@@ -122,6 +122,9 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .dfill{height:100%;transition:width .5s ease;}
 .dfill-S{background:var(--s);} .dfill-A{background:var(--a);} .dfill-B{background:var(--b);} .dfill-C{background:var(--c);} .dfill-D{background:var(--d);}
 .dn{width:22px;text-align:right;color:var(--ink-muted);}
+.sugbar{height:5px;background:var(--teal-wash);margin-top:5px;max-width:200px;}
+.sugfill{height:100%;background:var(--amber);transition:width .5s ease;}
+.btn.sm{padding:6px 10px;font-size:10.5px;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -180,6 +183,8 @@ function deviceId(){
 }
 function myVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oylarim')||'{}'); }catch(e){ return {}; } }
 function setMyVote(fid, lig){ const m = myVotes(); m[fid]=lig; localStorage.setItem('pr_oylarim', JSON.stringify(m)); }
+function mySugVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oneri_oylarim')||'{}'); }catch(e){ return {}; } }
+function setMySugVote(id){ const m = mySugVotes(); m[id]=1; localStorage.setItem('pr_oneri_oylarim', JSON.stringify(m)); }
 
 // ---------- kufur/spam filtresi ----------
 const BAD_WORDS = ['amk','aq','sik','sikik','sikim','siktir','orospu','pic','yarrak','yarak','got','amcik','amina','anani','pezevenk','kahpe','ibne','ipne','dallama','gavat','fuck','shit','bitch','asshole','dick','cunt','porn','sex'];
@@ -201,6 +206,7 @@ let currentMode = 'auto';
 let selectedFood = null;
 let foodCache = {};   // cid -> [foods]
 let voteCache = {};   // cid -> {foodId:{S..D}}
+let sugCache = {};    // cid -> [oneriler]
 let votingOpen = true;
 
 // ---------- veri ----------
@@ -224,6 +230,13 @@ async function loadCuisine(cid, force){
       if(!voteCache[cid][v.yemek_id]) voteCache[cid][v.yemek_id]={S:0,A:0,B:0,C:0,D:0};
       voteCache[cid][v.yemek_id][v.lig]=v.adet;
     });
+  }
+  const {data: sugs} = await sb.from('oneriler').select('id,ad,kcal').eq('mutfak', cid).eq('durum','bekliyor').order('created_at',{ascending:false});
+  sugCache[cid] = (sugs||[]).map(s=>({...s, oy:0}));
+  if(sugCache[cid].length){
+    const sids = sugCache[cid].map(s=>s.id);
+    const {data: sv} = await sb.from('oneri_oylar').select('oneri_id').in('oneri_id', sids);
+    (sv||[]).forEach(v=>{ const s=sugCache[cid].find(x=>x.id===v.oneri_id); if(s) s.oy++; });
   }
 }
 function communityTierOf(cid, foodId){
@@ -339,14 +352,35 @@ function renderComm(){
       </div>`;
     }
   }
+  // Oneri Sahnesi
+  html += `<div class="section-title">Öneri Sahnesi 🔥</div>
+  <p class="note">Topluluğun önerdiği yemekler. 5 ateş oyu toplayan otomatik yayına girer (B ligiyle başlar).</p>`;
+  const sugs = (sugCache[cid]||[]).slice().sort((a,b)=>b.oy-a.oy);
+  if(!sugs.length){
+    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Sahne boş — ilk öneriyi sen yap.</p></div>`;
+  } else {
+    html += '<div class="card">';
+    sugs.forEach((s,i)=>{
+      const voted = mySugVotes()[s.id];
+      html += `<div class="crow" style="--i:${i}">
+        <div class="name">${esc(s.ad)}
+          <small>${s.kcal?s.kcal+' kcal · ':''}${s.oy}/5 oy</small>
+          <div class="sugbar"><div class="sugfill" style="width:${Math.min(100,(s.oy/5)*100)}%"></div></div>
+        </div>
+        <button class="btn sm ${voted?'secondary':''}" data-sug="${s.id}" ${voted?'disabled':''}>${voted?'Oyladın ✓':'🔥 İsterim'}</button>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
   html += `<div class="section-title">Eksik yemek mi var?</div>
   <div class="card">
-    <p class="note" style="margin-top:0">Önerin doğrudan yayınlanmaz — önce onaydan geçer.</p>
+    <p class="note" style="margin-top:0">Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer.</p>
     <div class="field-row">
       <div style="flex:2"><label>Yemek adı</label><input type="text" id="nf-name" maxlength="60" placeholder="örn. Menemen"></div>
       <div><label>kcal (tahmini)</label><input type="number" id="nf-kcal" placeholder="250"></div>
     </div>
-    <button class="btn" id="nf-add">Öneri gönder</button>
+    <button class="btn" id="nf-add">Sahneye gönder</button>
     <div class="err" id="nf-err"></div>
     <div class="ok" id="nf-ok"></div>
   </div>`;
@@ -454,6 +488,26 @@ function wireUp(){
   document.querySelectorAll('.votebtns button').forEach(b=>{
     b.onclick = ()=> doVote(selectedFood, b.dataset.t);
   });
+  document.querySelectorAll('[data-sug]').forEach(b=>{
+    b.onclick = async ()=>{
+      b.disabled = true;
+      const id = b.dataset.sug;
+      const {error} = await sb.from('oneri_oylar').insert({oneri_id:id, cihaz:deviceId()});
+      if(error){
+        if((error.code||'')==='23505'){ setMySugVote(id); toast('Bu öneriyi zaten oyladın'); render(); }
+        else { toast('Oy kaydedilemedi'); b.disabled=false; }
+        return;
+      }
+      setMySugVote(id);
+      const s = (sugCache[currentCuisine]||[]).find(x=>x.id===id);
+      if(s){
+        s.oy++;
+        if(s.oy>=5){ toast('🎉 "'+s.ad+'" yayına girdi!'); await refresh(true); return; }
+      }
+      toast('🔥 Oyun sahnede');
+      render();
+    };
+  });
   const add = document.getElementById('nf-add');
   if(add){
     add.onclick = async ()=>{
@@ -473,8 +527,9 @@ function wireUp(){
       if(error){ err.textContent='Gönderilemedi, biraz sonra tekrar dene.'; return; }
       document.getElementById('nf-name').value='';
       document.getElementById('nf-kcal').value='';
-      ok.textContent='Önerin alındı! Onaydan geçince yayınlanır.';
-      toast('Öneri gönderildi ✓');
+      ok.textContent='Önerin sahnede! 5 ateş oyu alırsa yayına girer.';
+      toast('Öneri sahneye düştü 🔥');
+      await refresh(true);
     };
   }
 }

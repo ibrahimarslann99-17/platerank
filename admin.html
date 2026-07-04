@@ -174,6 +174,7 @@ async function renderYemekler(){
       html += `<div class="row">
         <div class="info"><div class="name">${esc(f.ad)} ${f.yayinda?'':'<span class="badge">yayında değil</span>'}</div>
         <small>${f.kcal} kcal · skor ${f.doyuruculuk}</small></div>
+        <button class="btn small secondary" data-skor="${f.id}" data-cur="${f.doyuruculuk}">Skor</button>
         <button class="btn small secondary" data-toggle="${f.id}" data-cur="${f.yayinda}">${f.yayinda?'Gizle':'Yayınla'}</button>
         <button class="btn small secondary" data-resetvotes="${f.id}">Oyları sıfırla</button>
         <button class="btn small danger" data-del="${f.id}">Sil</button>
@@ -182,6 +183,14 @@ async function renderYemekler(){
     html += '</div>';
   });
   el.innerHTML = html || '<div class="card"><small>Yemek yok.</small></div>';
+  el.querySelectorAll('[data-skor]').forEach(b=>{
+    b.onclick = async ()=>{
+      const v = parseInt(prompt('Yeni doyuruculuk skoru (1-500):\n200+ = S · 150+ = A · 100+ = B · 70+ = C · altı = D', b.dataset.cur),10);
+      if(!v || v<1 || v>500) return;
+      await sb.from('yemekler').update({doyuruculuk:v}).eq('id', b.dataset.skor);
+      renderYemekler();
+    };
+  });
   el.querySelectorAll('[data-toggle]').forEach(b=>{
     b.onclick = async ()=>{
       await sb.from('yemekler').update({yayinda: b.dataset.cur!=='true'}).eq('id', b.dataset.toggle);
