@@ -125,6 +125,19 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .sugbar{height:5px;background:var(--teal-wash);margin-top:5px;max-width:200px;}
 .sugfill{height:100%;background:var(--amber);transition:width .5s ease;}
 .btn.sm{padding:6px 10px;font-size:10.5px;white-space:nowrap;}
+/* besin barlari */
+.nut{margin-top:8px;display:grid;gap:4px;max-width:260px;}
+.nrow{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);}
+.nrow .nl{width:52px;}
+.nbar{flex:1;height:5px;background:var(--paper);}
+.nfill{height:100%;transition:width .5s ease;}
+.nf-p{background:var(--s);} .nf-l{background:#4FB3C9;} .nf-y{background:var(--c);}
+.nrow .ng{width:34px;text-align:right;}
+/* Kesifler ozel vitrin */
+.tab.hm{border-color:var(--amber);color:var(--amber);}
+.tab.hm.active{background:var(--amber);color:#0F1722;border-color:var(--amber);}
+.hmban{border:1px solid var(--amber);background:rgba(217,164,65,0.08);color:var(--ink);padding:10px 12px;font-size:12px;margin:0 0 14px;line-height:1.6;font-family:'IBM Plex Mono',monospace;}
+.hmban b{color:var(--amber);}
 </style>
 </head>
 <body>
@@ -160,7 +173,11 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const CUISINES = [
   {id:'tr', name:'Türk'}, {id:'it', name:'İtalyan'}, {id:'jp', name:'Japon'},
   {id:'mx', name:'Meksika'}, {id:'cn', name:'Çin'}, {id:'us', name:'Amerikan'},
+  {id:'hm', name:'Keşifler 🔦'},
 ];
+function hmBanner(){
+  return `<div class="hmban">🔦 <b>Keşifler</b> — "Ben bir şey buldum!" alanı. Az kalori + yüksek doyuruculuk + gerçek lezzet. Tarifi dene, sonra oyla. Yeni keşifler Öneri Sahnesi'nden gelir.</div>`;
+}
 const TIER_ORDER = ['S','A','B','C','D'];
 const TIER_NUM = {S:5,A:4,B:3,C:2,D:1};
 const TIER_INFO = {
@@ -219,7 +236,7 @@ async function loadSettings(){
 async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
   const {data: foods, error} = await sb.from('yemekler')
-    .select('id,mutfak,ad,kcal,doyuruculuk').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
+    .select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
   if(error){ console.error(error); foodCache[cid]=[]; voteCache[cid]={}; return; }
   foodCache[cid] = foods||[];
   const ids = foodCache[cid].map(f=>f.id);
@@ -252,7 +269,7 @@ function communityTierOf(cid, foodId){
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function renderTabs(){
   const el = document.getElementById('tabs');
-  el.innerHTML = CUISINES.map(c=>`<button class="tab ${c.id===currentCuisine?'active':''}" data-c="${c.id}">${c.name}</button>`).join('');
+  el.innerHTML = CUISINES.map(c=>`<button class="tab ${c.id==='hm'?'hm':''} ${c.id===currentCuisine?'active':''}" data-c="${c.id}">${c.name}</button>`).join('');
   el.querySelectorAll('.tab').forEach(b=>{
     b.onclick = async ()=>{ currentCuisine=b.dataset.c; selectedFood=null; await refresh(); };
   });
@@ -289,17 +306,23 @@ function renderAuto(){
   const foods = foodCache[currentCuisine]||[];
   if(!foods.length) return '<div class="card"><p class="note" style="margin:0">Bu mutfakta henüz yemek yok.</p></div>';
   const max = Math.max(...foods.map(f=>f.doyuruculuk));
-  let html = legendHtml();
+  let html = currentCuisine==='hm' ? hmBanner() : '';
+  html += legendHtml();
   html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör. (Resmi klinik veri değil — Holt 1995 mantığının mutfağa uyarlaması.)</p>`;
   html += '<div class="card">';
   foods.forEach((f,i)=>{
     const lig = satietyToTier(f.doyuruculuk);
     const pct = Math.max(5,(f.doyuruculuk/max)*100);
+    const nut = f.protein==null ? '' : `<div class="nut">
+        <div class="nrow"><span class="nl">protein</span><div class="nbar"><div class="nfill nf-p" style="width:${Math.min(100,(f.protein/35)*100)}%"></div></div><span class="ng">~${f.protein}g</span></div>
+        <div class="nrow"><span class="nl">lif</span><div class="nbar"><div class="nfill nf-l" style="width:${Math.min(100,(f.lif/10)*100)}%"></div></div><span class="ng">~${f.lif}g</span></div>
+        <div class="nrow"><span class="nl">yağ</span><div class="nbar"><div class="nfill nf-y" style="width:${Math.min(100,(f.yag/36)*100)}%"></div></div><span class="ng">~${f.yag}g</span></div>
+      </div>`;
     html += `<div class="arow" style="--i:${i}" data-exp="1">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <div class="lig lig-${lig}">${lig}</div>
       <div class="info"><div class="name">${esc(f.ad)}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
-        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal</div>
+        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri tahminidir</span>':''}</div>
       </div>
       <div class="kcal">${f.kcal} kcal</div>
     </div>`;
@@ -327,8 +350,9 @@ function renderComm(){
     if(ct) groups[ct.tier].push({f, total:ct.total});
     else unvoted.push(f);
   });
-  let html = legendHtml();
-  html += `<p class="note">Halkın verdiği oylar. Bir yemeğe dokun, sonra alttan lig ver. Yeşil nokta = senin oyun. Oylar herkese açık ve ortak sayılır.</p>`;
+  let html = cid==='hm' ? hmBanner() : '';
+  html += legendHtml();
+  html += `<p class="note">${cid==='hm' ? 'Keşifleri tarifi deneyenler oylar — denemeden oy verme, sahtekârlık olur. 🔦' : 'Halkın verdiği oylar. Bir yemeğe dokun, sonra alttan lig ver. Yeşil nokta = senin oyun. Oylar herkese açık ve ortak sayılır.'}</p>`;
   TIER_ORDER.forEach((t,i)=>{
     html += `<div class="tier tier-${t}" style="--i:${i}"><div class="tier-label">${t}</div><div class="tier-items">`;
     groups[t].forEach(({f,total})=>{ html += chipHtml(f,total); });
@@ -373,9 +397,9 @@ function renderComm(){
     html += '</div>';
   }
 
-  html += `<div class="section-title">Eksik yemek mi var?</div>
+  html += `<div class="section-title">${cid==='hm' ? 'Bir keşfin mi var? 🔦' : 'Eksik yemek mi var?'}</div>
   <div class="card">
-    <p class="note" style="margin-top:0">Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer.</p>
+    <p class="note" style="margin-top:0">${cid==='hm' ? 'Az kalorili ama doyuran ve lezzetli bir şey mi buldun? Sahneye at; 5 ateş oyu alırsa Keşifler rafına girer.' : 'Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer.'}</p>
     <div class="field-row">
       <div style="flex:2"><label>Yemek adı</label><input type="text" id="nf-name" maxlength="60" placeholder="örn. Menemen"></div>
       <div><label>kcal (tahmini)</label><input type="number" id="nf-kcal" placeholder="250"></div>
