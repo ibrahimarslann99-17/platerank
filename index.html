@@ -17,7 +17,11 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
-  background:var(--paper);
+  background:
+    radial-gradient(600px 420px at 12% 4%, rgba(62,142,126,0.16), transparent 60%),
+    radial-gradient(520px 400px at 88% 28%, rgba(217,164,65,0.10), transparent 60%),
+    var(--paper);
+  background-attachment:fixed;
   color:var(--ink); font-family:'IBM Plex Serif', serif; min-height:100vh; padding:18px 12px 70px;
 }
 body::before{
@@ -171,6 +175,24 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .g-slow i.on{background:var(--s);}
 .g-mid i.on{background:var(--amber);}
 .g-fast i.on{background:var(--danger);}
+
+/* glassmorphic kartlar */
+.card,.tier,.votepanel,.hmban,.banner{
+  background:rgba(24,35,51,0.52);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-color:rgba(237,232,221,0.10);
+}
+.hmban{border-color:rgba(217,164,65,0.5);}
+.banner{border-color:var(--danger);}
+.votepanel{border-color:rgba(237,232,221,0.28);}
+
+/* kart yuzeyinde gorunen metrikler */
+.kcal .mini-t{display:block;font-size:9px;color:var(--ink-muted);margin-top:3px;letter-spacing:0.03em;}
+.gdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-left:7px;vertical-align:middle;}
+.gdot.d1{background:var(--s);}
+.gdot.d2{background:var(--amber);}
+.gdot.d3{background:var(--danger);box-shadow:0 0 6px rgba(217,87,68,0.6);}
 </style>
 </head>
 <body>
@@ -379,13 +401,15 @@ function renderAuto(){
         <div class="nrow"><span class="nl">yağ</span><div class="nbar"><div class="nfill nf-y" style="width:${Math.min(100,(f.yag/36)*100)}%"></div></div><span class="ng">~${f.yag}g</span></div>
         ${f.seker!=null?`<div class="nrow"><span class="nl">şeker</span><div class="nbar"><div class="nfill nf-s" style="width:${Math.min(100,(f.seker/30)*100)}%"></div></div><span class="ng">~${f.seker}g</span></div>`:''}
       </div>`;
+    const g = sekerSoku(f);
+    const t = acikmaSuresi(f);
     html += `<div class="arow" style="--i:${i}" data-exp="1">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <div class="lig lig-${lig}">${lig}</div>
-      <div class="info"><div class="name">${esc(f.ad)}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
+      <div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
         <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri ve metrikler tahminidir</span>':''}</div>
       </div>
-      <div class="kcal">${f.kcal} kcal</div>
+      <div class="kcal">${f.kcal} kcal${t?`<span class="mini-t">⏱ ${saatStr(t)} sa</span>`:''}</div>
     </div>`;
   });
   html += '</div>';
