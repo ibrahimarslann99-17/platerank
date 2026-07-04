@@ -135,7 +135,7 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .nrow .nl{width:52px;}
 .nbar{flex:1;height:5px;background:var(--paper);}
 .nfill{height:100%;transition:width .5s ease;}
-.nf-p{background:var(--s);} .nf-l{background:#4FB3C9;} .nf-y{background:var(--c);}
+.nf-p{background:var(--s);} .nf-l{background:#4FB3C9;} .nf-y{background:var(--c);} .nf-s{background:#E06A9C;}
 .nrow .ng{width:34px;text-align:right;}
 /* Kesifler ozel vitrin */
 .tab.hm{border-color:var(--amber);color:var(--amber);}
@@ -157,6 +157,20 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .tab:hover{transform:translateY(-1px);}
 @keyframes fadeUp{0%{opacity:0;transform:translateY(12px) scale(0.985);}70%{opacity:1;transform:translateY(-2px) scale(1.004);}100%{opacity:1;transform:none;}}
 .arow .bar{transition:width .9s cubic-bezier(0.22,1.18,0.36,1);}
+
+/* seker soku + acikma metrikleri */
+.metr{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;}
+.mchip{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-muted);border:1px solid var(--line);padding:4px 8px;border-radius:4px;background:var(--paper);white-space:nowrap;}
+.mchip.warn{border-color:var(--danger);color:var(--danger);}
+.mchip.cool{border-color:var(--s);color:var(--s);}
+.gbars{display:inline-flex;align-items:flex-end;gap:2px;height:12px;}
+.gbars i{width:3px;background:var(--line);border-radius:1px;display:block;}
+.gbars i:nth-child(1){height:5px;}
+.gbars i:nth-child(2){height:8px;}
+.gbars i:nth-child(3){height:12px;}
+.g-slow i.on{background:var(--s);}
+.g-mid i.on{background:var(--amber);}
+.g-fast i.on{background:var(--danger);}
 </style>
 </head>
 <body>
@@ -209,6 +223,33 @@ const TIER_INFO = {
 function legendHtml(){
   return '<div class="legend">'+TIER_ORDER.map(t=>`<div class="lg lg-${t}"><b>${t}</b>${TIER_INFO[t].split(' — ')[0]}</div>`).join('')+'</div>';
 }
+
+// makrolardan turetilen metrikler
+function sekerSoku(f){
+  if(f.protein==null) return null;
+  const karb = Math.max(0,(f.kcal - f.protein*4 - f.yag*9)/4);
+  const puan = (karb + (f.seker||0)) / (1 + f.lif*2 + f.protein*0.9 + f.yag*0.4) * (120/(f.doyuruculuk+40));
+  if(puan>=2.6) return {seviye:3, ad:'Roket', cls:'g-fast'};
+  if(puan>=1.3) return {seviye:2, ad:'Orta', cls:'g-mid'};
+  return {seviye:1, ad:'Yavaş', cls:'g-slow'};
+}
+function acikmaSuresi(f){
+  if(f.protein==null) return null;
+  let s = 1 + (f.doyuruculuk/280)*3.2 + f.protein*0.02 + f.lif*0.05;
+  s = Math.max(1, Math.min(5, s));
+  return Math.round(s*2)/2;
+}
+function saatStr(t){ return String(t).replace('.',','); }
+function metrHtml(f){
+  const g = sekerSoku(f);
+  if(!g) return '';
+  const t = acikmaSuresi(f);
+  const bars = `<span class="gbars ${g.cls}">`+[1,2,3].map(i=>`<i class="${i<=g.seviye?'on':''}"></i>`).join('')+`</span>`;
+  return `<div class="metr">
+    <span class="mchip ${g.seviye===3?'warn':(g.seviye===1?'cool':'')}">${bars} Şeker şoku: ${g.ad}</span>
+    <span class="mchip">⏱ tekrar acıkma ~${saatStr(t)} sa</span>
+  </div>`;
+}
 function satietyToTier(s){ if(s>=200)return 'S'; if(s>=150)return 'A'; if(s>=100)return 'B'; if(s>=70)return 'C'; return 'D'; }
 
 // ---------- cihaz kimligi + kisisel oylar (yerel) ----------
@@ -255,7 +296,7 @@ async function loadSettings(){
 async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
   const {data: foods, error} = await sb.from('yemekler')
-    .select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
+    .select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
   if(error){ console.error(error); foodCache[cid]=[]; voteCache[cid]={}; return; }
   foodCache[cid] = foods||[];
   const ids = foodCache[cid].map(f=>f.id);
@@ -336,12 +377,13 @@ function renderAuto(){
         <div class="nrow"><span class="nl">protein</span><div class="nbar"><div class="nfill nf-p" style="width:${Math.min(100,(f.protein/35)*100)}%"></div></div><span class="ng">~${f.protein}g</span></div>
         <div class="nrow"><span class="nl">lif</span><div class="nbar"><div class="nfill nf-l" style="width:${Math.min(100,(f.lif/10)*100)}%"></div></div><span class="ng">~${f.lif}g</span></div>
         <div class="nrow"><span class="nl">yağ</span><div class="nbar"><div class="nfill nf-y" style="width:${Math.min(100,(f.yag/36)*100)}%"></div></div><span class="ng">~${f.yag}g</span></div>
+        ${f.seker!=null?`<div class="nrow"><span class="nl">şeker</span><div class="nbar"><div class="nfill nf-s" style="width:${Math.min(100,(f.seker/30)*100)}%"></div></div><span class="ng">~${f.seker}g</span></div>`:''}
       </div>`;
     html += `<div class="arow" style="--i:${i}" data-exp="1">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <div class="lig lig-${lig}">${lig}</div>
       <div class="info"><div class="name">${esc(f.ad)}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
-        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri tahminidir</span>':''}</div>
+        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri ve metrikler tahminidir</span>':''}</div>
       </div>
       <div class="kcal">${f.kcal} kcal</div>
     </div>`;
@@ -458,10 +500,16 @@ function renderConflict(){
       else if(r.diff < 0){ verdict='Hafife Alınan'; vclass='v-under'; story='Doyurucu ama hak ettiği sevgiyi görmüyor'; }
       else { verdict='Uzlaşma'; vclass='v-agree'; story='Kafa ve mide aynı fikirde'; }
       const gapClass = r.mag>=3?'gap-hi':(r.mag>=2?'gap-mid':'gap-lo');
+      const g = sekerSoku(r.f);
+      let ekstra = '';
+      if(g && r.diff > 0 && g.seviye===3){ ekstra = `<span class="verdict v-trap">🚨 şeker şoku: roket — "tok tutuyor" hissi ${saatStr(acikmaSuresi(r.f))} saatte çöker</span>`; }
+      else if(g && r.diff < 0 && g.seviye===1){ ekstra = `<span class="verdict v-under">⏱ ~${saatStr(acikmaSuresi(r.f))} sa tok tutar — halk daha farkında değil</span>`; }
       html += `<div class="crow">
         <div class="name">${esc(r.f.ad)}
           <small>${r.votes} oy · ${r.f.kcal} kcal</small>
           <span class="verdict ${vclass}">${verdict} — ${story}</span>
+          ${ekstra}
+          ${metrHtml(r.f)}
         </div>
         <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span><span class="arrow">→</span><span class="tp-${r.comm}">${r.comm}</span></div>
         <div class="gap ${gapClass}">${r.diff>0?'+':''}${r.diff}</div>
@@ -478,9 +526,10 @@ function renderConflict(){
     undiscovered.sort((a,b)=> TIER_NUM[b.sci]-TIER_NUM[a.sci] || a.votes-b.votes);
     html += '<div class="card">';
     undiscovered.forEach(u=>{
+      const ut = acikmaSuresi(u.f);
       html += `<div class="crow">
         <div class="name">${esc(u.f.ad)}
-          <small>${u.votes===0?'hiç oylanmamış':u.votes+' oy · halk: '+u.comm} · ${u.f.kcal} kcal</small>
+          <small>${u.votes===0?'hiç oylanmamış':u.votes+' oy · halk: '+u.comm} · ${u.f.kcal} kcal${ut?' · ⏱ ~'+saatStr(ut)+' sa':''}</small>
         </div>
         <div class="tierpair"><span class="tp-${u.sci}">${u.sci}</span></div>
       </div>`;
