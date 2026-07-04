@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlateRank — Yönetici</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+:root{
+  --paper:#0F1722; --card:#182333; --line:#243349; --line-strong:#3A4A66;
+  --ink:#EDE8DD; --ink-muted:#9AA3B2;
+  --teal:#3E8E7E; --teal-dark:#5FBFAB; --teal-wash:#1D3330;
+  --amber:#D9A441; --danger:#D95744;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Serif',serif;min-height:100vh;padding:18px 12px 70px;}
+.wrap{max-width:640px;margin:0 auto;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-dark);font-weight:600;}
+h1{font-weight:700;font-size:24px;margin:4px 0 16px;}
+.card{background:var(--card);border:1px solid var(--line-strong);padding:14px;margin-bottom:14px;}
+label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;}
+input{width:100%;font-family:'IBM Plex Serif',serif;font-size:15px;padding:8px 10px;border:1px solid var(--line-strong);background:var(--paper);color:var(--ink);margin-bottom:10px;}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;border:1px solid var(--teal);background:var(--teal);color:#fff;padding:9px 14px;cursor:pointer;}
+.btn:hover{background:#2F6B5E;}
+.btn.secondary{background:transparent;color:var(--teal-dark);}
+.btn.danger{background:var(--danger);border-color:var(--danger);}
+.btn.small{padding:5px 9px;font-size:10.5px;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.err{color:var(--danger);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:4px;}
+.ok{color:var(--teal-dark);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:4px;}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-dark);font-weight:600;margin:22px 0 10px;border-bottom:1px solid var(--line-strong);padding-bottom:6px;}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);}
+.row:last-child{border-bottom:none;}
+.row .info{flex:1;min-width:0;}
+.row .name{font-weight:600;font-size:14px;}
+.row small{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-muted);}
+.killswitch{display:flex;align-items:center;gap:12px;}
+.killswitch .state{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:14px;}
+.state-on{color:var(--teal-dark);}
+.state-off{color:var(--danger);}
+.badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;padding:2px 6px;border:1px solid var(--line-strong);color:var(--ink-muted);}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.tab{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:8px 13px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-muted);cursor:pointer;font-weight:600;text-transform:uppercase;}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.loading{text-align:center;padding:30px;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">PlateRank</div>
+      <h1>Yönetici Paneli</h1>
+    </div>
+    <button class="btn secondary" id="btn-logout" style="display:none">Çıkış</button>
+  </div>
+  <div id="app"><div class="loading">Yükleniyor…</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const CUISINES = {tr:'Türk', it:'İtalyan', jp:'Japon', mx:'Meksika', cn:'Çin', us:'Amerikan'};
+let currentTab = 'oneriler';
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// ---------- giris ----------
+function renderLogin(msg){
+  document.getElementById('btn-logout').style.display='none';
+  document.getElementById('app').innerHTML = `
+  <div class="card">
+    <label>E-posta</label><input type="email" id="lg-email" autocomplete="username">
+    <label>Şifre</label><input type="password" id="lg-pass" autocomplete="current-password">
+    <button class="btn" id="lg-btn">Giriş yap</button>
+    <div class="err" id="lg-err">${esc(msg||'')}</div>
+  </div>`;
+  document.getElementById('lg-btn').onclick = async ()=>{
+    const email = document.getElementById('lg-email').value.trim();
+    const pass = document.getElementById('lg-pass').value;
+    const {error} = await sb.auth.signInWithPassword({email, password:pass});
+    if(error){ document.getElementById('lg-err').textContent = 'Giriş başarısız: e-posta veya şifre hatalı.'; return; }
+    boot();
+  };
+}
+document.getElementById('btn-logout').onclick = async ()=>{ await sb.auth.signOut(); renderLogin(); };
+
+// ---------- panel ----------
+async function boot(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ renderLogin(); return; }
+  document.getElementById('btn-logout').style.display='';
+  renderPanel();
+}
+async function renderPanel(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+  <div class="tabs">
+    <button class="tab ${currentTab==='oneriler'?'active':''}" data-t="oneriler">Öneriler</button>
+    <button class="tab ${currentTab==='yemekler'?'active':''}" data-t="yemekler">Yemekler</button>
+    <button class="tab ${currentTab==='ayarlar'?'active':''}" data-t="ayarlar">Acil Anahtar</button>
+  </div>
+  <div id="panel"><div class="loading">Yükleniyor…</div></div>`;
+  app.querySelectorAll('.tab').forEach(b=>{ b.onclick=()=>{ currentTab=b.dataset.t; renderPanel(); }; });
+  if(currentTab==='oneriler') await renderOneriler();
+  else if(currentTab==='yemekler') await renderYemekler();
+  else await renderAyarlar();
+}
+
+// --- oneriler ---
+async function renderOneriler(){
+  const el = document.getElementById('panel');
+  const {data, error} = await sb.from('oneriler').select('*').order('created_at',{ascending:false});
+  if(error){ el.innerHTML = `<div class="err">Okunamadı: ${esc(error.message)}</div>`; return; }
+  const bekleyen = (data||[]).filter(o=>o.durum==='bekliyor');
+  const gecmis = (data||[]).filter(o=>o.durum!=='bekliyor').slice(0,20);
+  let html = `<div class="section-title">Onay kuyruğu (${bekleyen.length})</div><div class="card">`;
+  if(!bekleyen.length) html += '<small>Bekleyen öneri yok.</small>';
+  bekleyen.forEach(o=>{
+    html += `<div class="row">
+      <div class="info"><div class="name">${esc(o.ad)}</div>
+      <small>${CUISINES[o.mutfak]||o.mutfak} · ${o.kcal?o.kcal+' kcal':'kcal yok'} · ${new Date(o.created_at).toLocaleDateString('tr-TR')}</small></div>
+      <button class="btn small" data-approve="${o.id}">Onayla</button>
+      <button class="btn small danger" data-reject="${o.id}">Reddet</button>
+    </div>`;
+  });
+  html += '</div>';
+  if(gecmis.length){
+    html += `<div class="section-title">Son işlenenler</div><div class="card">`;
+    gecmis.forEach(o=>{ html += `<div class="row"><div class="info"><div class="name">${esc(o.ad)}</div><small>${CUISINES[o.mutfak]||o.mutfak}</small></div><span class="badge">${o.durum}</span></div>`; });
+    html += '</div>';
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('[data-approve]').forEach(b=>{
+    b.onclick = async ()=>{
+      const o = bekleyen.find(x=>x.id===b.dataset.approve);
+      let kcal = o.kcal;
+      if(!kcal){
+        kcal = parseInt(prompt(`"${o.ad}" için kalori (porsiyon başına):`),10);
+        if(!kcal || kcal<1 || kcal>5000){ alert('Geçerli kcal girmeden onaylanamaz.'); return; }
+      }
+      const skor = parseInt(prompt(`"${o.ad}" için doyuruculuk skoru (1-500):\n200+ = S · 150+ = A · 100+ = B · 70+ = C · altı = D`),10);
+      if(!skor || skor<1 || skor>500){ alert('Geçerli skor girmeden onaylanamaz.'); return; }
+      const {error:e1} = await sb.from('yemekler').insert({mutfak:o.mutfak, ad:o.ad, kcal:kcal, doyuruculuk:skor});
+      if(e1){ alert('Yemek eklenemedi: '+e1.message); return; }
+      await sb.from('oneriler').update({durum:'onaylandi'}).eq('id', o.id);
+      renderOneriler();
+    };
+  });
+  el.querySelectorAll('[data-reject]').forEach(b=>{
+    b.onclick = async ()=>{
+      await sb.from('oneriler').update({durum:'reddedildi'}).eq('id', b.dataset.reject);
+      renderOneriler();
+    };
+  });
+}
+
+// --- yemekler ---
+async function renderYemekler(){
+  const el = document.getElementById('panel');
+  const {data, error} = await sb.from('yemekler').select('*').order('mutfak').order('doyuruculuk',{ascending:false});
+  if(error){ el.innerHTML = `<div class="err">Okunamadı: ${esc(error.message)}</div>`; return; }
+  let html = '';
+  Object.keys(CUISINES).forEach(cid=>{
+    const foods = (data||[]).filter(f=>f.mutfak===cid);
+    if(!foods.length) return;
+    html += `<div class="section-title">${CUISINES[cid]} (${foods.length})</div><div class="card">`;
+    foods.forEach(f=>{
+      html += `<div class="row">
+        <div class="info"><div class="name">${esc(f.ad)} ${f.yayinda?'':'<span class="badge">yayında değil</span>'}</div>
+        <small>${f.kcal} kcal · skor ${f.doyuruculuk}</small></div>
+        <button class="btn small secondary" data-toggle="${f.id}" data-cur="${f.yayinda}">${f.yayinda?'Gizle':'Yayınla'}</button>
+        <button class="btn small secondary" data-resetvotes="${f.id}">Oyları sıfırla</button>
+        <button class="btn small danger" data-del="${f.id}">Sil</button>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  el.innerHTML = html || '<div class="card"><small>Yemek yok.</small></div>';
+  el.querySelectorAll('[data-toggle]').forEach(b=>{
+    b.onclick = async ()=>{
+      await sb.from('yemekler').update({yayinda: b.dataset.cur!=='true'}).eq('id', b.dataset.toggle);
+      renderYemekler();
+    };
+  });
+  el.querySelectorAll('[data-resetvotes]').forEach(b=>{
+    b.onclick = async ()=>{
+      if(!confirm('Bu yemeğin TÜM oyları silinecek. Emin misin?')) return;
+      await sb.from('oylar').delete().eq('yemek_id', b.dataset.resetvotes);
+      alert('Oylar silindi.');
+    };
+  });
+  el.querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = async ()=>{
+      if(!confirm('Yemek ve tüm oyları kalıcı olarak silinecek. Genelde "Gizle" daha güvenlidir. Yine de sil?')) return;
+      await sb.from('yemekler').delete().eq('id', b.dataset.del);
+      renderYemekler();
+    };
+  });
+}
+
+// --- acil anahtar ---
+async function renderAyarlar(){
+  const el = document.getElementById('panel');
+  const {data, error} = await sb.from('ayarlar').select('oylama_acik').eq('id',1).single();
+  if(error){ el.innerHTML = `<div class="err">Okunamadı: ${esc(error.message)}</div>`; return; }
+  const acik = data.oylama_acik;
+  el.innerHTML = `<div class="card killswitch">
+    <div style="flex:1">
+      <div class="state ${acik?'state-on':'state-off'}">Oylama şu an: ${acik?'AÇIK':'KAPALI'}</div>
+      <small>Kapatınca site görüntülenmeye devam eder ama hiçbir yeni oy kabul edilmez.</small>
+    </div>
+    <button class="btn ${acik?'danger':''}" id="ks-btn">${acik?'OYLAMAYI DURDUR':'Oylamayı aç'}</button>
+  </div>`;
+  document.getElementById('ks-btn').onclick = async ()=>{
+    if(acik && !confirm('Oylama tüm ziyaretçilere kapatılacak. Emin misin?')) return;
+    const {error:e} = await sb.from('ayarlar').update({oylama_acik: !acik}).eq('id',1);
+    if(e){ alert('Değiştirilemedi: '+e.message); return; }
+    renderAyarlar();
+  };
+}
+
+boot();
+</script>
+</body>
+</html>

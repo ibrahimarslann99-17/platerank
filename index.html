@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlateRank — Doyuruculuk Tier List</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#0F1722; --card:#182333; --line:#243349; --line-strong:#3A4A66;
+  --ink:#EDE8DD; --ink-muted:#9AA3B2;
+  --teal:#3E8E7E; --teal-dark:#5FBFAB; --teal-wash:#1D3330;
+  --amber:#D9A441; --danger:#D95744;
+  --s:#3DBF8B; --a:#7BC950; --b:#E0B62E; --c:#E58A3A; --d:#D95744;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink); font-family:'IBM Plex Serif', serif; min-height:100vh; padding:18px 12px 70px;
+}
+.wrap{max-width:600px;margin:0 auto;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-dark);font-weight:600;}
+h1{font-weight:700;font-size:28px;line-height:1.12;margin:4px 0 6px;}
+.subtitle{font-size:13.5px;color:var(--ink-muted);margin:0 0 16px;line-height:1.5;}
+.banner{border:1px solid var(--danger);color:var(--danger);background:rgba(217,87,68,0.08);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:10px 12px;margin-bottom:14px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-webkit-overflow-scrolling:touch;}
+.tab{flex:0 0 auto;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.04em;padding:8px 13px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-muted);cursor:pointer;white-space:nowrap;text-transform:uppercase;font-weight:600;}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.modeswitch{display:flex;border:1px solid var(--line-strong);margin-bottom:16px;}
+.modeswitch button{flex:1;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;padding:10px 6px;border:none;background:var(--card);color:var(--ink-muted);cursor:pointer;}
+.modeswitch button.active{background:var(--teal);color:#fff;}
+.modeswitch button:not(:last-child){border-right:1px solid var(--line-strong);}
+.crow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line);}
+.crow:last-child{border-bottom:none;}
+.crow .name{flex:1;min-width:0;font-weight:600;font-size:14px;}
+.crow .name small{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-muted);font-weight:400;margin-top:2px;}
+.tierpair{display:flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;}
+.tierpair .arrow{color:var(--ink-muted);font-size:11px;}
+.tp-S{color:var(--s);} .tp-A{color:var(--a);} .tp-B{color:var(--b);} .tp-C{color:var(--c);} .tp-D{color:var(--d);}
+.gap{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;min-width:30px;text-align:right;}
+.gap-hi{color:var(--danger);} .gap-mid{color:var(--amber);} .gap-lo{color:var(--ink-muted);}
+.verdict{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 6px;border:1px solid;margin-top:3px;}
+.v-trap{color:var(--danger);border-color:var(--danger);}
+.v-under{color:var(--teal-dark);border-color:var(--teal-dark);}
+.v-agree{color:var(--ink-muted);border-color:var(--line-strong);}
+.note{font-size:12px;color:var(--ink-muted);font-style:italic;margin:0 0 14px;line-height:1.5;}
+.tier{display:flex;border:1px solid var(--line-strong);margin-bottom:8px;background:var(--card);min-height:56px;}
+.tier-label{flex:0 0 46px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:22px;color:#0F1722;}
+.tier-S .tier-label{background:var(--s);} .tier-A .tier-label{background:var(--a);}
+.tier-B .tier-label{background:var(--b);} .tier-C .tier-label{background:var(--c);} .tier-D .tier-label{background:var(--d);}
+.tier-items{flex:1;display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-items:flex-start;}
+.chip{font-size:13px;background:var(--paper);border:1px solid var(--line-strong);padding:5px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+.chip .kcal{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);}
+.chip.selected{border-color:var(--teal);background:var(--teal-wash);box-shadow:0 0 0 1px var(--teal);}
+.chip .mine{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+.arow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);}
+.arow:last-child{border-bottom:none;}
+.arow .num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);width:20px;}
+.arow .lig{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;width:18px;text-align:center;}
+.lig-S{color:var(--s);} .lig-A{color:var(--a);} .lig-B{color:var(--b);} .lig-C{color:var(--c);} .lig-D{color:var(--d);}
+.arow .info{flex:1;min-width:0;}
+.arow .name{font-weight:600;font-size:14px;}
+.arow .barwrap{height:6px;background:var(--teal-wash);margin-top:5px;max-width:240px;}
+.arow .bar{height:100%;background:var(--teal);}
+.arow .kcal{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);min-width:56px;text-align:right;}
+.card{background:var(--card);border:1px solid var(--line-strong);padding:14px;margin-bottom:14px;}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;border:1px solid var(--teal);background:var(--teal);color:#fff;padding:9px 14px;cursor:pointer;}
+.btn:hover{background:#2F6B5E;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.votepanel{position:sticky;bottom:0;background:var(--card);border:1px solid var(--teal);padding:12px;margin-top:14px;box-shadow:0 -4px 12px rgba(0,0,0,0.06);}
+.votepanel .who{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--teal-dark);font-weight:600;margin-bottom:8px;}
+.votebtns{display:flex;gap:6px;}
+.votebtns button{flex:1;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;padding:10px 0;border:1px solid var(--line-strong);background:var(--paper);cursor:pointer;color:var(--ink);}
+.votebtns button.v-S:hover{background:var(--s);color:#fff;}
+.votebtns button.v-A:hover{background:var(--a);color:#fff;}
+.votebtns button.v-B:hover{background:var(--b);color:#fff;}
+.votebtns button.v-C:hover{background:var(--c);color:#fff;}
+.votebtns button.v-D:hover{background:var(--d);color:#fff;}
+label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;}
+input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',serif;font-size:15px;padding:8px 10px;border:1px solid var(--line-strong);background:var(--paper);color:var(--ink);margin-bottom:10px;}
+.field-row{display:flex;gap:10px;}
+.field-row>div{flex:1;}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-dark);font-weight:600;margin:22px 0 10px;border-bottom:1px solid var(--line-strong);padding-bottom:6px;}
+.err{color:var(--danger);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:4px;}
+.ok{color:var(--teal-dark);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:4px;}
+.loading{text-align:center;padding:30px;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.footer-actions{margin-top:26px;text-align:center;}
+.footer-actions button{background:none;border:none;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;text-decoration:underline;cursor:pointer;}
+
+/* etkileşim & animasyon */
+.tab,.chip,.btn,.modeswitch button,.votebtns button{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .12s ease,box-shadow .18s ease;}
+.tab:hover{border-color:var(--teal);color:var(--ink);}
+.chip:hover{transform:translateY(-1px);border-color:var(--teal);}
+.chip:active{transform:scale(0.97);}
+.votebtns button:active{transform:scale(0.94);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.arow,.crow{animation:fadeUp .35s ease both;animation-delay:calc(var(--i,0)*35ms);}
+.tier{animation:fadeUp .35s ease both;animation-delay:calc(var(--i,0)*60ms);}
+.arow .bar{transition:width .7s cubic-bezier(.2,.8,.2,1);}
+.votepanel{animation:fadeUp .25s ease both;}
+.arow{cursor:pointer;}
+.arow:hover .name{color:var(--teal-dark);}
+.arow .detay{display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);margin-top:6px;line-height:1.6;}
+.arow.acik .detay{display:block;animation:fadeUp .25s ease both;}
+.legend{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 14px;}
+.legend .lg{flex:1 1 auto;display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);border:1px solid var(--line);padding:4px 7px;background:var(--card);}
+.legend .lg b{font-size:13px;}
+.lg-S b{color:var(--s);} .lg-A b{color:var(--a);} .lg-B b{color:var(--b);} .lg-C b{color:var(--c);} .lg-D b{color:var(--d);}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--teal);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:10px 16px;opacity:0;transition:transform .3s ease,opacity .3s ease;z-index:50;pointer-events:none;}
+#toast.goster{transform:translateX(-50%) translateY(0);opacity:1;}
+.kbd-hint{display:none;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-muted);margin-top:10px;}
+@media (hover:hover){.kbd-hint{display:block;}}
+.cfade{animation:fadeUp .3s ease both;}
+.legend .lg{cursor:pointer;transition:border-color .18s ease,transform .12s ease;}
+.legend .lg:hover{border-color:var(--teal);transform:translateY(-1px);}
+.dist{margin-top:10px;display:grid;gap:3px;}
+.dl{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+.dl>span:first-child{width:12px;font-weight:700;}
+.dbar{flex:1;height:5px;background:var(--paper);}
+.dfill{height:100%;transition:width .5s ease;}
+.dfill-S{background:var(--s);} .dfill-A{background:var(--a);} .dfill-B{background:var(--b);} .dfill-C{background:var(--c);} .dfill-D{background:var(--d);}
+.dn{width:22px;text-align:right;color:var(--ink-muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Doyuruculuk Ligi · Topluluk Sürümü</div>
+  <h1>PlateRank</h1>
+  <p class="subtitle">Yemekleri kalori başına doyuruculuğa göre sırala. İki mod: bilimin dediği (otomatik skor) ve halkın dediği (topluluk oyu). Oylar herkese açıktır.</p>
+
+  <div id="banner"></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="modeswitch">
+    <button id="mode-auto" class="active">Bilim</button>
+    <button id="mode-comm">Halk</button>
+    <button id="mode-conf">Çelişki ⚡</button>
+  </div>
+
+  <div id="content"><div class="loading">Yükleniyor…</div></div>
+
+  <div class="footer-actions">
+    <button id="btn-reset">Bu cihazdaki oy işaretlerimi temizle</button>
+  </div>
+  <div class="kbd-hint">⌨ ← → mutfak değiştir · 1·2·3 mod · yemek seçiliyken S/A/B/C/D ile oy ver</div>
+</div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ---------- baglanti ----------
+const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const CUISINES = [
+  {id:'tr', name:'Türk'}, {id:'it', name:'İtalyan'}, {id:'jp', name:'Japon'},
+  {id:'mx', name:'Meksika'}, {id:'cn', name:'Çin'}, {id:'us', name:'Amerikan'},
+];
+const TIER_ORDER = ['S','A','B','C','D'];
+const TIER_NUM = {S:5,A:4,B:3,C:2,D:1};
+const TIER_INFO = {
+  S:'Tok tutma şampiyonu — az kaloriyle uzun tokluk',
+  A:'Güçlü doyurucu — güvenilir seçim',
+  B:'Ortalama — idare eder',
+  C:'Zayıf doyurucu — çabuk acıktırır',
+  D:'Boş kalori — yedin ama doymadın'
+};
+function legendHtml(){
+  return '<div class="legend">'+TIER_ORDER.map(t=>`<div class="lg lg-${t}"><b>${t}</b>${TIER_INFO[t].split(' — ')[0]}</div>`).join('')+'</div>';
+}
+function satietyToTier(s){ if(s>=200)return 'S'; if(s>=150)return 'A'; if(s>=100)return 'B'; if(s>=70)return 'C'; return 'D'; }
+
+// ---------- cihaz kimligi + kisisel oylar (yerel) ----------
+function deviceId(){
+  let d = localStorage.getItem('pr_cihaz');
+  if(!d){ d = crypto.randomUUID(); localStorage.setItem('pr_cihaz', d); }
+  return d;
+}
+function myVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oylarim')||'{}'); }catch(e){ return {}; } }
+function setMyVote(fid, lig){ const m = myVotes(); m[fid]=lig; localStorage.setItem('pr_oylarim', JSON.stringify(m)); }
+
+// ---------- kufur/spam filtresi ----------
+const BAD_WORDS = ['amk','aq','sik','sikik','sikim','siktir','orospu','pic','yarrak','yarak','got','amcik','amina','anani','pezevenk','kahpe','ibne','ipne','dallama','gavat','fuck','shit','bitch','asshole','dick','cunt','porn','sex'];
+function normalizeText(s){
+  s = s.toLocaleLowerCase('tr');
+  const map = {'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u','@':'a','0':'o','1':'i','3':'e','4':'a','5':'s','$':'s','!':'i'};
+  s = s.split('').map(c=>map[c]??c).join('');
+  return s.replace(/[^a-z ]/g,'');
+}
+function isProfane(s){
+  const n = normalizeText(s);
+  const words = n.split(/\s+/);
+  return BAD_WORDS.some(w => w.length<=4 ? words.includes(w) : n.includes(w));
+}
+
+// ---------- durum ----------
+let currentCuisine = 'tr';
+let currentMode = 'auto';
+let selectedFood = null;
+let foodCache = {};   // cid -> [foods]
+let voteCache = {};   // cid -> {foodId:{S..D}}
+let votingOpen = true;
+
+// ---------- veri ----------
+async function loadSettings(){
+  const {data} = await sb.from('ayarlar').select('oylama_acik').eq('id',1).single();
+  votingOpen = data ? data.oylama_acik : true;
+  document.getElementById('banner').innerHTML = votingOpen ? '' :
+    '<div class="banner">Oylama geçici olarak durduruldu. Sıralamalar görüntülenebilir, yeni oy kabul edilmiyor.</div>';
+}
+async function loadCuisine(cid, force){
+  if(foodCache[cid] && !force) return;
+  const {data: foods, error} = await sb.from('yemekler')
+    .select('id,mutfak,ad,kcal,doyuruculuk').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
+  if(error){ console.error(error); foodCache[cid]=[]; voteCache[cid]={}; return; }
+  foodCache[cid] = foods||[];
+  const ids = foodCache[cid].map(f=>f.id);
+  voteCache[cid] = {};
+  if(ids.length){
+    const {data: votes} = await sb.from('oy_durumu').select('yemek_id,lig,adet').in('yemek_id', ids);
+    (votes||[]).forEach(v=>{
+      if(!voteCache[cid][v.yemek_id]) voteCache[cid][v.yemek_id]={S:0,A:0,B:0,C:0,D:0};
+      voteCache[cid][v.yemek_id][v.lig]=v.adet;
+    });
+  }
+}
+function communityTierOf(cid, foodId){
+  const v = voteCache[cid][foodId];
+  if(!v) return null;
+  let best=null, bestN=-1, total=0;
+  TIER_ORDER.forEach(t=>{ const n=v[t]||0; total+=n; if(n>bestN){bestN=n;best=t;} });
+  if(total===0) return null;
+  return {tier:best, total};
+}
+
+// ---------- render ----------
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderTabs(){
+  const el = document.getElementById('tabs');
+  el.innerHTML = CUISINES.map(c=>`<button class="tab ${c.id===currentCuisine?'active':''}" data-c="${c.id}">${c.name}</button>`).join('');
+  el.querySelectorAll('.tab').forEach(b=>{
+    b.onclick = async ()=>{ currentCuisine=b.dataset.c; selectedFood=null; await refresh(); };
+  });
+}
+function render(){
+  renderTabs();
+  document.getElementById('mode-auto').classList.toggle('active', currentMode==='auto');
+  document.getElementById('mode-comm').classList.toggle('active', currentMode==='comm');
+  document.getElementById('mode-conf').classList.toggle('active', currentMode==='conflict');
+  const content = document.getElementById('content');
+  if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
+  else if(currentMode==='comm'){ content.innerHTML = renderComm(); }
+  else { content.innerHTML = renderConflict(); }
+  content.classList.remove('cfade');
+  void content.offsetWidth;
+  content.classList.add('cfade');
+  wireUp();
+  animateBars();
+}
+function animateBars(){
+  document.querySelectorAll('.bar').forEach(b=>{
+    const w = b.dataset.w; if(!w) return;
+    b.style.width = '0%';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ b.style.width = w + '%'; }));
+  });
+}
+async function refresh(force){
+  document.getElementById('content').innerHTML = '<div class="loading">Yükleniyor…</div>';
+  await loadCuisine(currentCuisine, force);
+  render();
+}
+
+function renderAuto(){
+  const foods = foodCache[currentCuisine]||[];
+  if(!foods.length) return '<div class="card"><p class="note" style="margin:0">Bu mutfakta henüz yemek yok.</p></div>';
+  const max = Math.max(...foods.map(f=>f.doyuruculuk));
+  let html = legendHtml();
+  html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör. (Resmi klinik veri değil — Holt 1995 mantığının mutfağa uyarlaması.)</p>`;
+  html += '<div class="card">';
+  foods.forEach((f,i)=>{
+    const lig = satietyToTier(f.doyuruculuk);
+    const pct = Math.max(5,(f.doyuruculuk/max)*100);
+    html += `<div class="arow" style="--i:${i}" data-exp="1">
+      <div class="num">${String(i+1).padStart(2,'0')}</div>
+      <div class="lig lig-${lig}">${lig}</div>
+      <div class="info"><div class="name">${esc(f.ad)}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
+        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal</div>
+      </div>
+      <div class="kcal">${f.kcal} kcal</div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function chipHtml(f,total){
+  const mine = myVotes()[f.id];
+  const sel = selectedFood===f.id ? 'selected':'';
+  return `<div class="chip ${sel}" data-f="${f.id}">
+    ${mine?'<span class="mine"></span>':''}${esc(f.ad)}
+    <span class="kcal">${f.kcal}${total?' · '+total+'oy':''}</span>
+  </div>`;
+}
+
+function renderComm(){
+  const cid = currentCuisine;
+  const foods = foodCache[cid]||[];
+  const groups = {S:[],A:[],B:[],C:[],D:[]};
+  const unvoted = [];
+  foods.forEach(f=>{
+    const ct = communityTierOf(cid, f.id);
+    if(ct) groups[ct.tier].push({f, total:ct.total});
+    else unvoted.push(f);
+  });
+  let html = legendHtml();
+  html += `<p class="note">Halkın verdiği oylar. Bir yemeğe dokun, sonra alttan lig ver. Yeşil nokta = senin oyun. Oylar herkese açık ve ortak sayılır.</p>`;
+  TIER_ORDER.forEach((t,i)=>{
+    html += `<div class="tier tier-${t}" style="--i:${i}"><div class="tier-label">${t}</div><div class="tier-items">`;
+    groups[t].forEach(({f,total})=>{ html += chipHtml(f,total); });
+    html += `</div></div>`;
+  });
+  if(unvoted.length){
+    html += `<div class="section-title">Henüz oylanmadı</div><div class="tier" style="border-style:dashed;"><div class="tier-label" style="background:var(--line-strong);color:var(--ink);">?</div><div class="tier-items">`;
+    unvoted.forEach(f=> html += chipHtml(f,0));
+    html += `</div></div>`;
+  }
+  if(selectedFood && votingOpen){
+    const f = foods.find(x=>x.id===selectedFood);
+    if(f){
+      const mine = myVotes()[f.id];
+      const counts = voteCache[cid][f.id]||{S:0,A:0,B:0,C:0,D:0};
+      const maxc = Math.max(1,...TIER_ORDER.map(t=>counts[t]||0));
+      html += `<div class="votepanel">
+        <div class="who">"${esc(f.ad)}" hangi lige? ${mine?'(oyun: '+mine+')':''}</div>
+        <div class="votebtns">${TIER_ORDER.map(t=>`<button class="v-${t}" data-t="${t}" title="${TIER_INFO[t]}">${t}</button>`).join('')}</div>
+        <div class="dist">${TIER_ORDER.map(t=>`<div class="dl"><span class="tp-${t}">${t}</span><div class="dbar"><div class="dfill dfill-${t}" style="width:${((counts[t]||0)/maxc)*100}%"></div></div><span class="dn">${counts[t]||0}</span></div>`).join('')}</div>
+      </div>`;
+    }
+  }
+  html += `<div class="section-title">Eksik yemek mi var?</div>
+  <div class="card">
+    <p class="note" style="margin-top:0">Önerin doğrudan yayınlanmaz — önce onaydan geçer.</p>
+    <div class="field-row">
+      <div style="flex:2"><label>Yemek adı</label><input type="text" id="nf-name" maxlength="60" placeholder="örn. Menemen"></div>
+      <div><label>kcal (tahmini)</label><input type="number" id="nf-kcal" placeholder="250"></div>
+    </div>
+    <button class="btn" id="nf-add">Öneri gönder</button>
+    <div class="err" id="nf-err"></div>
+    <div class="ok" id="nf-ok"></div>
+  </div>`;
+  return html;
+}
+
+function renderConflict(){
+  const cid = currentCuisine;
+  const foods = foodCache[cid]||[];
+  const rows = [];
+  const undiscovered = [];
+  foods.forEach(f=>{
+    const sci = satietyToTier(f.doyuruculuk);
+    const ct = communityTierOf(cid, f.id);
+    if(ct){
+      const diff = TIER_NUM[ct.tier] - TIER_NUM[sci];
+      rows.push({f, sci, comm:ct.tier, votes:ct.total, diff, mag:Math.abs(diff)});
+      if((sci==='S'||sci==='A') && diff<=-2) undiscovered.push({f, sci, comm:ct.tier, votes:ct.total});
+    } else {
+      if(sci==='S'||sci==='A') undiscovered.push({f, sci, comm:null, votes:0});
+    }
+  });
+  rows.sort((a,b)=> b.mag - a.mag);
+  let html = `<p class="note">Kafan ne diyor, miden ne diyor? Bilim ligini (doyuruculuk) halk oyuyla (sevgi) karşılaştırır. Fark ne kadar büyükse çelişki o kadar sert.</p>`;
+  if(rows.length===0){
+    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Henüz çelişki yok — çünkü kimse oy vermemiş. Önce "Halk" sekmesinden birkaç yemeği oyla, sonra buraya dön.</p></div>`;
+  } else {
+    html += '<div class="card">';
+    rows.forEach(r=>{
+      let verdict, vclass, story;
+      if(r.diff > 0){ verdict='Tatlı Tuzak'; vclass='v-trap'; story='Halk seviyor, miden doymuyor'; }
+      else if(r.diff < 0){ verdict='Hafife Alınan'; vclass='v-under'; story='Doyurucu ama hak ettiği sevgiyi görmüyor'; }
+      else { verdict='Uzlaşma'; vclass='v-agree'; story='Kafa ve mide aynı fikirde'; }
+      const gapClass = r.mag>=3?'gap-hi':(r.mag>=2?'gap-mid':'gap-lo');
+      html += `<div class="crow">
+        <div class="name">${esc(r.f.ad)}
+          <small>${r.votes} oy · ${r.f.kcal} kcal</small>
+          <span class="verdict ${vclass}">${verdict} — ${story}</span>
+        </div>
+        <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span><span class="arrow">→</span><span class="tp-${r.comm}">${r.comm}</span></div>
+        <div class="gap ${gapClass}">${r.diff>0?'+':''}${r.diff}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  // Kesfedilmeyi Bekleyenler
+  html += `<div class="section-title">Keşfedilmeyi Bekleyenler</div>
+  <p class="note">Bilim S/A ligi verdiği hâlde halkın henüz keşfetmediği (hiç oylanmamış ya da düşük oylanmış) yemekler.</p>`;
+  if(undiscovered.length===0){
+    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Bu mutfakta bekleyen yok — halk ödevini yapmış.</p></div>`;
+  } else {
+    undiscovered.sort((a,b)=> TIER_NUM[b.sci]-TIER_NUM[a.sci] || a.votes-b.votes);
+    html += '<div class="card">';
+    undiscovered.forEach(u=>{
+      html += `<div class="crow">
+        <div class="name">${esc(u.f.ad)}
+          <small>${u.votes===0?'hiç oylanmamış':u.votes+' oy · halk: '+u.comm} · ${u.f.kcal} kcal</small>
+        </div>
+        <div class="tierpair"><span class="tp-${u.sci}">${u.sci}</span></div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  html += `<p class="note" style="margin-top:12px;">Sol harf = bilim, sağ harf = halk. <b>Tatlı Tuzak</b>'lar diyetini sessizce bozan, <b>Hafife Alınan</b>'lar keşfetmen gereken yemekler.</p>`;
+  return html;
+}
+
+// ---------- etkilesim ----------
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('goster');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('goster'), 1800);
+}
+async function doVote(fid, t){
+  if(!votingOpen || !fid) return;
+  const cid = currentCuisine;
+  const {error} = await sb.from('oylar').insert({yemek_id:fid, lig:t, cihaz:deviceId()});
+  if(error){ toast('Oy kaydedilemedi — oylama kapalı olabilir'); return; }
+  if(!voteCache[cid][fid]) voteCache[cid][fid]={S:0,A:0,B:0,C:0,D:0};
+  const prev = myVotes()[fid];
+  if(prev && voteCache[cid][fid][prev]>0) voteCache[cid][fid][prev]--;
+  voteCache[cid][fid][t] = (voteCache[cid][fid][t]||0)+1;
+  setMyVote(fid, t);
+  selectedFood = null;
+  render();
+  toast('Oyun kaydedildi: '+t+' ✓');
+}
+function wireUp(){
+  const cid = currentCuisine;
+  document.querySelectorAll('[data-exp]').forEach(r=>{
+    r.onclick = ()=> r.classList.toggle('acik');
+  });
+  document.querySelectorAll('.legend .lg').forEach((lg,i)=>{
+    lg.onclick = ()=>{
+      const t = document.querySelectorAll('.tier')[i];
+      if(t) t.scrollIntoView({behavior:'smooth', block:'center'});
+    };
+  });
+  document.querySelectorAll('.chip').forEach(ch=>{
+    ch.onclick = ()=>{ selectedFood = (selectedFood===ch.dataset.f)?null:ch.dataset.f; render(); };
+  });
+  document.querySelectorAll('.votebtns button').forEach(b=>{
+    b.onclick = ()=> doVote(selectedFood, b.dataset.t);
+  });
+  const add = document.getElementById('nf-add');
+  if(add){
+    add.onclick = async ()=>{
+      const name = document.getElementById('nf-name').value.trim();
+      const kcal = parseFloat(document.getElementById('nf-kcal').value);
+      const err = document.getElementById('nf-err');
+      const ok = document.getElementById('nf-ok');
+      err.textContent=''; ok.textContent='';
+      if(!name || name.length<2){ err.textContent='İsim gerekli (en az 2 harf).'; return; }
+      if(isProfane(name)){ err.textContent='Bu isim uygun değil.'; return; }
+      if(document.getElementById('nf-kcal').value && (!kcal||kcal<=0||kcal>5000)){ err.textContent='kcal 1-5000 arası olmalı.'; return; }
+      add.disabled = true;
+      const payload = {mutfak:cid, ad:name};
+      if(kcal>0) payload.kcal = Math.round(kcal);
+      const {error} = await sb.from('oneriler').insert(payload);
+      add.disabled = false;
+      if(error){ err.textContent='Gönderilemedi, biraz sonra tekrar dene.'; return; }
+      document.getElementById('nf-name').value='';
+      document.getElementById('nf-kcal').value='';
+      ok.textContent='Önerin alındı! Onaydan geçince yayınlanır.';
+      toast('Öneri gönderildi ✓');
+    };
+  }
+}
+
+// klavye kisayollari
+document.addEventListener('keydown', e=>{
+  if(['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  const k = e.key.toLowerCase();
+  const idx = CUISINES.findIndex(c=>c.id===currentCuisine);
+  if(e.key==='ArrowRight'){ currentCuisine=CUISINES[(idx+1)%CUISINES.length].id; selectedFood=null; refresh(); }
+  else if(e.key==='ArrowLeft'){ currentCuisine=CUISINES[(idx-1+CUISINES.length)%CUISINES.length].id; selectedFood=null; refresh(); }
+  else if(k==='1'){ currentMode='auto'; selectedFood=null; render(); }
+  else if(k==='2'){ currentMode='comm'; selectedFood=null; render(); }
+  else if(k==='3'){ currentMode='conflict'; selectedFood=null; render(); }
+  else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
+});
+
+document.getElementById('mode-auto').onclick = ()=>{ currentMode='auto'; selectedFood=null; render(); };
+document.getElementById('mode-comm').onclick = ()=>{ currentMode='comm'; selectedFood=null; render(); };
+document.getElementById('mode-conf').onclick = ()=>{ currentMode='conflict'; selectedFood=null; render(); };
+document.getElementById('btn-reset').onclick = ()=>{
+  if(!confirm('Bu cihazdaki kişisel oy işaretlerin (yeşil noktalar) temizlenecek. Ortak sayaçlar etkilenmez. Emin misin?')) return;
+  localStorage.removeItem('pr_oylarim');
+  render();
+  toast('İşaretler temizlendi');
+};
+
+(async ()=>{ await loadSettings(); await refresh(); })();
+</script>
+</body>
+</html>
