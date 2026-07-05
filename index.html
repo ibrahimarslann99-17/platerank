@@ -121,6 +121,14 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
 .kbd-hint{display:none;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-muted);margin-top:10px;}
 @media (hover:hover){.kbd-hint{display:block;}}
 .cfade{animation:fadeUp .3s ease both;}
+.manif-link{background:none;border:none;color:var(--teal-dark);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;text-decoration:underline;cursor:pointer;padding:0;margin:-8px 0 16px;display:inline-block;}
+#manifesto{display:none;margin-bottom:20px;}
+#manifesto.acik{display:block;animation:fadeUp .35s ease both;}
+#manifesto .card{padding:20px 18px;}
+#manifesto h2{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;margin:0 0 10px;}
+#manifesto h3{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-dark);font-weight:600;margin:20px 0 8px;border-bottom:1px solid var(--line-strong);padding-bottom:6px;}
+#manifesto p{font-size:13.5px;line-height:1.65;color:var(--ink);margin:0 0 10px;}
+#manifesto .imza{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);margin-top:16px;font-style:normal;}
 .legend .lg{cursor:pointer;transition:border-color .18s ease,transform .12s ease;}
 .legend .lg:hover{border-color:var(--teal);transform:translateY(-1px);}
 .dist{margin-top:10px;display:grid;gap:3px;}
@@ -200,6 +208,26 @@ input[type=text],input[type=number]{width:100%;font-family:'IBM Plex Serif',seri
   <div class="eyebrow">Doyuruculuk Ligi · Topluluk Sürümü</div>
   <h1>PlateRank</h1>
   <p class="subtitle">Yemekleri kalori başına doyuruculuğa göre sırala. İki mod: bilimin dediği (otomatik skor) ve halkın dediği (topluluk oyu). Oylar herkese açıktır.</p>
+  <button class="manif-link" id="btn-manif">Neden bu site var? →</button>
+
+  <div id="manifesto">
+    <div class="card">
+      <h2>Kalori sayan çok, tokluk soran yok.</h2>
+      <p>Her paketin üstünde kalori yazıyor, her uygulama kalori sayıyor. Ama kimse asıl soruyu sormuyor: <b>bu yemek beni doyuracak mı?</b> 450 kalorilik künefe ile 450 kalorilik kuru fasulye kâğıt üstünde eşit — ama biri seni bir buçuk saat sonra buzdolabının kapısına geri getirir, öteki akşama kadar unutturur. Bu site o farkın peşinde.</p>
+      <p>PlateRank tek bir şeyi ölçmeye çalışır: <b>harcadığın kaloriye karşılık ne kadar tokluk satın alıyorsun.</b> İki hakemi var — Bilim (makrolardan hesaplanan skor) ve Halk (senin oyların). Çelişki sekmesi, ikisinin kavga ettiği yer. En sevdiğim sekme de o.</p>
+
+      <h3>Skor nasıl hesaplanıyor?</h3>
+      <p>Temel mantık, Holt ve ekibinin 1995 tarihli tokluk indeksi çalışmasından uyarlandı: protein, lif ve su hacmi skoru yukarı iter; şeker, rafine un ve yağ yoğunluğu aşağı çeker. 200 üstü S ligi, 70 altı D ligi. Şeker Şoku ve Tekrar Acıkma süresi de aynı makrolardan türetilen tahminlerdir — kronometreyle değil, hesapla bulunur.</p>
+
+      <h3>Veriler nereden?</h3>
+      <p>Besin değerleri USDA FoodData Central ve benzeri gıda veritabanlarına dayalı porsiyon tahminleridir. Restoran porsiyonu oynak bir hayvandır; ±%30 sapma normaldir. Bariz yanlış görürsen söyle, düzeltirim — bu site yaşayan bir liste, taş tablet değil.</p>
+
+      <h3>Dürüstlük köşesi</h3>
+      <p>Bu site klinik bir araç değil, diyet tavsiyesi hiç değil. Doyuruculuk kişiseldir: birini mercimek doyurur, birini hiçbir şey doyurmaz. Oylar cihaz başına birdir, öneriler filtreden ve topluluk oyundan geçer, ama internetin internet olduğunu ikimiz de biliyoruz — saçma bir şey görürsen kalıcı değildir.</p>
+
+      <p class="imza">— İbrahim · gerçek açlıkla test edilmiştir · hata/itiraz: ibrahimarslann99@gmail.com</p>
+    </div>
+  </div>
 
   <div id="banner"></div>
   <div class="tabs" id="tabs"></div>
@@ -663,6 +691,11 @@ document.addEventListener('keydown', e=>{
   else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
 });
 
+document.getElementById('btn-manif').onclick = ()=>{
+  const m = document.getElementById('manifesto');
+  m.classList.toggle('acik');
+  document.getElementById('btn-manif').textContent = m.classList.contains('acik') ? 'Manifestoyu kapat ↑' : 'Neden bu site var? →';
+};
 document.getElementById('mode-auto').onclick = ()=>{ currentMode='auto'; selectedFood=null; render(); };
 document.getElementById('mode-comm').onclick = ()=>{ currentMode='comm'; selectedFood=null; render(); };
 document.getElementById('mode-conf').onclick = ()=>{ currentMode='conflict'; selectedFood=null; render(); };
