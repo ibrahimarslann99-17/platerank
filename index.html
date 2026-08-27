@@ -262,6 +262,35 @@ body{background:
 @keyframes spin{to{transform:rotate(360deg);}}
 .uyari h3{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin:0 0 8px;color:var(--ink);}
 .uyari p{font-size:13px;line-height:1.6;color:var(--ink-muted);margin:0 auto 14px;max-width:340px;}
+.pbox{display:grid;gap:14px;}
+.pfield label{display:block;margin-bottom:6px;}
+.pinput{display:flex;gap:8px;align-items:center;}
+.pinput input{margin-bottom:0;}
+.pdurum{display:grid;gap:7px;}
+.pd{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--line-strong);border-radius:6px;cursor:pointer;background:rgba(24,35,51,0.4);transition:border-color .18s ease,background .18s ease,transform .3s cubic-bezier(0.34,1.5,0.64,1);}
+.pd:hover{border-color:rgba(237,232,221,0.4);transform:translateY(-1px);}
+.pd.sec{border-color:var(--teal);background:rgba(237,232,221,0.08);}
+.pd input{margin:3px 0 0;accent-color:var(--teal);}
+.pd .pdt{font-weight:600;font-size:14px;color:var(--ink);}
+.pd .pdd{font-size:12px;color:var(--ink-muted);line-height:1.5;margin-top:2px;}
+.pd .pdk{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);margin-left:auto;white-space:nowrap;padding-top:2px;}
+.psonuc{text-align:center;padding:20px 14px;}
+.psonuc .buyuk{font-family:'Syne',sans-serif;font-weight:800;font-size:46px;line-height:1;color:var(--teal-dark);}
+.psonuc .birim{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-muted);margin-top:6px;}
+.psonuc .aciklama{font-size:13px;color:var(--ink-muted);margin-top:10px;line-height:1.6;}
+.ptabak{display:grid;gap:8px;margin-top:4px;}
+.pt{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:9px 0;border-bottom:1px dashed var(--line);}
+.pt:last-child{border-bottom:none;}
+.pt .ptg{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--s);min-width:52px;text-align:right;font-weight:600;}
+.pt .ptk{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);min-width:62px;text-align:right;}
+.vrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+.vrow:last-child{border-bottom:none;}
+.vrow .vn{flex:1;min-width:0;}
+.vrow .vbar{width:88px;height:6px;background:var(--paper);border-radius:2px;overflow:hidden;}
+.vrow .vfill{height:100%;background:var(--s);border-radius:2px;transition:width .6s cubic-bezier(0.22,1,0.36,1);}
+.vrow .vv{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);min-width:44px;text-align:right;font-weight:600;}
+.pnot{border:1px solid var(--danger);background:rgba(217,87,68,0.09);border-radius:6px;padding:11px 13px;font-size:12.5px;line-height:1.6;color:var(--ink);}
+.pnot b{color:var(--danger);}
 .uyari .sayac{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);}
 #content.solma{opacity:0.32;}
 .rp{position:relative;overflow:hidden;}
@@ -317,6 +346,7 @@ body{background:
     <button id="mode-auto" class="active">Bilim</button>
     <button id="mode-comm">Halk</button>
     <button id="mode-conf">Çelişki ⚡</button>
+    <button id="mode-prot">Protein</button>
   </div>
 
   <div id="content"><div class="loading">Yükleniyor…</div></div>
@@ -349,7 +379,7 @@ body{background:
   <div class="footer-actions">
     <button id="btn-reset">Bu cihazdaki oy işaretlerimi temizle</button>
   </div>
-  <div class="kbd-hint">⌨ ← → mutfak değiştir · 1·2·3 mod · yemek seçiliyken S/A/B/C/D ile oy ver</div>
+  <div class="kbd-hint">⌨ ← → mutfak değiştir · 1·2·3·4 mod · yemek seçiliyken S/A/B/C/D ile oy ver</div>
 </div>
 <div id="toast"></div>
 
@@ -564,9 +594,12 @@ function render(){
   document.getElementById('mode-auto').classList.toggle('active', currentMode==='auto');
   document.getElementById('mode-comm').classList.toggle('active', currentMode==='comm');
   document.getElementById('mode-conf').classList.toggle('active', currentMode==='conflict');
+  document.getElementById('mode-prot').classList.toggle('active', currentMode==='protein');
+  document.getElementById('tabwrap').style.display = currentMode==='protein' ? 'none' : '';
   const content = document.getElementById('content');
   if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
   else if(currentMode==='comm'){ content.innerHTML = renderComm(); }
+  else if(currentMode==='protein'){ content.innerHTML = renderProtein(); }
   else { content.innerHTML = renderConflict(); }
   content.classList.remove('cfade');
   void content.offsetWidth;
@@ -708,6 +741,88 @@ function renderComm(){
   return html;
 }
 
+// --- protein hesaplayici ---
+const P_DURUM = [
+  {id:"asgari", k:0.8,  ad:"Sadece eksik kalmamak için", not:"Vücudun bozulmadan ayakta kalması için gereken en düşük miktar. Hedef değil, taban çizgisi."},
+  {id:"saglik", k:1.1,  ad:"Sağlıklı ve dinç olmak için", not:"Hareketli ama sporcu olmayan bir yetişkin için makul aralık."},
+  {id:"spor",   k:1.5,  ad:"Düzenli spor yapıyorum",      not:"Haftada 3+ gün ağırlık veya yoğun antrenman yapanlar için."},
+  {id:"diyet",  k:1.8,  ad:"Kilo veriyorum",              not:"Az yerken kasını korumak için protein yükselir. Diyetin en kritik parçası budur."},
+  {id:"yasli",  k:1.6,  ad:"65 yaş üstündeyim",           not:"Yaşla birlikte kas erimesi hızlanır; ihtiyaç gençlerden yüksektir."},
+  {id:"iyilesme",k:2.0, ad:"Hastalık/ameliyat sonrası iyileşiyorum", not:"Doku onarımı için en yüksek ihtiyaç. Böbrek rahatsızlığı olanlar için GEÇERSİZ — aşağıdaki uyarıyı oku."}
+];
+// 100 kalori basina protein (verimlilik) - USDA/TUBER ortalamalari
+const P_VERIM = [
+  {ad:"Karides", p:24, kcal:99, v:24.2},
+  {ad:"Ton balığı (suda konserve)", p:30, kcal:130, v:23.0},
+  {ad:"Yumurta beyazı", p:11, kcal:52, v:21.2},
+  {ad:"Kalamar (haşlanmış)", p:18, kcal:92, v:19.6},
+  {ad:"Levrek", p:24, kcal:124, v:19.4},
+  {ad:"Hindi göğsü", p:29, kcal:150, v:19.3},
+  {ad:"Tavuk göğsü (derisiz)", p:31, kcal:165, v:18.8},
+  {ad:"Lor peyniri", p:18, kcal:100, v:18.0},
+  {ad:"Skyr", p:11, kcal:63, v:17.5},
+  {ad:"Süzme yoğurt (yağsız)", p:10, kcal:59, v:17.0},
+  {ad:"Süzme peynir (yağsız)", p:12, kcal:72, v:16.7},
+  {ad:"Tofu", p:12, kcal:76, v:15.8},
+  {ad:"Mantar", p:3.1, kcal:22, v:14.1},
+  {ad:"Somon", p:25, kcal:208, v:12.0},
+  {ad:"Yumurta (tam)", p:13, kcal:143, v:9.1},
+  {ad:"Mercimek (pişmiş)", p:9, kcal:116, v:7.8},
+  {ad:"Badem", p:21, kcal:579, v:3.6},
+  {ad:"Pirinç (pişmiş)", p:2.7, kcal:130, v:2.1}
+];
+function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
+function pKilo(){ return localStorage.getItem("pr_kilo") || ""; }
+function renderProtein(){
+  const kilo = parseFloat(pKilo());
+  const dsec = pDurum();
+  const dd = P_DURUM.find(x=>x.id===dsec) || P_DURUM[1];
+  let html = '<p class="note">Günde kaç gram protein? Kilonu gir, durumunu seç. Hesap basit: kilo × katsayı. Katsayılar beslenme kılavuzlarının yaygın kullandığı aralıklardır.</p>';
+  html += '<div class="card pbox">';
+  html += '<div class="pfield"><label>Kilon (kg)</label><div class="pinput"><input type="number" id="p-kilo" min="25" max="250" placeholder="örn. 72" value="'+(pKilo()||'')+'"></div></div>';
+  html += '<div class="pdurum">' + P_DURUM.map(x=>
+    '<label class="pd '+(x.id===dsec?"sec":"")+'" data-d="'+x.id+'"><input type="radio" name="pd" '+(x.id===dsec?"checked":"")+'><span><span class="pdt">'+x.ad+'</span><span class="pdd">'+x.not+'</span></span><span class="pdk">×'+String(x.k).replace(".",",")+'</span></label>'
+  ).join('') + '</div>';
+  html += '</div>';
+  if(kilo && kilo>=25 && kilo<=250){
+    const hedef = Math.round(kilo * dd.k);
+    html += '<div class="card psonuc"><div class="buyuk">'+hedef+'</div><div class="birim">gram protein / gün</div>';
+    html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div></div>';
+    // ornek tabak
+    const porsiyon = [
+      {ad:"Tavuk göğsü (150 g)", p:47, kcal:248},
+      {ad:"Yumurta (2 adet)", p:13, kcal:143},
+      {ad:"Süzme yoğurt (200 g)", p:20, kcal:118},
+      {ad:"Mercimek çorbası (1 kase)", p:9, kcal:150},
+      {ad:"Ton balığı (1 konserve)", p:24, kcal:104}
+    ];
+    let kalan = hedef, sec = [], i = 0;
+    while(kalan > 8 && i < 40){ const x = porsiyon[i % porsiyon.length]; sec.push(x); kalan -= x.p; i++; }
+    const topP = sec.reduce((a,b)=>a+b.p,0), topK = sec.reduce((a,b)=>a+b.kcal,0);
+    const grup = {};
+    sec.forEach(x=>{ grup[x.ad] = grup[x.ad] || {n:0, p:x.p, kcal:x.kcal}; grup[x.ad].n++; });
+    html += '<div class="section-title">Bu kaç tabak eder?</div><div class="card ptabak">';
+    Object.keys(grup).forEach(k=>{ const g = grup[k];
+      html += '<div class="pt"><span style="flex:1">'+(g.n>1?g.n+" × ":"")+k+'</span><span class="ptg">'+(g.p*g.n)+' g</span><span class="ptk">'+(g.kcal*g.n)+' kcal</span></div>';
+    });
+    html += '<div class="pt" style="border-top:1px solid var(--line-strong);padding-top:11px;margin-top:4px"><span style="flex:1;font-weight:600">Toplam</span><span class="ptg">'+topP+' g</span><span class="ptk">'+topK+' kcal</span></div>';
+    html += '</div><p class="note">Tek bir örnek — aynı proteini başka kombinasyonlarla da alabilirsin. Önemli olan toplam.</p>';
+  } else {
+    html += '<p class="note">Kilonu girince hedefin ve örnek tabaklar burada çıkacak.</p>';
+  }
+  // verimlilik listesi
+  html += '<div class="section-title">100 kalori başına en çok protein</div>';
+  html += '<p class="note">Asıl mesele "hangi besinde çok protein var" değil, <b>aynı kaloriye karşılık ne kadar protein aldığın</b>. Badem de tavuk da protein listelerinde iyi görünür; aradaki fark 5 kat.</p>';
+  html += '<div class="card">';
+  P_VERIM.forEach(x=>{
+    html += '<div class="vrow"><span class="vn">'+x.ad+'</span><span class="vbar"><span class="vfill" style="width:'+Math.min(100,(x.v/25)*100)+'%"></span></span><span class="vv">'+String(x.v).replace(".",",")+' g</span></div>';
+  });
+  html += '</div>';
+  html += '<p class="note">Sağdaki sayı: o besinden 100 kalori yediğinde kaç gram protein aldığın.</p>';
+  html += '<div class="pnot"><b>Önemli:</b> Bunlar genel kılavuz değerleridir, kişisel tedavi önerisi değildir. <b>Böbrek rahatsızlığın varsa yüksek protein zararlıdır</b> — bu durumda protein miktarı doktor tarafından kısıtlanır, yukarıdaki hesaba göre artırma. Gebelik, karaciğer hastalığı veya sürekli ilaç kullanımı varsa da hedefini doktoruna danışarak belirle.</div>';
+  return html;
+}
+const TIER_NUM_X = null;
 function renderConflict(){
   const cid = currentCuisine;
   const foods = foodCache[cid]||[];
@@ -802,6 +917,23 @@ async function doVote(fid, t){
 }
 function wireUp(){
   const cid = currentCuisine;
+  const pk = document.getElementById('p-kilo');
+  if(pk){
+    let t;
+    pk.oninput = ()=>{
+      clearTimeout(t);
+      t = setTimeout(()=>{
+        localStorage.setItem('pr_kilo', pk.value);
+        const pos = pk.selectionStart;
+        render();
+        const yeni = document.getElementById('p-kilo');
+        if(yeni){ yeni.focus(); try{ yeni.setSelectionRange(pos,pos); }catch(e){} }
+      }, 550);
+    };
+  }
+  document.querySelectorAll('.pd').forEach(el=>{
+    el.onclick = ()=>{ localStorage.setItem('pr_durum', el.dataset.d); buzz(12); render(); };
+  });
   document.querySelectorAll('[data-exp]').forEach(r=>{
     r.onclick = ()=> r.classList.toggle('acik');
   });
@@ -874,6 +1006,7 @@ document.addEventListener('keydown', e=>{
   else if(k==='1'){ currentMode='auto'; selectedFood=null; render(); }
   else if(k==='2'){ currentMode='comm'; selectedFood=null; render(); }
   else if(k==='3'){ currentMode='conflict'; selectedFood=null; render(); }
+  else if(k==='4'){ currentMode='protein'; selectedFood=null; render(); }
   else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
 });
 
@@ -892,6 +1025,7 @@ document.getElementById('btn-manif').onclick = ()=>{
 document.getElementById('mode-auto').onclick = ()=>{ currentMode='auto'; selectedFood=null; render(); };
 document.getElementById('mode-comm').onclick = ()=>{ currentMode='comm'; selectedFood=null; render(); };
 document.getElementById('mode-conf').onclick = ()=>{ currentMode='conflict'; selectedFood=null; render(); };
+document.getElementById('mode-prot').onclick = ()=>{ currentMode='protein'; selectedFood=null; render(); };
 document.getElementById('btn-reset').onclick = ()=>{
   if(!confirm('Bu cihazdaki kişisel oy işaretlerin (yeşil noktalar) temizlenecek. Ortak sayaçlar etkilenmez. Emin misin?')) return;
   localStorage.removeItem('pr_oylarim');
