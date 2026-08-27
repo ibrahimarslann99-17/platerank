@@ -301,6 +301,24 @@ body{background:
 #tur-ok.yukari{border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:11px solid rgba(64,84,112,0.97);}
 #tur-ok.asagi{border-left:9px solid transparent;border-right:9px solid transparent;border-top:11px solid rgba(20,30,44,0.98);}
 .tur-tekrar{background:none;border:none;color:var(--ink-muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;text-decoration:underline;cursor:pointer;padding:0;margin-left:14px;}
+.psec{display:flex;gap:6px;flex-wrap:wrap;}
+.psec button{flex:1 1 auto;min-width:78px;font-family:'IBM Plex Serif',serif;font-size:13.5px;padding:10px 8px;
+  border:1px solid var(--line-strong);border-radius:6px;background:rgba(24,35,51,0.45);color:var(--ink-muted);cursor:pointer;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .3s cubic-bezier(0.34,1.5,0.64,1);}
+.psec button:hover{border-color:rgba(237,232,221,0.4);transform:translateY(-1px);}
+.psec button.sec{background:var(--teal);color:#0F1722;border-color:var(--teal);font-weight:600;}
+.pf2{display:flex;gap:10px;}
+.pf2>div{flex:1;}
+.oner{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px dashed var(--line);}
+.oner:last-child{border-bottom:none;}
+.oner .os{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;width:18px;text-align:center;}
+.oner .oi{flex:1;min-width:0;}
+.oner .on{font-weight:600;font-size:14.5px;}
+.oner .od{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-muted);margin-top:3px;}
+.oner .ok2{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);text-align:right;min-width:62px;}
+.butce{display:flex;align-items:baseline;gap:8px;justify-content:center;margin:2px 0 4px;}
+.butce .bs{font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:var(--teal-dark);line-height:1;}
+.butce .bl{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);}
 .pbox{display:grid;gap:14px;}
 .pfield label{display:block;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);}
 .pinput{display:flex;gap:8px;align-items:center;}
@@ -868,6 +886,39 @@ const P_DURUM = [
   {id:"iyilesme",k:2.0, ad:"Hastalık/ameliyat sonrası iyileşiyorum", not:"Doku onarımı için en yüksek ihtiyaç. Böbrek rahatsızlığı olanlar için GEÇERSİZ — aşağıdaki uyarıyı oku."}
 ];
 // 100 kalori basina protein (verimlilik) - USDA/TUBER ortalamalari
+const P_AKTIVITE = [
+  {id:"az", k:1.2, ad:"Masa başı", not:"Gün çoğu oturarak"},
+  {id:"hafif", k:1.375, ad:"Hafif hareketli", not:"Haftada 1-3 gün"},
+  {id:"orta", k:1.55, ad:"Orta", not:"Haftada 3-5 gün"},
+  {id:"yogun", k:1.725, ad:"Çok hareketli", not:"Haftada 6-7 gün"}
+];
+const P_YEDIM = [
+  {id:"hic", o:0.00, ad:"Hiç yemedim"},
+  {id:"az", o:0.20, ad:"Az yedim"},
+  {id:"normal", o:0.45, ad:"Normal yedim"},
+  {id:"cok", o:0.72, ad:"Çok yedim"}
+];
+const P_ACLIK = [
+  {id:"az", p:0.22, ad:"Az açım", not:"canım bir şey çekti"},
+  {id:"orta", p:0.34, ad:"Orta", not:"normal bir öğün"},
+  {id:"cok", p:0.50, ad:"Çok açım", not:"doyurucu olsun"}
+];
+const P_TAT = [{id:"farketmez",ad:"Fark etmez"},{id:"tuzlu",ad:"Tuzlu"},{id:"tatli",ad:"Tatlı"}];
+function pg(k,v){ return localStorage.getItem("pr_"+k) || v; }
+function ps(k,v){ localStorage.setItem("pr_"+k, v); }
+function gunlukKalori(){
+  const kilo = parseFloat(pg("kilo","")), boy = parseFloat(pg("boy","")), yas = parseFloat(pg("yas",""));
+  if(!kilo || !boy || !yas) return null;
+  const c = pg("cins","e");
+  const bmr = 10*kilo + 6.25*boy - 5*yas + (c==="e" ? 5 : -161);
+  const akt = (P_AKTIVITE.find(a=>a.id===pg("akt","hafif"))||P_AKTIVITE[1]).k;
+  return Math.round(bmr * akt);
+}
+function secGrup(id, liste, aktifId){
+  return '<div class="psec" data-grup="'+id+'">' + liste.map(function(x){
+    return '<button data-v="'+x.id+'" class="'+(x.id===aktifId?"sec":"")+'">'+x.ad+(x.not?'<br><span style="font-size:10.5px;opacity:.7">'+x.not+'</span>':'')+'</button>';
+  }).join('') + '</div>';
+}
 const P_VERIM = [
   {ad:"Karides", p:24, kcal:99, v:24.2},
   {ad:"Ton balığı (suda konserve)", p:30, kcal:130, v:23.0},
@@ -890,13 +941,70 @@ const P_VERIM = [
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
 function pKilo(){ return localStorage.getItem("pr_kilo") || ""; }
+function neYesem(){
+  const gk = gunlukKalori();
+  let h = '<div class="section-title">Şimdi ne yesem?</div>';
+  if(!gk){
+    h += '<div class="card"><p class="note" style="margin:0">Öneri alabilmek için yukarıya boy, yaş ve kilonu gir.</p></div>';
+    return h;
+  }
+  const saat = new Date().getHours();
+  const yedim = P_YEDIM.find(x=>x.id===pg("yedim","normal")) || P_YEDIM[2];
+  const aclik = P_ACLIK.find(x=>x.id===pg("aclik","orta")) || P_ACLIK[1];
+  const tat = pg("tat","farketmez");
+  h += '<div class="card pbox">';
+  h += '<div><label>Bugün şimdiye kadar ne kadar yedin?</label>'+secGrup("yedim", P_YEDIM, yedim.id)+'</div>';
+  h += '<div><label>Şu an ne kadar açsın?</label>'+secGrup("aclik", P_ACLIK, aclik.id)+'</div>';
+  h += '<div><label>Canın ne çekiyor?</label>'+secGrup("tat", P_TAT, tat)+'</div>';
+  h += '</div>';
+  const alinan = Math.round(gk * yedim.o);
+  const kalan = Math.max(150, gk - alinan);
+  const porsiyon = Math.round(kalan * aclik.p);
+  h += '<div class="card psonuc"><div class="butce"><span class="bs">~'+porsiyon+'</span><span class="bl">kalorilik bir şey</span></div>';
+  h += '<div class="aciklama">Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.</div></div>';
+  // oneriler
+  const havuz = (foodCache[currentCuisine]||[]).filter(function(f){
+    if(f.kcal > porsiyon*1.5 || f.kcal < porsiyon*0.25) return false;
+    if(tat==="tatli" && (f.seker||0) < 10) return false;
+    if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
+    return true;
+  }).sort(function(a,b){ return b.doyuruculuk - a.doyuruculuk; });
+  const mutfakAdi = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || "";
+  h += '<div class="section-title">Sana uygun seçenekler · '+mutfakAdi+'</div>';
+  if(!havuz.length){
+    h += '<div class="card"><p class="note" style="margin:0">Bu kriterlere uyan yemek bulunamadı. Üstteki mutfak şeridinden \"Tümü\" seçmeyi dene, ya da tat tercihini değiştir.</p></div>';
+  } else {
+    h += '<p class="note">En çok tok tutandan başlar. Sağdaki süre, tahmini tekrar acıkma zamanın.</p><div class="card">';
+    havuz.slice(0,6).forEach(function(f){
+      const lig = satietyToTier(f.doyuruculuk);
+      const g = sekerSoku(f); const t = acikmaSuresi(f);
+      h += '<div class="oner"><span class="os lig-'+lig+'">'+lig+'</span><span class="oi"><span class="on">'+esc(f.ad)+'</span>';
+      h += '<span class="od">'+f.kcal+' kcal'+(f.protein!=null?' · '+f.protein+' g protein':'')+(g?' · şeker şoku: '+g.ad.toLocaleLowerCase("tr"):'')+'</span></span>';
+      h += '<span class="ok2">'+(t?'⏱ '+saatStr(t)+' sa':'')+'</span></div>';
+    });
+    h += '</div>';
+    // bunun yerine
+    const enKotu = havuz.slice().sort(function(a,b){ return a.doyuruculuk - b.doyuruculuk; })[0];
+    const enIyi = havuz[0];
+    if(enKotu && enIyi && enKotu.id !== enIyi.id && (enIyi.doyuruculuk - enKotu.doyuruculuk) > 60){
+      const tk = acikmaSuresi(enKotu), ti = acikmaSuresi(enIyi);
+      h += '<div class="hmban" style="border-color:var(--teal);background:rgba(237,232,221,0.06)"><b style="color:var(--teal-dark)">Bunun yerine:</b> '+esc(enKotu.ad)+' ('+enKotu.kcal+' kcal'+(tk?', '+saatStr(tk)+' sa tok tutar':'')+') yerine <b>'+esc(enIyi.ad)+'</b> ('+enIyi.kcal+' kcal'+(ti?', '+saatStr(ti)+' sa':'')+') seçersen aynı öğünden çok daha uzun fayda görürsün.</div>';
+    }
+  }
+  h += '<p class="note">Öneriler üstte seçili mutfağa göre değişir. Hepsini görmek için mutfak şeridinden \"Tümü\" seç.</p>';
+  return h;
+}
 function renderProtein(){
   const kilo = parseFloat(pKilo());
   const dsec = pDurum();
   const dd = P_DURUM.find(x=>x.id===dsec) || P_DURUM[1];
   let html = '<p class="note">Günde kaç gram protein? Kilonu gir, durumunu seç. Hesap basit: kilo × katsayı. Katsayılar beslenme kılavuzlarının yaygın kullandığı aralıklardır.</p>';
   html += '<div class="card pbox">';
-  html += '<div class="pfield"><label>Kilon (kg)</label><div class="pinput"><input type="number" id="p-kilo" min="25" max="250" placeholder="örn. 72" value="'+(pKilo()||'')+'"></div></div>';
+  html += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
+  html += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
+  html += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+  html += '<div><label>Cinsiyet</label>'+secGrup("cins", [{id:"e",ad:"Erkek"},{id:"k",ad:"Kadın"}], pg("cins","e"))+'</div>';
+  html += '<div><label>Ne kadar hareketlisin?</label>'+secGrup("akt", P_AKTIVITE, pg("akt","hafif"))+'</div>';
   html += '<div class="pdurum">' + P_DURUM.map(x=>
     '<label class="pd '+(x.id===dsec?"sec":"")+'" data-d="'+x.id+'"><input type="radio" name="pd" '+(x.id===dsec?"checked":"")+'><span><span class="pdt">'+x.ad+'</span><span class="pdd">'+x.not+'</span></span><span class="pdk">×'+String(x.k).replace(".",",")+'</span></label>'
   ).join('') + '</div>';
@@ -904,6 +1012,8 @@ function renderProtein(){
   if(kilo && kilo>=25 && kilo<=250){
     const hedef = Math.round(kilo * dd.k);
     html += '<div class="card psonuc"><div class="buyuk">'+hedef+'</div><div class="birim">gram protein / gün</div>';
+    const gkx = gunlukKalori();
+    if(gkx) html += '<div class="birim" style="margin-top:8px;color:var(--ink)">Günlük kalori ihtiyacın: <b>'+gkx+' kcal</b></div>';
     html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
     html += '<div class="pshare"><button class="btn" id="p-share">Sonucumu paylaş</button><button class="btn ikincil" id="p-copy">Bağlantıyı kopyala</button></div>';
     html += '</div>';
@@ -944,6 +1054,7 @@ function renderProtein(){
   });
   html += '</div>';
   html += '<p class="note">Sağdaki sayı: o besinden 100 kalori yediğinde kaç gram protein aldığın.</p>';
+  html += neYesem();
   html += '<div class="pnot"><b>Önemli:</b> Bunlar genel kılavuz değerleridir, kişisel tedavi önerisi değildir. <b>Böbrek rahatsızlığın varsa yüksek protein zararlıdır</b> — bu durumda protein miktarı doktor tarafından kısıtlanır, yukarıdaki hesaba göre artırma. Gebelik, karaciğer hastalığı veya sürekli ilaç kullanımı varsa da hedefini doktoruna danışarak belirle.</div>';
   return html;
 }
@@ -1069,6 +1180,26 @@ function wireUp(){
   }
   const pcp = document.getElementById("p-copy");
   if(pcp){ pcp.onclick = async ()=>{ buzz(10); try{ await navigator.clipboard.writeText("https://platerank.dev"); toast("Bağlantı kopyalandı ✓"); }catch(e){ toast("Kopyalanamadı"); } }; }
+  ['boy','yas'].forEach(function(alan){
+    const el = document.getElementById('p-'+alan);
+    if(!el) return;
+    let tt;
+    el.oninput = function(){
+      clearTimeout(tt);
+      tt = setTimeout(function(){
+        ps(alan, el.value);
+        const pos = el.selectionStart;
+        render();
+        const y = document.getElementById('p-'+alan);
+        if(y){ y.focus(); try{ y.setSelectionRange(pos,pos); }catch(e){} }
+      }, 550);
+    };
+  });
+  document.querySelectorAll('.psec').forEach(function(g){
+    g.querySelectorAll('button').forEach(function(b){
+      b.onclick = function(){ ps(g.dataset.grup, b.dataset.v); buzz(10); render(); };
+    });
+  });
   document.querySelectorAll('.pd').forEach(el=>{
     el.onclick = ()=>{ localStorage.setItem('pr_durum', el.dataset.d); buzz(12); render(); };
   });
