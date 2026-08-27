@@ -963,12 +963,25 @@ function neYesem(){
   h += '<div class="card psonuc"><div class="butce"><span class="bs">~'+porsiyon+'</span><span class="bl">kalorilik bir şey</span></div>';
   h += '<div class="aciklama">Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.</div></div>';
   // oneriler
-  const havuz = (foodCache[currentCuisine]||[]).filter(function(f){
-    if(f.kcal > porsiyon*1.5 || f.kcal < porsiyon*0.25) return false;
+  var havuz = (foodCache[currentCuisine]||[]).filter(function(f){
+    if(f.kcal > porsiyon*1.35 || f.kcal < porsiyon*0.55) return false;
     if(tat==="tatli" && (f.seker||0) < 10) return false;
     if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
     return true;
-  }).sort(function(a,b){ return b.doyuruculuk - a.doyuruculuk; });
+  });
+  if(havuz.length < 4){
+    havuz = (foodCache[currentCuisine]||[]).filter(function(f){
+      if(f.kcal > porsiyon*1.7 || f.kcal < porsiyon*0.35) return false;
+      if(tat==="tatli" && (f.seker||0) < 10) return false;
+      if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
+      return true;
+    });
+  }
+  havuz.sort(function(a,b){
+    var ya = 1 - Math.abs(a.kcal - porsiyon)/porsiyon;
+    var yb = 1 - Math.abs(b.kcal - porsiyon)/porsiyon;
+    return (b.doyuruculuk * (0.55 + 0.45*Math.max(0,yb))) - (a.doyuruculuk * (0.55 + 0.45*Math.max(0,ya)));
+  });
   const mutfakAdi = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || "";
   h += '<div class="section-title">Sana uygun seçenekler · '+mutfakAdi+'</div>';
   if(!havuz.length){
