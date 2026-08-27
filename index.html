@@ -52,8 +52,9 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;letter-spacing:-
 .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-webkit-overflow-scrolling:touch;}
 .tab{flex:0 0 auto;font-family:'Syne',sans-serif;font-size:12px;letter-spacing:0.05em;padding:8px 13px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-muted);cursor:pointer;white-space:nowrap;text-transform:uppercase;font-weight:700;}
 .tab.active{background:var(--teal);color:#0F1722;border-color:var(--teal);}
-.modeswitch{display:flex;border:1px solid var(--line-strong);margin-bottom:16px;}
-.modeswitch button{flex:1;font-family:'Syne',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;padding:10px 6px;border:none;background:var(--card);color:var(--ink-muted);cursor:pointer;}
+.modeswitch{display:flex;border:1px solid var(--line-strong);margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
+.modeswitch::-webkit-scrollbar{display:none;}
+.modeswitch button{flex:1 0 auto;white-space:nowrap;font-family:'Syne',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;padding:10px 6px;border:none;background:var(--card);color:var(--ink-muted);cursor:pointer;}
 .modeswitch button.active{background:var(--teal);color:#0F1722;}
 .modeswitch button:not(:last-child){border-right:1px solid var(--line-strong);}
 .crow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line);}
@@ -413,7 +414,8 @@ body{background:
   <div class="turs" id="turs"></div>
   <div class="modeswitch">
     <button id="mode-auto" class="active">Besin değerleri</button>
-    <button id="mode-prot">Protein</button>
+    <button id="mode-yesem">Ne yesem?</button>
+    <button id="mode-prot">Protein ihtiyacım?</button>
     <button id="mode-comm">Halk oyu</button>
     <button id="mode-conf">Çelişki ⚡</button>
   </div>
@@ -455,7 +457,7 @@ body{background:
     <button id="btn-reset">Bu cihazdaki oy işaretlerimi temizle</button>
     <button class="tur-tekrar" id="btn-tur">Tanıtımı tekrar izle</button>
   </div>
-  <div class="kbd-hint">⌨ ← → mutfak değiştir · 1·2·3·4 mod · yemek seçiliyken S/A/B/C/D ile oy ver</div>
+  <div class="kbd-hint">⌨ ← → mutfak değiştir · 1-5 mod · yemek seçiliyken S/A/B/C/D ile oy ver</div>
 </div>
 <div id="toast"></div>
 <div id="tur-katman"><div id="tur-delik"></div><div id="tur-ok"></div>
@@ -719,11 +721,13 @@ function render(){
   document.getElementById('mode-comm').classList.toggle('active', currentMode==='comm');
   document.getElementById('mode-conf').classList.toggle('active', currentMode==='conflict');
   document.getElementById('mode-prot').classList.toggle('active', currentMode==='protein');
+  document.getElementById('mode-yesem').classList.toggle('active', currentMode==='yesem');
 
   const content = document.getElementById('content');
   if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
   else if(currentMode==='comm'){ content.innerHTML = renderComm(); }
   else if(currentMode==='protein'){ content.innerHTML = renderProtein(); }
+  else if(currentMode==='yesem'){ content.innerHTML = renderYesem(); }
   else { content.innerHTML = renderConflict(); }
   content.classList.remove('cfade');
   void content.offsetWidth;
@@ -941,11 +945,26 @@ const P_VERIM = [
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
 function pKilo(){ return localStorage.getItem("pr_kilo") || ""; }
+function renderYesem(){
+  const gk = gunlukKalori();
+  let h = '<p class="note">Ne yiyeceğine karar veremiyor musun? Üç soruya cevap ver, sana uygun seçenekleri sıralayayım. Üstteki mutfak şeridinden \"Tümü\" seçersen bütün mutfaklara bakar.</p>';
+  if(!gk){
+    h += '<div class="card pbox">';
+    h += '<p class="note" style="margin:0 0 4px">Önce seni tanıyalım — bu bilgiler sadece bu cihazda kalır.</p>';
+    h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
+    h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
+    h += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+    h += '<div><label>Cinsiyet</label>'+secGrup("cins", [{id:"e",ad:"Erkek"},{id:"k",ad:"Kadın"}], pg("cins","e"))+'</div>';
+    h += '<div><label>Ne kadar hareketlisin?</label>'+secGrup("akt", P_AKTIVITE, pg("akt","hafif"))+'</div>';
+    h += '</div>';
+    return h;
+  }
+  return h + neYesem();
+}
 function neYesem(){
   const gk = gunlukKalori();
-  let h = '<div class="section-title">Şimdi ne yesem?</div>';
+  let h = '';
   if(!gk){
-    h += '<div class="card"><p class="note" style="margin:0">Öneri alabilmek için yukarıya boy, yaş ve kilonu gir.</p></div>';
     return h;
   }
   const saat = new Date().getHours();
@@ -1067,7 +1086,6 @@ function renderProtein(){
   });
   html += '</div>';
   html += '<p class="note">Sağdaki sayı: o besinden 100 kalori yediğinde kaç gram protein aldığın.</p>';
-  html += neYesem();
   html += '<div class="pnot"><b>Önemli:</b> Bunlar genel kılavuz değerleridir, kişisel tedavi önerisi değildir. <b>Böbrek rahatsızlığın varsa yüksek protein zararlıdır</b> — bu durumda protein miktarı doktor tarafından kısıtlanır, yukarıdaki hesaba göre artırma. Gebelik, karaciğer hastalığı veya sürekli ilaç kullanımı varsa da hedefini doktoruna danışarak belirle.</div>';
   return html;
 }
@@ -1288,7 +1306,8 @@ document.addEventListener('keydown', e=>{
   else if(k==='1'){ currentMode='auto'; selectedFood=null; render(); }
   else if(k==='2'){ currentMode='comm'; selectedFood=null; render(); }
   else if(k==='3'){ currentMode='conflict'; selectedFood=null; render(); }
-  else if(k==='4'){ currentMode='protein'; selectedFood=null; render(); }
+  else if(k==='4'){ currentMode='yesem'; selectedFood=null; render(); }
+  else if(k==='5'){ currentMode='protein'; selectedFood=null; render(); }
   else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
 });
 
@@ -1307,6 +1326,10 @@ document.getElementById('btn-manif').onclick = ()=>{
 document.getElementById('mode-auto').onclick = ()=>{ currentMode='auto'; selectedFood=null; render(); };
 document.getElementById('mode-comm').onclick = ()=>{ currentMode='comm'; selectedFood=null; render(); };
 document.getElementById('mode-conf').onclick = ()=>{ currentMode='conflict'; selectedFood=null; render(); };
+document.getElementById('mode-yesem').onclick = async ()=>{
+  currentMode='yesem'; selectedFood=null;
+  if(!foodCache[currentCuisine]) await refresh(); else render();
+};
 document.getElementById('mode-prot').onclick = async ()=>{
   currentMode='protein'; selectedFood=null;
   if(!foodCache[currentCuisine]) await refresh(); else render();
