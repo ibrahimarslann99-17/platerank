@@ -597,7 +597,7 @@ function render(){
   document.getElementById('mode-comm').classList.toggle('active', currentMode==='comm');
   document.getElementById('mode-conf').classList.toggle('active', currentMode==='conflict');
   document.getElementById('mode-prot').classList.toggle('active', currentMode==='protein');
-  document.getElementById('tabwrap').style.display = currentMode==='protein' ? 'none' : '';
+
   const content = document.getElementById('content');
   if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
   else if(currentMode==='comm'){ content.innerHTML = renderComm(); }
@@ -791,24 +791,30 @@ function renderProtein(){
     html += '<div class="card psonuc"><div class="buyuk">'+hedef+'</div><div class="birim">gram protein / gün</div>';
     html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div></div>';
     // ornek tabak
-    const porsiyon = [
-      {ad:"Tavuk göğsü (150 g)", p:47, kcal:248},
-      {ad:"Yumurta (2 adet)", p:13, kcal:143},
-      {ad:"Süzme yoğurt (200 g)", p:20, kcal:118},
-      {ad:"Mercimek çorbası (1 kase)", p:9, kcal:150},
-      {ad:"Ton balığı (1 konserve)", p:24, kcal:104}
-    ];
+    const mutfakAd = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || '';
+    const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7)
+      .map(f=>({ad:f.ad, p:f.protein, kcal:f.kcal, v:(f.protein/f.kcal)*100}))
+      .sort((a,b)=>b.v-a.v);
+    html += '<div class="section-title">Bu kaç tabak eder? · ' + mutfakAd + '</div>';
+    if(!havuz.length){
+      html += '<div class="card"><p class="note" style="margin:0">Bu mutfakta protein hesabı için yeterli veri yok. Üstteki sekmelerden başka bir mutfak seç.</p></div>';
+    } else {
+    html += '<p class="note">Yukarıdaki sekmelerden mutfak değiştir, tabak da değişsin. Sıralama en verimli olandan başlar: aynı proteini en az kaloriyle veren yemekler.</p>';
+    const cesit = havuz.slice(0, 5);
     let kalan = hedef, sec = [], i = 0;
-    while(kalan > 8 && i < 40){ const x = porsiyon[i % porsiyon.length]; sec.push(x); kalan -= x.p; i++; }
+    while(kalan > 8 && i < 40){ const x = cesit[i % cesit.length]; sec.push(x); kalan -= x.p; i++; }
     const topP = sec.reduce((a,b)=>a+b.p,0), topK = sec.reduce((a,b)=>a+b.kcal,0);
     const grup = {};
     sec.forEach(x=>{ grup[x.ad] = grup[x.ad] || {n:0, p:x.p, kcal:x.kcal}; grup[x.ad].n++; });
-    html += '<div class="section-title">Bu kaç tabak eder?</div><div class="card ptabak">';
+    html += '<div class="card ptabak">';
     Object.keys(grup).forEach(k=>{ const g = grup[k];
       html += '<div class="pt"><span style="flex:1">'+(g.n>1?g.n+" × ":"")+k+'</span><span class="ptg">'+(g.p*g.n)+' g</span><span class="ptk">'+(g.kcal*g.n)+' kcal</span></div>';
     });
     html += '<div class="pt" style="border-top:1px solid var(--line-strong);padding-top:11px;margin-top:4px"><span style="flex:1;font-weight:600">Toplam</span><span class="ptg">'+topP+' g</span><span class="ptk">'+topK+' kcal</span></div>';
-    html += '</div><p class="note">Tek bir örnek — aynı proteini başka kombinasyonlarla da alabilirsin. Önemli olan toplam.</p>';
+    html += '</div>';
+    const verim = (topP/topK*100).toFixed(1).replace('.',',');
+    html += '<p class="note">Bu tabaklarla ' + topP + ' g protein alırsın ve ' + topK + ' kalori ödersin — yani 100 kalori başına ' + verim + ' g. Sadece bir örnek; aynı proteini başka kombinasyonlarla da alabilirsin, önemli olan toplam.</p>';
+    }
   } else {
     html += '<p class="note">Kilonu girince hedefin ve örnek tabaklar burada çıkacak.</p>';
   }
@@ -1027,7 +1033,10 @@ document.getElementById('btn-manif').onclick = ()=>{
 document.getElementById('mode-auto').onclick = ()=>{ currentMode='auto'; selectedFood=null; render(); };
 document.getElementById('mode-comm').onclick = ()=>{ currentMode='comm'; selectedFood=null; render(); };
 document.getElementById('mode-conf').onclick = ()=>{ currentMode='conflict'; selectedFood=null; render(); };
-document.getElementById('mode-prot').onclick = ()=>{ currentMode='protein'; selectedFood=null; render(); };
+document.getElementById('mode-prot').onclick = async ()=>{
+  currentMode='protein'; selectedFood=null;
+  if(!foodCache[currentCuisine]) await refresh(); else render();
+};
 document.getElementById('btn-reset').onclick = ()=>{
   if(!confirm('Bu cihazdaki kişisel oy işaretlerin (yeşil noktalar) temizlenecek. Ortak sayaçlar etkilenmez. Emin misin?')) return;
   localStorage.removeItem('pr_oylarim');
