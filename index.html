@@ -12,7 +12,13 @@
 <meta property="og:url" content="https://platerank.dev/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="tr_TR">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://platerank.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PlateRank — Kalori sayan çok, tokluk soran yok.">
+<meta property="og:site_name" content="PlateRank">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://platerank.dev/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%230F1722' stroke='%23EDE8DD' stroke-width='6'/%3E%3Ctext x='50' y='66' text-anchor='middle' font-family='Arial Black' font-size='44' font-weight='900' fill='%233DBF8B'%3ES%3C/text%3E%3C/svg%3E">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
@@ -297,6 +303,10 @@ body{background:
 .psonuc{text-align:center;padding:20px 14px;}
 .psonuc .buyuk{font-family:'Syne',sans-serif;font-weight:800;font-size:46px;line-height:1;color:var(--teal-dark);}
 .psonuc .birim{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-muted);margin-top:6px;}
+.pshare{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.pshare .btn{font-size:11px;padding:8px 14px;}
+.pshare .btn.ikincil{background:transparent;color:var(--ink);border-color:var(--line-strong);}
+.pshare .btn.ikincil:hover{background:rgba(237,232,221,0.1);color:var(--ink);}
 .psonuc .aciklama{font-size:13px;color:var(--ink-muted);margin-top:10px;line-height:1.6;}
 .ptabak{display:grid;gap:8px;margin-top:4px;}
 .pt{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:9px 0;border-bottom:1px dashed var(--line);}
@@ -398,6 +408,12 @@ body{background:
       <li><b>Yulaf lapası</b> — 250 kcal · skor 230 · çözünür lif sayesinde uzun tokluk</li>
     </ol>
     <p>Listenin diğer ucunda ne var? Baklava (skor 50), donut (45) ve tres leches (45) gibi şeker yoğun tatlılar — yüksek kalori verip kısa süreli tokluk sağladıkları için <b>D ligi</b>nde. Aradaki farkı görmek için yukarıdaki <b>Bilim</b> sekmesinden tüm sıralamaya, <b>Çelişki</b> sekmesinden ise halkın algısıyla verinin çatıştığı yemeklere bakabilirsin.</p>
+    <h3>Günde kaç gram protein almalıyım?</h3>
+    <p>Basit hesap: <b>kilon × katsayı</b>. Katsayı durumuna göre değişir — sadece eksik kalmamak için 0,8; sağlıklı ve dinç olmak için 1,1; düzenli spor yapıyorsan 1,5; kilo veriyorsan 1,8; 65 yaş üstündeysen 1,6; hastalık veya ameliyat sonrası iyileşiyorsan 2,0. Örnek: 70 kilo ve spor yapan biri için günde 105 gram. Yukarıdaki <b>Protein</b> sekmesinden kendi hesabını yapabilir, bunun kaç tabak ettiğini mutfak mutfak görebilirsin. (Böbrek rahatsızlığı olanlarda protein kısıtlanır; o durumda hedefini doktorun belirler.)</p>
+    <h3>Az kalorili ama doyurucu ne yenir?</h3>
+    <p>100 kalorinin altında en çok tok tutanlar: ayran (65 kcal), haşlanmış yumurta (78 kcal), miso çorbası (80 kcal), cacık (90 kcal), çoban salata (90 kcal). Ortak özellikleri su hacmi ve protein. Buna karşılık aynı kalorideki bir avuç kuruyemiş ya da iki bisküvi, seni yarım saat sonra tekrar mutfağa gönderir.</p>
+    <h3>Hangi yemek kaç kalori?</h3>
+    <p>Sitedeki 200 yemeğin her birinde porsiyon başına kalori, protein, lif, yağ ve şeker değeri var. Üstteki arama kutusuna yemeğin adını yaz — simit, lahmacun, pizza, cips, kola, ne olursa — kalorisini, kaç saat tok tuttuğunu ve kan şekerini ne hızda yükselttiğini görürsün. Değerler USDA ve TürKomp ortalamalarına dayanır; porsiyon farkına göre ±%30 sapabilir.</p>
     <h3>Doyuruculuk neye göre hesaplanıyor?</h3>
     <p>Skor, Holt ve ekibinin 1995 tarihli tokluk indeksi (satiety index) mantığından uyarlandı: protein, lif ve su hacmi skoru yükseltir; şeker, rafine un ve yağ yoğunluğu düşürür. 200 üzeri S ligi (tok tutma şampiyonu), 150-200 arası A, 100-150 arası B, 70-100 arası C, 70 altı D ligi (boş kalori). Her yemek için ayrıca <b>şeker şoku hızı</b> ve <b>tahmini tekrar acıkma süresi</b> hesaplanır.</p>
   </section>
@@ -864,7 +880,9 @@ function renderProtein(){
   if(kilo && kilo>=25 && kilo<=250){
     const hedef = Math.round(kilo * dd.k);
     html += '<div class="card psonuc"><div class="buyuk">'+hedef+'</div><div class="birim">gram protein / gün</div>';
-    html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div></div>';
+    html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
+    html += '<div class="pshare"><button class="btn" id="p-share">Sonucumu paylaş</button><button class="btn ikincil" id="p-copy">Bağlantıyı kopyala</button></div>';
+    html += '</div>';
     // ornek tabak
     const mutfakAd = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || '';
     const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7)
@@ -1014,6 +1032,19 @@ function wireUp(){
       }, 550);
     };
   }
+  const psh = document.getElementById("p-share");
+  if(psh){
+    const dd2 = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
+    const hedef2 = Math.round(parseFloat(pKilo()) * dd2.k);
+    const metin = "Günlük protein ihtiyacım: " + hedef2 + " g (" + dd2.ad.toLocaleLowerCase("tr") + ").\nSeninki kaç? Kilonu gir, 5 saniyede öğren:\nhttps://platerank.dev";
+    psh.onclick = async ()=>{
+      buzz(12);
+      if(navigator.share){ try{ await navigator.share({title:"PlateRank — protein hesabım", text:metin}); return; }catch(e){} }
+      try{ await navigator.clipboard.writeText(metin); toast("Sonucun kopyalandı, yapıştır ✓"); }catch(e){ toast("Kopyalanamadı"); }
+    };
+  }
+  const pcp = document.getElementById("p-copy");
+  if(pcp){ pcp.onclick = async ()=>{ buzz(10); try{ await navigator.clipboard.writeText("https://platerank.dev"); toast("Bağlantı kopyalandı ✓"); }catch(e){ toast("Kopyalanamadı"); } }; }
   document.querySelectorAll('.pd').forEach(el=>{
     el.onclick = ()=>{ localStorage.setItem('pr_durum', el.dataset.d); buzz(12); render(); };
   });
