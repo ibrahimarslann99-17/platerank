@@ -257,6 +257,12 @@ body{background:
 .sk-info{flex:1;} .sk-name{height:13px;margin-bottom:7px;} .sk-bar{height:6px;max-width:240px;}
 .sk-kcal{width:52px;height:11px;}
 #content{transition:opacity .22s ease;}
+.uyari{text-align:center;padding:30px 18px;}
+.uyari .pulse{width:44px;height:44px;margin:0 auto 14px;border-radius:50%;border:2px solid var(--line-strong);border-top-color:var(--teal);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.uyari h3{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin:0 0 8px;color:var(--ink);}
+.uyari p{font-size:13px;line-height:1.6;color:var(--ink-muted);margin:0 auto 14px;max-width:340px;}
+.uyari .sayac{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);}
 #content.solma{opacity:0.32;}
 .rp{position:relative;overflow:hidden;}
 .rp-w{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;
@@ -448,7 +454,12 @@ async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
   const {data: foods, error} = await sb.from('yemekler')
     .select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker').eq('mutfak', cid).order('doyuruculuk',{ascending:false});
-  if(error){ console.error(error); foodCache[cid]=[]; voteCache[cid]={}; return; }
+  if(error){
+    console.error(error);
+    if(!foodCache[cid]) { uyandirmaEkrani(); uyandir(cid); }
+    return;
+  }
+  uyandirmaBitti();
   foodCache[cid] = foods||[];
   const ids = foodCache[cid].map(f=>f.id);
   voteCache[cid] = {};
@@ -503,6 +514,35 @@ function updateFade(){
   const t=document.getElementById('tabs'), w=document.getElementById('tabwrap');
   if(!t||!w) return;
   w.classList.toggle('more', t.scrollWidth - t.scrollLeft - t.clientWidth > 8);
+}
+let uyandirmaSayaci = 0, uyandirmaTimer = null;
+function uyandirmaEkrani(){
+  const c = document.getElementById("content");
+  if(!c || c.dataset.uyaniyor === "1") return;
+  c.dataset.uyaniyor = "1";
+  uyandirmaSayaci = 0;
+  c.classList.remove("solma");
+  c.innerHTML = '<div class="card uyari"><div class="pulse"></div><h3>Mutfak ısınıyor…</h3><p>Sunucumuz uzun süre ziyaretçi gelmeyince uykuya dalıyor (ücretsiz plan). Şu an uyandırıyoruz — genelde yarım dakika sürer, sayfayı kapatmana gerek yok.</p><div class="sayac" id="uyandirma-sayac">0 sn</div></div>';
+  clearInterval(uyandirmaTimer);
+  uyandirmaTimer = setInterval(()=>{
+    uyandirmaSayaci++;
+    const s = document.getElementById("uyandirma-sayac");
+    if(s) s.textContent = uyandirmaSayaci + " sn" + (uyandirmaSayaci>75 ? " · beklenenden uzun sürüyor, birazdan tekrar dene" : "");
+  }, 1000);
+}
+function uyandirmaBitti(){
+  const c = document.getElementById("content");
+  if(c) delete c.dataset.uyaniyor;
+  clearInterval(uyandirmaTimer);
+}
+async function uyandir(cid, deneme){
+  deneme = deneme || 1;
+  if(deneme > 20) return;
+  await new Promise(r=>setTimeout(r, 3500));
+  const {data, error} = await sb.from("yemekler").select("id").eq("mutfak", cid).limit(1);
+  if(error || !data){ return uyandir(cid, deneme+1); }
+  uyandirmaBitti();
+  await refresh(true);
 }
 function skeleton(n){
   let h='<div class="card">';
