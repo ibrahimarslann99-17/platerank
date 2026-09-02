@@ -543,7 +543,7 @@ async function loadSettings(){
 }
 async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
-  let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur');
+  let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme');
   if(cid !== 'hepsi') qy = qy.eq('mutfak', cid);
   const {data: foods, error} = await qy.order('doyuruculuk',{ascending:false}).limit(400);
   if(error){
@@ -603,7 +603,7 @@ async function aramaYap(){
   const n = trNorm(s);
   let bulunan = hepsi.filter(f=> trNorm(f.ad).includes(n));
   if(bulunan.length < 3){
-    const {data} = await sb.from("yemekler").select("id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur").ilike("ad","%"+s+"%").limit(40);
+    const {data} = await sb.from("yemekler").select("id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme").ilike("ad","%"+s+"%").limit(40);
     const gorulen = new Set(bulunan.map(f=>f.id));
     (data||[]).forEach(f=>{ if(!gorulen.has(f.id)) bulunan.push(f); });
   }
@@ -951,6 +951,7 @@ function neYesem(){
   h += '<div class="aciklama">Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.</div></div>';
   // oneriler
   var havuz = (foodCache[currentCuisine]||[]).filter(function(f){
+    if(f.sadece_malzeme) return false;
     if(f.kcal > porsiyon*1.35 || f.kcal < porsiyon*0.55) return false;
     if(tat==="tatli" && (f.seker||0) < 10) return false;
     if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
@@ -958,6 +959,7 @@ function neYesem(){
   });
   if(havuz.length < 4){
     havuz = (foodCache[currentCuisine]||[]).filter(function(f){
+      if(f.sadece_malzeme) return false;
       if(f.kcal > porsiyon*1.7 || f.kcal < porsiyon*0.35) return false;
       if(tat==="tatli" && (f.seker||0) < 10) return false;
       if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
@@ -1019,7 +1021,7 @@ function renderProtein(){
     html += '</div>';
     // ornek tabak
     const mutfakAd = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || '';
-    const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7)
+    const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7 && !f.sadece_malzeme)
       .map(f=>({ad:f.ad, p:f.protein, kcal:f.kcal, v:(f.protein/f.kcal)*100}))
       .sort((a,b)=>b.v-a.v);
     html += '<div class="section-title">Bu kaç tabak eder? · ' + mutfakAd + '</div>';
