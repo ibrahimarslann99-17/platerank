@@ -441,10 +441,10 @@ const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CUISINES = [
-  {id:'hepsi', name:'Tümü'},
+  {id:'hepsi', name:'Tümü'}, {id:'temel', name:'Temel Gıdalar'},
   {id:'tr', name:'Türk'}, {id:'it', name:'İtalyan'}, {id:'jp', name:'Japon'},
   {id:'mx', name:'Meksika'}, {id:'cn', name:'Çin'}, {id:'us', name:'Amerikan'},
-  {id:'hm', name:'Keşifler 🔦'}, {id:'temel', name:'Temel Gıdalar'},
+  {id:'hm', name:'Keşifler 🔦'},
 ];
 function hmBanner(){
   return `<div class="hmban">🔦 <b>Keşifler</b> — "Ben bir şey buldum!" alanı. Az kalori + yüksek doyuruculuk + gerçek lezzet. Tarifi dene, sonra oyla. Yeni keşifler Öneri Sahnesi'nden gelir.</div>`;
