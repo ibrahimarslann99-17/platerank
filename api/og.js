@@ -1,5 +1,5 @@
 const satori = require('satori').default;
-const { Resvg } = require('@resvg/resvg-js');
+const sharp = require('sharp');
 
 const DURUM = {
   asgari: 'sadece eksik kalmamak için',
@@ -134,8 +134,7 @@ module.exports = {
         fonts: [{ name: 'Figtree', data: fontData, weight: 700, style: 'normal' }],
       });
 
-      const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
-      const png = resvg.render().asPng();
+      const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
       return new Response(png, {
         headers: {
