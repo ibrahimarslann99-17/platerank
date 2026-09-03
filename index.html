@@ -1210,11 +1210,12 @@ function wireUp(){
   if(psh){
     const dd2 = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
     const hedef2 = Math.round(parseFloat(pKilo()) * dd2.k);
-    const metin = "Günlük protein ihtiyacım: " + hedef2 + " g (" + dd2.ad.toLocaleLowerCase("tr") + ").\nSeninki kaç? Kilonu gir, 5 saniyede öğren:\nhttps://platerank.dev";
+    const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;
+    const metin = "Günlük protein ihtiyacım: " + hedef2 + " g (" + dd2.ad.toLocaleLowerCase("tr") + "). Seninki kaç?";
     psh.onclick = async ()=>{
       buzz(12);
-      if(navigator.share){ try{ await navigator.share({title:"PlateRank · protein hesabım", text:metin}); return; }catch(e){} }
-      try{ await navigator.clipboard.writeText(metin); toast("Sonucun kopyalandı, yapıştır ✓"); }catch(e){ toast("Kopyalanamadı"); }
+      if(navigator.share){ try{ await navigator.share({title:"PlateRank · protein hesabım", text:metin, url:paylasUrl}); return; }catch(e){} }
+      try{ await navigator.clipboard.writeText(paylasUrl); toast("Bağlantı kopyalandı, yapıştır ✓"); }catch(e){ toast("Kopyalanamadı"); }
     };
   }
   const pcp = document.getElementById("p-copy");
