@@ -85,6 +85,9 @@ h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;l
 .arow .barwrap{height:6px;background:var(--teal-wash);margin-top:5px;max-width:240px;}
 .arow .bar{height:100%;background:var(--teal);}
 .arow .kcal{font-family:'Figtree',system-ui,sans-serif;font-size:11px;color:var(--ink-muted);min-width:56px;text-align:right;}
+.arow .favbtn{background:none;border:none;cursor:pointer;font-size:16px;line-height:1;padding:2px 0;width:16px;flex:none;color:var(--line-strong);}
+.arow .favbtn.on{color:#C7941C;}
+.arow .favbtn:hover{color:#C7941C;}
 .card{background:var(--card);border:1px solid var(--line-strong);padding:14px;margin-bottom:14px;}
 .btn{font-family:'Figtree',system-ui,sans-serif;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;border:1px solid var(--teal);background:var(--teal);color:#FFFFFF;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);}
 .btn:hover{background:var(--teal-dark);border-color:var(--teal-dark);}
@@ -343,7 +346,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 @media (prefers-reduced-motion: reduce){.sk{animation:none;} .rp-w{display:none;} #tabink{transition:none;} .arow,.crow,.tier{animation:none;}}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Haşlanmış yumurta"},{"@type":"ListItem","position":3,"name":"Haşlanmış patates"},{"@type":"ListItem","position":4,"name":"Miso çorbası"},{"@type":"ListItem","position":5,"name":"Mercimek çorbası"},{"@type":"ListItem","position":6,"name":"Wonton çorbası"},{"@type":"ListItem","position":7,"name":"Minestrone çorbası"},{"@type":"ListItem","position":8,"name":"Yayla çorbası"},{"@type":"ListItem","position":9,"name":"Ceviche"},{"@type":"ListItem","position":10,"name":"Sashimi"},{"@type":"ListItem","position":11,"name":"Sıcak ekşi çorba"},{"@type":"ListItem","position":12,"name":"Izgara tavuk göğsü"},{"@type":"ListItem","position":13,"name":"Buharda levrek"},{"@type":"ListItem","position":14,"name":"Siyah fasulye çorbası"},{"@type":"ListItem","position":15,"name":"Yulaf lapası"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış yumurta, haşlanmış patates, mercimek ve miso gibi çorbalar, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Holt (1995) tokluk indeksi mantığından uyarlanan skor, protein, lif ve su hacmini artı; şeker, rafine un ve yağ yoğunluğunu eksi yönde değerlendirir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), haşlanmış yumurta (78 kcal), miso çorbası (80 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Haşlanmış yumurta"},{"@type":"ListItem","position":3,"name":"Haşlanmış patates"},{"@type":"ListItem","position":4,"name":"Miso çorbası"},{"@type":"ListItem","position":5,"name":"Mercimek çorbası"},{"@type":"ListItem","position":6,"name":"Wonton çorbası"},{"@type":"ListItem","position":7,"name":"Minestrone çorbası"},{"@type":"ListItem","position":8,"name":"Yayla çorbası"},{"@type":"ListItem","position":9,"name":"Ceviche"},{"@type":"ListItem","position":10,"name":"Sashimi"},{"@type":"ListItem","position":11,"name":"Sıcak ekşi çorba"},{"@type":"ListItem","position":12,"name":"Izgara tavuk göğsü"},{"@type":"ListItem","position":13,"name":"Buharda levrek"},{"@type":"ListItem","position":14,"name":"Siyah fasulye çorbası"},{"@type":"ListItem","position":15,"name":"Yulaf lapası"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış yumurta, haşlanmış patates, mercimek ve miso gibi çorbalar, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Holt (1995) tokluk indeksi mantığından uyarlanan skor, protein, lif ve su hacmini artı; şeker, rafine un ve yağ yoğunluğunu eksi yönde değerlendirir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), haşlanmış yumurta (78 kcal), miso çorbası (80 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
 </script>
 </head>
 <body>
@@ -386,6 +389,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
     <button id="mode-prot">Protein ihtiyacım?</button>
     <button id="mode-comm">Halk oyu</button>
     <button id="mode-conf">Çelişki ⚡</button>
+    <button id="mode-fav">★ Favoriler</button>
   </div>
 
   <div id="content"><div class="loading">Yükleniyor…</div></div>
@@ -419,6 +423,8 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
     <p>Sitedeki <span class="toplam-sayi">380+</span> yemeğin her birinde porsiyon başına kalori, protein, lif, yağ ve şeker değeri var. Üstteki arama kutusuna yemeğin adını yaz: simit, lahmacun, pizza, cips, kola, ne olursa; kalorisini, kaç saat tok tuttuğunu ve kan şekerini ne hızda yükselttiğini görürsün. Değerler USDA ve TürKomp ortalamalarına dayanır; porsiyon farkına göre ±%30 sapabilir.</p>
     <h3>Doyuruculuk neye göre hesaplanıyor?</h3>
     <p>Skor, Holt ve ekibinin 1995 tarihli tokluk indeksi (satiety index) mantığından uyarlandı: protein, lif ve su hacmi skoru yükseltir; şeker, rafine un ve yağ yoğunluğu düşürür. 200 üzeri S ligi (tok tutma şampiyonu), 150-200 arası A, 100-150 arası B, 70-100 arası C, 70 altı D ligi (boş kalori). Her yemek için ayrıca <b>şeker şoku hızı</b> ve <b>tahmini tekrar acıkma süresi</b> hesaplanır.</p>
+    <h3>Veriye API ile erişebilir miyim?</h3>
+    <p>Evet, tüm veri seti salt-okunur ve herkese açık: <code>GET https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler</code>, başlığa <code>apikey: sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ</code> eklemen yeterli. Örnek: <code>curl "https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler?select=ad,mutfak,kcal,doyuruculuk&amp;mutfak=eq.tr" -H "apikey: sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ"</code>. Yazma izni yok, sadece okuma; kullanırken kaynak göstermen yeterli.</p>
   </section>
 
   <div class="footer-actions">
@@ -444,6 +450,7 @@ const CUISINES = [
   {id:'hepsi', name:'Tümü'}, {id:'temel', name:'Temel Gıdalar'},
   {id:'tr', name:'Türk'}, {id:'it', name:'İtalyan'}, {id:'jp', name:'Japon'},
   {id:'mx', name:'Meksika'}, {id:'cn', name:'Çin'}, {id:'us', name:'Amerikan'},
+  {id:'kr', name:'Kore'}, {id:'th', name:'Tayland'}, {id:'in', name:'Hint'}, {id:'me', name:'Ortadoğu'},
   {id:'hm', name:'Keşifler 🔦'},
 ];
 function hmBanner(){
@@ -500,6 +507,15 @@ function myVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oylarim')||'
 function setMyVote(fid, lig){ const m = myVotes(); m[fid]=lig; localStorage.setItem('pr_oylarim', JSON.stringify(m)); }
 function mySugVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oneri_oylarim')||'{}'); }catch(e){ return {}; } }
 function setMySugVote(id){ const m = mySugVotes(); m[id]=1; localStorage.setItem('pr_oneri_oylarim', JSON.stringify(m)); }
+function myFavs(){ try{ return new Set(JSON.parse(localStorage.getItem('pr_favoriler')||'[]')); }catch(e){ return new Set(); } }
+function toggleFav(fid){ const s = myFavs(); if(s.has(fid)) s.delete(fid); else s.add(fid); localStorage.setItem('pr_favoriler', JSON.stringify([...s])); return s.has(fid); }
+let favFoodsCache = [];
+async function loadFavs(){
+  const ids = [...myFavs()];
+  if(!ids.length){ favFoodsCache = []; return; }
+  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme').in('id', ids);
+  favFoodsCache = data || [];
+}
 
 // ---------- kufur/spam filtresi ----------
 const BAD_WORDS = ['amk','aq','sik','sikik','sikim','siktir','orospu','pic','yarrak','yarak','got','amcik','amina','anani','pezevenk','kahpe','ibne','ipne','dallama','gavat','fuck','shit','bitch','asshole','dick','cunt','porn','sex'];
@@ -690,12 +706,14 @@ function render(){
   document.getElementById('mode-conf').classList.toggle('active', currentMode==='conflict');
   document.getElementById('mode-prot').classList.toggle('active', currentMode==='protein');
   document.getElementById('mode-yesem').classList.toggle('active', currentMode==='yesem');
+  document.getElementById('mode-fav').classList.toggle('active', currentMode==='fav');
 
   const content = document.getElementById('content');
   if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
   else if(currentMode==='comm'){ content.innerHTML = renderComm(); }
   else if(currentMode==='protein'){ content.innerHTML = renderProtein(); }
   else if(currentMode==='yesem'){ content.innerHTML = renderYesem(); }
+  else if(currentMode==='fav'){ content.innerHTML = renderFav(); }
   else { content.innerHTML = renderConflict(); }
   content.classList.remove('cfade');
   void content.offsetWidth;
@@ -743,7 +761,13 @@ function renderAuto(){
   html += legendHtml();
   html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör. (Resmi klinik veri değil, Holt 1995 mantığının mutfağa uyarlaması.)</p>`;
   html += '<div class="card">';
-  foods.forEach((f,i)=>{
+  const favs = myFavs();
+  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs); });
+  html += '</div>';
+  return html;
+}
+
+function arowHtml(f,i,max,favs){
     const lig = satietyToTier(f.doyuruculuk);
     const pct = Math.max(5,(f.doyuruculuk/max)*100);
     const nut = f.protein==null ? '' : `<div class="nut">
@@ -754,15 +778,29 @@ function renderAuto(){
       </div>`;
     const g = sekerSoku(f);
     const t = acikmaSuresi(f);
-    html += `<div class="arow" style="--i:${i}" data-exp="1">
+    const fav = favs.has(f.id);
+    return `<div class="arow" style="--i:${i}" data-exp="1">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
+      <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
       <div class="lig lig-${lig}">${lig}</div>
       <div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
         <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri ve metrikler tahminidir</span>':''}</div>
       </div>
       <div class="kcal">${f.kcal} kcal${t?`<span class="mini-t">⏱ ${saatStr(t)} sa</span>`:''}</div>
     </div>`;
-  });
+}
+
+function renderFav(){
+  const foods = filtrele(favFoodsCache.slice().sort((a,b)=> b.doyuruculuk - a.doyuruculuk));
+  if(!foods.length){
+    return '<div class="card bos">Henüz favorin yok. Bir satırın başındaki ★ işaretine dokun, favorilere eklenir.</div>';
+  }
+  const max = Math.max(...foods.map(f=>f.doyuruculuk));
+  const favs = myFavs();
+  let html = legendHtml();
+  html += `<p class="note">Favoriye aldığın yemekler, mutfak ayrımı olmadan burada.</p>`;
+  html += '<div class="card">';
+  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs); });
   html += '</div>';
   return html;
 }
@@ -1207,6 +1245,15 @@ function wireUp(){
   document.querySelectorAll('[data-exp]').forEach(r=>{
     r.onclick = ()=> r.classList.toggle('acik');
   });
+  document.querySelectorAll('.favbtn').forEach(b=>{
+    b.onclick = (e)=>{
+      e.stopPropagation();
+      const on = toggleFav(b.dataset.fav);
+      b.classList.toggle('on', on);
+      buzz(8);
+      if(currentMode==='fav' && !on){ render(); }
+    };
+  });
   document.querySelectorAll('.legend .lg').forEach((lg,i)=>{
     lg.onclick = ()=>{
       const t = document.querySelectorAll('.tier')[i];
@@ -1278,6 +1325,7 @@ document.addEventListener('keydown', e=>{
   else if(k==='3'){ currentMode='conflict'; selectedFood=null; render(); }
   else if(k==='4'){ currentMode='yesem'; selectedFood=null; render(); }
   else if(k==='5'){ currentMode='protein'; selectedFood=null; render(); }
+  else if(k==='6'){ currentMode='fav'; selectedFood=null; loadFavs().then(render); }
   else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
 });
 
@@ -1303,6 +1351,13 @@ document.getElementById('mode-yesem').onclick = async ()=>{
 document.getElementById('mode-prot').onclick = async ()=>{
   currentMode='protein'; selectedFood=null;
   if(!foodCache[currentCuisine]) await refresh(); else render();
+};
+document.getElementById('mode-fav').onclick = async ()=>{
+  currentMode='fav'; selectedFood=null;
+  const c = document.getElementById('content'); c.classList.add('solma'); c.innerHTML = skeleton(6);
+  await loadFavs();
+  render();
+  c.classList.remove('solma');
 };
 document.getElementById('btn-reset').onclick = ()=>{
   if(!confirm('Bu cihazdaki kişisel oy işaretlerin (yeşil noktalar) temizlenecek. Ortak sayaçlar etkilenmez. Emin misin?')) return;
