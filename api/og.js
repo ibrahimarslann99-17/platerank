@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og';
+const { ImageResponse } = require('@vercel/og');
 
 const DURUM = {
   asgari: 'sadece eksik kalmamak için',
@@ -26,8 +26,8 @@ async function loadGoogleFont(text) {
   return null;
 }
 
-export default {
-  async fetch(request) {
+module.exports = {
+  fetch: async function (request) {
     const { searchParams } = new URL(request.url);
     let p = (searchParams.get('p') || '100').replace(/[^0-9]/g, '');
     if (!p || p.length > 4) p = '100';

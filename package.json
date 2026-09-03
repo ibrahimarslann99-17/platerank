@@ -1,7 +1,6 @@
 {
   "name": "platerank",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@vercel/og": "1.0.2"
   }

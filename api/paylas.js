@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' };
-
 const DURUM = {
   asgari: 'sadece eksik kalmamak için',
   saglik: 'sağlıklı ve dinç olmak için',
@@ -13,21 +11,22 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-export default async function handler(req) {
-  const url = new URL(req.url);
-  let p = (url.searchParams.get('p') || '').replace(/[^0-9]/g, '');
-  const d = url.searchParams.get('d') || 'saglik';
-  const durumMetin = DURUM[d] || DURUM.saglik;
+module.exports = {
+  fetch: async function (request) {
+    const url = new URL(request.url);
+    let p = (url.searchParams.get('p') || '').replace(/[^0-9]/g, '');
+    const d = url.searchParams.get('d') || 'saglik';
+    const durumMetin = DURUM[d] || DURUM.saglik;
 
-  const baslik = p ? `Günlük protein hedefim: ${p} g` : "PlateRank · protein hesabım";
-  const aciklama = p
-    ? `${p} gram, ${durumMetin} günlük hedefim. Seninki kaç? PlateRank'te kilonu gir, 5 saniyede öğren.`
-    : 'Günlük protein ihtiyacını 5 saniyede öğren.';
+    const baslik = p ? `Günlük protein hedefim: ${p} g` : "PlateRank · protein hesabım";
+    const aciklama = p
+      ? `${p} gram, ${durumMetin} günlük hedefim. Seninki kaç? PlateRank'te kilonu gir, 5 saniyede öğren.`
+      : 'Günlük protein ihtiyacını 5 saniyede öğren.';
 
-  const ogImgUrl = `${url.origin}/api/og?${url.searchParams.toString()}`;
-  const siteUrl = 'https://platerank.dev/';
+    const ogImgUrl = `${url.origin}/api/og?${url.searchParams.toString()}`;
+    const siteUrl = 'https://platerank.dev/';
 
-  const html = `<!doctype html>
+    const html = `<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
@@ -40,7 +39,7 @@ export default async function handler(req) {
 <meta property="og:image" content="${esc(ogImgUrl)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="${esc(req.url)}">
+<meta property="og:url" content="${esc(request.url)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(baslik)}">
 <meta name="twitter:description" content="${esc(aciklama)}">
@@ -65,7 +64,8 @@ export default async function handler(req) {
 </body>
 </html>`;
 
-  return new Response(html, {
-    headers: { 'content-type': 'text/html; charset=utf-8' },
-  });
-}
+    return new Response(html, {
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  },
+};
