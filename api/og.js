@@ -28,7 +28,7 @@ async function getFont() {
         })
       ).text();
       const m = css.match(/src: url\(([^)]+)\) format\('(opentype|truetype)'\)/);
-      if (!m) throw new Error('font css eşleşmedi');
+      if (!m) throw new Error('font css eşleşmedi: ' + css.slice(0, 500));
       const res = await fetch(m[1]);
       if (res.status !== 200) throw new Error('font dosyası indirilemedi');
       return Buffer.from(await res.arrayBuffer());
