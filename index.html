@@ -467,7 +467,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 // ---------- baglanti ----------
 const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'pkce' } });
 
 // ---------- hesap / senkron ----------
 // Misafir modu varsayılan: her şey localStorage'da kalır. Giriş yapılırsa
