@@ -147,6 +147,12 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 @media (hover:hover){.kbd-hint{display:block;}}
 .cfade{animation:fadeUp .3s ease both;}
 .manif-link{background:none;border:none;color:var(--teal-dark);font-family:'Figtree',system-ui,sans-serif;font-size:11px;letter-spacing:0.06em;text-decoration:underline;cursor:pointer;padding:0;margin:-8px 0 16px;display:inline-block;}
+.authbar{margin:-8px 0 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'Figtree',system-ui,sans-serif;font-size:12px;color:var(--ink-muted);}
+.authbar .manif-link{margin:0;}
+.authform{display:flex;gap:6px;align-items:center;}
+.authform input{font-family:'Figtree',system-ui,sans-serif;font-size:12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:6px 10px;background:var(--card);color:var(--ink);min-width:190px;}
+.authform .btn{font-size:11px;padding:7px 12px;}
+.authok{color:var(--teal-dark);font-weight:600;}
 #manifesto{display:none;margin-bottom:20px;}
 #manifesto.acik{display:block;animation:fadeUp .35s ease both;}
 #manifesto .card{padding:20px 18px;}
@@ -369,6 +375,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
   <h1>PlateRank</h1>
   <p class="subtitle"><span class="toplam-sayi">380+</span> yemeğin besin değeri, doyuruculuğu ve şeker etkisi. Protein ihtiyacını hesapla, aradığın yemeği bul, ne kadar tok tutacağını gör.</p>
   <button class="manif-link" id="btn-manif">Neden bu site var? →</button>
+  <div class="authbar" id="authbar"></div>
 
   <div id="manifesto">
     <div class="card">
@@ -461,6 +468,109 @@ const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ---------- hesap / senkron ----------
+// Misafir modu varsayılan: her şey localStorage'da kalır. Giriş yapılırsa
+// favoriler/menü/profil Supabase'e taşınır, cihazlar arası senkron olur.
+let currentUser = null;
+let acctFavIds = null;   // Set<string> | null — null iken misafir (localStorage) yolu kullanılır
+let acctMenuIds = null;  // string[] | null
+let acctProfil = null;   // {kilo,boy,yas,cins,akt} | null
+const PROFIL_KOLON = {kilo:'kilo', boy:'boy', yas:'yas', cins:'cinsiyet', akt:'aktivite'};
+
+async function acctYukle(user){
+  currentUser = user;
+  const [{data: profilRow}, {data: favRows}, {data: menuRows}] = await Promise.all([
+    sb.from('profiller').select('*').eq('id', user.id).maybeSingle(),
+    sb.from('kullanici_favoriler').select('yemek_id').eq('user_id', user.id),
+    sb.from('kullanici_menu').select('yemek_id').eq('user_id', user.id).order('sira', {ascending:true}),
+  ]);
+  const ilkGiris = !profilRow;
+  acctProfil = {
+    kilo: profilRow?.kilo ?? '', boy: profilRow?.boy ?? '', yas: profilRow?.yas ?? '',
+    cins: profilRow?.cinsiyet ?? '', akt: profilRow?.aktivite ?? '',
+  };
+  acctFavIds = new Set((favRows||[]).map(r=>r.yemek_id));
+  acctMenuIds = (menuRows||[]).map(r=>r.yemek_id);
+  if(ilkGiris) await ilkGirisSenkronu();
+  renderAuthBar();
+  await loadMenu();
+  render();
+}
+
+async function ilkGirisSenkronu(){
+  // Bu cihazdaki misafir verisini hesaba bir kerelik taşı (üzerine yazmaz, birleştirir)
+  ['kilo','boy','yas','cins','akt'].forEach(k=>{
+    const lv = localStorage.getItem('pr_'+k);
+    if(lv && !acctProfil[k]) acctProfil[k] = lv;
+  });
+  const patch = {id: currentUser.id, guncellendi: new Date().toISOString()};
+  let varMi = false;
+  ['kilo','boy','yas','cins','akt'].forEach(k=>{
+    if(acctProfil[k]){
+      patch[PROFIL_KOLON[k]] = (k==='yas') ? (parseInt(acctProfil[k],10)||null) : (k==='kilo'||k==='boy') ? (parseFloat(acctProfil[k])||null) : acctProfil[k];
+      varMi = true;
+    }
+  });
+  if(varMi){ const {error} = await sb.from('profiller').upsert(patch); if(error) console.error('profil senkron hatası', error); }
+
+  let lokalFav = []; try{ lokalFav = JSON.parse(localStorage.getItem('pr_favoriler')||'[]'); }catch(e){}
+  lokalFav.forEach(fid=>acctFavIds.add(fid));
+  if(lokalFav.length){
+    const {error} = await sb.from('kullanici_favoriler').upsert(
+      [...acctFavIds].map(fid=>({user_id:currentUser.id, yemek_id:fid})),
+      {onConflict:'user_id,yemek_id', ignoreDuplicates:true}
+    );
+    if(error) console.error('favori senkron hatası', error);
+  }
+
+  let lokalMenu = []; try{ lokalMenu = JSON.parse(localStorage.getItem('pr_menu')||'[]'); }catch(e){}
+  lokalMenu.forEach(fid=>{ if(!acctMenuIds.includes(fid)) acctMenuIds.push(fid); });
+  if(lokalMenu.length){
+    const {error} = await sb.from('kullanici_menu').upsert(
+      acctMenuIds.map((fid,i)=>({user_id:currentUser.id, yemek_id:fid, sira:i})),
+      {onConflict:'user_id,yemek_id'}
+    );
+    if(error) console.error('menü senkron hatası', error);
+  }
+}
+
+function renderAuthBar(){
+  const el = document.getElementById('authbar');
+  if(!el) return;
+  if(currentUser){
+    el.innerHTML = '<span class="authok">✓ '+esc(currentUser.email)+'</span> <button class="manif-link" id="auth-out">Çıkış yap</button>';
+    const b = document.getElementById('auth-out');
+    if(b) b.onclick = async ()=>{ await sb.auth.signOut(); };
+  } else {
+    el.innerHTML = '<button class="manif-link" id="auth-toggle">Giriş yap — cihazlar arası senkron</button>'+
+      '<div class="authform" id="authform" hidden><input type="email" id="auth-email" placeholder="e-posta adresin" autocomplete="email"><button class="btn" id="auth-send">Bağlantı gönder</button></div>';
+    const t = document.getElementById('auth-toggle');
+    const f = document.getElementById('authform');
+    if(t) t.onclick = ()=>{ f.hidden = !f.hidden; if(!f.hidden) document.getElementById('auth-email').focus(); };
+    const s = document.getElementById('auth-send');
+    if(s) s.onclick = async ()=>{
+      const email = (document.getElementById('auth-email').value||'').trim();
+      if(!email || !email.includes('@')){ toast('Geçerli bir e-posta gir'); return; }
+      s.disabled = true; s.textContent = 'Gönderiliyor…';
+      const {error} = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://platerank.dev' } });
+      s.disabled = false; s.textContent = 'Bağlantı gönder';
+      if(error){ toast('Gönderilemedi: '+error.message); return; }
+      toast('Giriş bağlantısı gönderildi, e-postana bak ✓');
+      f.hidden = true;
+    };
+  }
+}
+
+sb.auth.onAuthStateChange((event, session)=>{
+  if(event==='SIGNED_IN' && session && session.user){
+    acctYukle(session.user);
+  } else if(event==='SIGNED_OUT'){
+    currentUser = null; acctFavIds = null; acctMenuIds = null; acctProfil = null;
+    renderAuthBar();
+    loadMenu().then(render);
+  }
+});
+
 const CUISINES = [
   {id:'hepsi', name:'Tümü'}, {id:'temel', name:'Temel Gıdalar'},
   {id:'veg', name:'Vejeteryan'},
@@ -523,8 +633,19 @@ function myVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oylarim')||'
 function setMyVote(fid, lig){ const m = myVotes(); m[fid]=lig; localStorage.setItem('pr_oylarim', JSON.stringify(m)); }
 function mySugVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oneri_oylarim')||'{}'); }catch(e){ return {}; } }
 function setMySugVote(id){ const m = mySugVotes(); m[id]=1; localStorage.setItem('pr_oneri_oylarim', JSON.stringify(m)); }
-function myFavs(){ try{ return new Set(JSON.parse(localStorage.getItem('pr_favoriler')||'[]')); }catch(e){ return new Set(); } }
-function toggleFav(fid){ const s = myFavs(); if(s.has(fid)) s.delete(fid); else s.add(fid); localStorage.setItem('pr_favoriler', JSON.stringify([...s])); return s.has(fid); }
+function myFavs(){
+  if(currentUser && acctFavIds) return new Set(acctFavIds);
+  try{ return new Set(JSON.parse(localStorage.getItem('pr_favoriler')||'[]')); }catch(e){ return new Set(); }
+}
+function toggleFav(fid){
+  if(currentUser && acctFavIds){
+    const varOlan = acctFavIds.has(fid);
+    if(varOlan){ acctFavIds.delete(fid); sb.from('kullanici_favoriler').delete().eq('user_id',currentUser.id).eq('yemek_id',fid).then(({error})=>{ if(error) console.error('favori silinemedi', error); }); }
+    else{ acctFavIds.add(fid); sb.from('kullanici_favoriler').insert({user_id:currentUser.id, yemek_id:fid}).then(({error})=>{ if(error) console.error('favori kaydedilemedi', error); }); }
+    return acctFavIds.has(fid);
+  }
+  const s = myFavs(); if(s.has(fid)) s.delete(fid); else s.add(fid); localStorage.setItem('pr_favoriler', JSON.stringify([...s])); return s.has(fid);
+}
 let favFoodsCache = [];
 async function loadFavs(){
   const ids = [...myFavs()];
@@ -533,8 +654,17 @@ async function loadFavs(){
   favFoodsCache = data || [];
 }
 // menü (sıra korunur, favoriler gibi ayrı bir kavram)
-function myMenu(){ try{ return JSON.parse(localStorage.getItem('pr_menu')||'[]'); }catch(e){ return []; } }
+function myMenu(){
+  if(currentUser && acctMenuIds) return acctMenuIds.slice();
+  try{ return JSON.parse(localStorage.getItem('pr_menu')||'[]'); }catch(e){ return []; }
+}
 function toggleMenu(fid){
+  if(currentUser && acctMenuIds){
+    const i = acctMenuIds.indexOf(fid);
+    if(i>=0){ acctMenuIds.splice(i,1); sb.from('kullanici_menu').delete().eq('user_id',currentUser.id).eq('yemek_id',fid).then(({error})=>{ if(error) console.error('menüden silinemedi', error); }); }
+    else{ acctMenuIds.push(fid); sb.from('kullanici_menu').insert({user_id:currentUser.id, yemek_id:fid, sira:acctMenuIds.length-1}).then(({error})=>{ if(error) console.error('menüye kaydedilemedi', error); }); }
+    return acctMenuIds.includes(fid);
+  }
   const arr = myMenu();
   const i = arr.indexOf(fid);
   if(i>=0) arr.splice(i,1); else arr.push(fid);
@@ -1006,8 +1136,21 @@ const P_ACLIK = [
   {id:"cok", p:0.50, ad:"Çok açım", not:"doyurucu olsun"}
 ];
 const P_TAT = [{id:"farketmez",ad:"Fark etmez"},{id:"tuzlu",ad:"Tuzlu"},{id:"tatli",ad:"Tatlı"}];
-function pg(k,v){ return localStorage.getItem("pr_"+k) || v; }
-function ps(k,v){ localStorage.setItem("pr_"+k, v); }
+function pg(k,v){
+  if(currentUser && acctProfil) return (acctProfil[k]!=null && acctProfil[k]!=='') ? String(acctProfil[k]) : v;
+  return localStorage.getItem("pr_"+k) || v;
+}
+function ps(k,v){
+  if(currentUser && acctProfil){
+    acctProfil[k] = v;
+    const kolon = PROFIL_KOLON[k] || k;
+    const patch = {id: currentUser.id, guncellendi: new Date().toISOString()};
+    patch[kolon] = (k==='yas') ? (parseInt(v,10)||null) : (k==='kilo'||k==='boy') ? (parseFloat(v)||null) : (v||null);
+    sb.from('profiller').upsert(patch).then(({error})=>{ if(error) console.error('profil kaydedilemedi', error); });
+    return;
+  }
+  localStorage.setItem("pr_"+k, v);
+}
 function gunlukKalori(){
   const kilo = parseFloat(pg("kilo","")), boy = parseFloat(pg("boy","")), yas = parseFloat(pg("yas",""));
   if(!kilo || !boy || !yas) return null;
@@ -1042,7 +1185,7 @@ const P_VERIM = [
   {ad:"Pirinç (pişmiş)", p:2.7, kcal:130, v:2.1}
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
-function pKilo(){ return localStorage.getItem("pr_kilo") || ""; }
+function pKilo(){ return pg("kilo",""); }
 function renderYesem(){
   const gk = gunlukKalori();
   let h = '<p class="note">Ne yiyeceğine karar veremiyor musun? Üç soruya cevap ver, sana uygun seçenekleri sıralayayım. Üstteki mutfak şeridinden \"Tümü\" seçersen bütün mutfaklara bakar.</p>';
@@ -1287,16 +1430,8 @@ function wireUp(){
   const pk = document.getElementById('p-kilo');
   if(pk){
     let t;
-    pk.oninput = ()=>{
-      clearTimeout(t);
-      t = setTimeout(()=>{
-        localStorage.setItem('pr_kilo', pk.value);
-        const pos = pk.selectionStart;
-        render();
-        const yeni = document.getElementById('p-kilo');
-        if(yeni){ yeni.focus(); try{ yeni.setSelectionRange(pos,pos); }catch(e){} }
-      }, 550);
-    };
+    pk.oninput = ()=>{ clearTimeout(t); t = setTimeout(()=>{ ps('kilo', pk.value); }, 400); };
+    pk.onblur = ()=>{ clearTimeout(t); ps('kilo', pk.value); render(); };
   }
   const psh = document.getElementById("p-share");
   if(psh){
@@ -1316,16 +1451,8 @@ function wireUp(){
     const el = document.getElementById('p-'+alan);
     if(!el) return;
     let tt;
-    el.oninput = function(){
-      clearTimeout(tt);
-      tt = setTimeout(function(){
-        ps(alan, el.value);
-        const pos = el.selectionStart;
-        render();
-        const y = document.getElementById('p-'+alan);
-        if(y){ y.focus(); try{ y.setSelectionRange(pos,pos); }catch(e){} }
-      }, 550);
-    };
+    el.oninput = function(){ clearTimeout(tt); tt = setTimeout(function(){ ps(alan, el.value); }, 400); };
+    el.onblur = function(){ clearTimeout(tt); ps(alan, el.value); render(); };
   });
   document.querySelectorAll('.psec').forEach(function(g){
     g.querySelectorAll('button').forEach(function(b){
@@ -1581,7 +1708,7 @@ document.getElementById("btn-tur").onclick = function(){ window.scrollTo({top:0,
   });
   await loadSettings();
   await refresh();
-  moveInk(false); updateFade(); updateModeFade();
+  moveInk(false); updateFade(); updateModeFade(); renderAuthBar();
   if(!localStorage.getItem("pr_tur_gordu")) setTimeout(turBaslat, 1200);
 })();
 </script>
