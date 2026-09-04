@@ -89,6 +89,15 @@ h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;l
 .arow .favbtn{background:none;border:none;cursor:pointer;font-size:16px;line-height:1;padding:2px 0;width:16px;flex:none;color:var(--line-strong);}
 .arow .favbtn.on{color:#C7941C;}
 .arow .favbtn:hover{color:#C7941C;}
+.arow .menubtn{background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:2px 0;width:16px;flex:none;color:var(--line-strong);font-weight:700;}
+.arow .menubtn.on{color:var(--teal-dark);}
+.arow .menubtn:hover{color:var(--teal-dark);}
+.menuozet{background:var(--card);border:1px solid var(--line);padding:16px;margin-bottom:12px;}
+.menuozet .mo-baslik{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;}
+.menuozet .mo-lig{font-family:'Figtree',system-ui,sans-serif;font-size:11px;font-weight:700;border:1px solid var(--line);padding:2px 7px;}
+.menuozet .mo-grid{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-family:'Figtree',system-ui,sans-serif;font-size:13px;color:var(--ink-muted);}
+.menuozet .mo-grid b{color:var(--ink);font-size:15px;}
+.menuozet .mo-not{font-size:11px;color:var(--ink-muted);align-self:center;}
 .card{background:var(--card);border:1px solid var(--line-strong);padding:14px;margin-bottom:14px;}
 .btn{font-family:'Figtree',system-ui,sans-serif;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;border:1px solid var(--teal);background:var(--teal);color:#FFFFFF;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);}
 .btn:hover{background:var(--teal-dark);border-color:var(--teal-dark);}
@@ -391,6 +400,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
     <button id="mode-comm">Halk oyu</button>
     <button id="mode-conf">Çelişki ⚡</button>
     <button id="mode-fav">★ Favoriler</button>
+    <button id="mode-menu">🧾 Menüm</button>
   </div>
 
   <div id="content"><div class="loading">Yükleniyor…</div></div>
@@ -517,6 +527,23 @@ async function loadFavs(){
   if(!ids.length){ favFoodsCache = []; return; }
   const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme').in('id', ids);
   favFoodsCache = data || [];
+}
+// menü (sıra korunur, favoriler gibi ayrı bir kavram)
+function myMenu(){ try{ return JSON.parse(localStorage.getItem('pr_menu')||'[]'); }catch(e){ return []; } }
+function toggleMenu(fid){
+  const arr = myMenu();
+  const i = arr.indexOf(fid);
+  if(i>=0) arr.splice(i,1); else arr.push(fid);
+  localStorage.setItem('pr_menu', JSON.stringify(arr));
+  return arr.includes(fid);
+}
+let menuFoodsCache = [];
+async function loadMenu(){
+  const ids = myMenu();
+  if(!ids.length){ menuFoodsCache = []; return; }
+  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme').in('id', ids);
+  const byId = new Map((data||[]).map(f=>[f.id,f]));
+  menuFoodsCache = ids.map(id=>byId.get(id)).filter(Boolean); // eklenme sırası korunur
 }
 
 // ---------- kufur/spam filtresi ----------
@@ -712,6 +739,7 @@ function render(){
   document.getElementById('mode-prot').classList.toggle('active', currentMode==='protein');
   document.getElementById('mode-yesem').classList.toggle('active', currentMode==='yesem');
   document.getElementById('mode-fav').classList.toggle('active', currentMode==='fav');
+  document.getElementById('mode-menu').classList.toggle('active', currentMode==='menu');
 
   const content = document.getElementById('content');
   if(currentMode==='auto'){ content.innerHTML = renderAuto(); }
@@ -719,6 +747,7 @@ function render(){
   else if(currentMode==='protein'){ content.innerHTML = renderProtein(); }
   else if(currentMode==='yesem'){ content.innerHTML = renderYesem(); }
   else if(currentMode==='fav'){ content.innerHTML = renderFav(); }
+  else if(currentMode==='menu'){ content.innerHTML = renderMenu(); }
   else { content.innerHTML = renderConflict(); }
   content.classList.remove('cfade');
   void content.offsetWidth;
@@ -772,12 +801,13 @@ function renderAuto(){
   html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör. (Resmi klinik veri değil, Holt 1995 mantığının mutfağa uyarlaması.)</p>`;
   html += '<div class="card">';
   const favs = myFavs();
-  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs); });
+  const menuSet4 = new Set(myMenu());
+  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs,menuSet4); });
   html += '</div>';
   return html;
 }
 
-function arowHtml(f,i,max,favs){
+function arowHtml(f,i,max,favs,menuSet){
     const lig = satietyToTier(f.doyuruculuk);
     const pct = Math.max(5,(f.doyuruculuk/max)*100);
     const nut = f.protein==null ? '' : `<div class="nut">
@@ -789,9 +819,11 @@ function arowHtml(f,i,max,favs){
     const g = sekerSoku(f);
     const t = acikmaSuresi(f);
     const fav = favs.has(f.id);
+    const inMenu = menuSet ? menuSet.has(f.id) : false;
     return `<div class="arow" style="--i:${i}" data-exp="1">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
+      <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       <div class="lig lig-${lig}">${lig}</div>
       <div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
         <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri ve metrikler tahminidir</span>':''}</div>
@@ -807,11 +839,52 @@ function renderFav(){
   }
   const max = Math.max(...foods.map(f=>f.doyuruculuk));
   const favs = myFavs();
+  const menuSet5 = new Set(myMenu());
   let html = legendHtml();
   html += `<p class="note">Favoriye aldığın yemekler, mutfak ayrımı olmadan burada.</p>`;
   html += '<div class="card">';
-  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs); });
+  foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs,menuSet5); });
   html += '</div>';
+  return html;
+}
+
+function renderMenu(){
+  if(!menuFoodsCache.length){
+    return '<div class="card bos">Menün boş. Bir satırın başındaki + işaretine dokun, menüne eklenir.</div>';
+  }
+  const foods = filtrele(menuFoodsCache);
+  const max = Math.max(...menuFoodsCache.map(f=>f.doyuruculuk));
+  const favs = myFavs();
+  const menuSet = new Set(myMenu());
+  const toplamKcal = menuFoodsCache.reduce((s,f)=>s+f.kcal,0);
+  const toplamProtein = menuFoodsCache.reduce((s,f)=> s + (f.protein||0), 0);
+  const toplamSeker = menuFoodsCache.reduce((s,f)=> s + (f.seker||0), 0);
+  const ortalamaSkor = Math.round(menuFoodsCache.reduce((s,f)=>s+f.doyuruculuk,0) / menuFoodsCache.length);
+  const ortalamaLig = satietyToTier(ortalamaSkor);
+  const acikmalar = menuFoodsCache.map(f=>acikmaSuresi(f)).filter(x=>x!=null);
+  const toplamAcikma = acikmalar.length ? Math.round(acikmalar.reduce((a,b)=>a+b,0)*2)/2 : null;
+
+  let html = `<div class="menuozet">
+    <div class="mo-baslik">Menün <span class="mo-lig lig-${ortalamaLig}">${ortalamaLig} ortalama</span></div>
+    <div class="mo-grid">
+      <div><b>${toplamKcal}</b> kcal</div>
+      <div><b>${toplamProtein}</b> g protein</div>
+      <div><b>${toplamSeker}</b> g şeker</div>
+      ${toplamAcikma?`<div><b>~${saatStr(toplamAcikma)}</b> sa toplam tokluk</div>`:''}
+    </div>
+    <div class="pshare">
+      <button class="btn ikincil" id="menu-copy">Metin olarak kopyala</button>
+      <button class="btn" id="menu-card">Kart olarak indir</button>
+      ${menuFoodsCache.length>6?'<span class="mo-not">Kartta ilk 6 kalem gösterilir</span>':''}
+    </div>
+  </div>`;
+  if(!foods.length){
+    html += '<div class="card bos">Bu türde menü öğesi yok.</div>';
+  } else {
+    html += '<div class="card">';
+    foods.forEach((f,i)=>{ html += arowHtml(f,i,max,favs,menuSet); });
+    html += '</div>';
+  }
   return html;
 }
 
@@ -1265,6 +1338,50 @@ function wireUp(){
       if(currentMode==='fav' && !on){ render(); }
     };
   });
+  document.querySelectorAll('.menubtn').forEach(b=>{
+    b.onclick = (e)=>{
+      e.stopPropagation();
+      const on = toggleMenu(b.dataset.menu);
+      b.classList.toggle('on', on);
+      buzz(8);
+      if(currentMode==='menu'){ loadMenu().then(render); }
+    };
+  });
+  const mcp2 = document.getElementById('menu-copy');
+  if(mcp2){
+    mcp2.onclick = async ()=>{
+      buzz(10);
+      const satirlar = menuFoodsCache.map(f=> `- ${f.ad} (${f.kcal} kcal${f.protein!=null?', '+f.protein+' g protein':''})`);
+      const toplamKcal2 = menuFoodsCache.reduce((s,f)=>s+f.kcal,0);
+      const toplamProtein2 = menuFoodsCache.reduce((s,f)=>s+(f.protein||0),0);
+      const metin = `PlateRank · Menüm\n${satirlar.join('\n')}\n\nToplam: ${toplamKcal2} kcal, ${toplamProtein2} g protein\nplaterank.dev`;
+      try{ await navigator.clipboard.writeText(metin); toast('Menü kopyalandı ✓'); }catch(e){ toast('Kopyalanamadı'); }
+    };
+  }
+  const mcard = document.getElementById('menu-card');
+  if(mcard){
+    mcard.onclick = async ()=>{
+      buzz(10);
+      const orijinalMetin = mcard.textContent;
+      mcard.disabled = true; mcard.textContent = 'Hazırlanıyor…';
+      try{
+        const items = menuFoodsCache.slice(0,6).map(f=>({a:f.ad, k:f.kcal, p:f.protein}));
+        const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(items))));
+        const res = await fetch('/api/menu-card?i=' + encodeURIComponent(b64));
+        if(!res.ok) throw new Error('kart üretilemedi');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'platerank-menum.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 4000);
+        toast('Kart indirildi ✓');
+      }catch(e){
+        toast('Kart oluşturulamadı, tekrar dene');
+      }
+      mcard.disabled = false; mcard.textContent = orijinalMetin;
+    };
+  }
   document.querySelectorAll('.legend .lg').forEach((lg,i)=>{
     lg.onclick = ()=>{
       const t = document.querySelectorAll('.tier')[i];
@@ -1337,6 +1454,7 @@ document.addEventListener('keydown', e=>{
   else if(k==='4'){ currentMode='yesem'; selectedFood=null; render(); }
   else if(k==='5'){ currentMode='protein'; selectedFood=null; render(); }
   else if(k==='6'){ currentMode='fav'; selectedFood=null; loadFavs().then(render); }
+  else if(k==='7'){ currentMode='menu'; selectedFood=null; loadMenu().then(render); }
   else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && selectedFood){ doVote(selectedFood, k.toUpperCase()); }
 });
 
@@ -1367,6 +1485,13 @@ document.getElementById('mode-fav').onclick = async ()=>{
   currentMode='fav'; selectedFood=null;
   const c = document.getElementById('content'); c.classList.add('solma'); c.innerHTML = skeleton(6);
   await loadFavs();
+  render();
+  c.classList.remove('solma');
+};
+document.getElementById('mode-menu').onclick = async ()=>{
+  currentMode='menu'; selectedFood=null;
+  const c = document.getElementById('content'); c.classList.add('solma'); c.innerHTML = skeleton(6);
+  await loadMenu();
   render();
   c.classList.remove('solma');
 };
