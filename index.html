@@ -27,6 +27,9 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://hpxnektzsrdhqzwwkfau.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
 <style>
 :root{
   --paper:#F5F5F2; --card:#FFFFFF; --line:#E1E0D5; --line-strong:#D2D1C4;
@@ -369,6 +372,35 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 .seo-list li{font-size:13px;line-height:1.7;color:var(--ink-muted);margin-bottom:5px;}
 .seo-list li b{color:var(--ink);font-weight:600;}
 @media (prefers-reduced-motion: reduce){.sk{animation:none;} .rp-w{display:none;} #tabink{transition:none;} .arow,.crow,.tier{animation:none;}}
+/* ---------- yapisik (sticky) arama + mutfak seridi ---------- */
+#stickybar{position:sticky;top:0;z-index:40;background:var(--paper);padding:8px 0;
+  transition:box-shadow .18s ease,border-color .18s ease;border-bottom:1px solid transparent;}
+#stickybar > .tabwrap{margin-bottom:0;}
+#stickybar.yapisik{border-bottom-color:var(--line);box-shadow:0 6px 14px -12px rgba(15,17,20,.35);}
+.ustlinkler{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:-8px 0 16px;}
+.ustlinkler .manif-link,.ustlinkler .authbar{margin:0;}
+
+/* ---------- mobil ---------- */
+@media (max-width:560px){
+  body{padding:10px 12px 70px;}
+  .eyebrow{font-size:10px;letter-spacing:0.14em;}
+  h1{font-size:26px;margin:2px 0 4px;}
+  .subtitle{font-size:12.5px;margin:0 0 10px;}
+  .sub-uzun{display:none;}
+  .ustlinkler{gap:12px;margin:0 0 10px;}
+  .ustlinkler .manif-link,.ustlinkler .authbar{font-size:11px;}
+  #stickybar{padding:8px 0 6px;margin-inline:-12px;padding-inline:12px;}
+  /* iOS'ta 16px altinda odaklaninca sayfa kendini zoomluyor */
+  #q{font-size:16px;padding:10px 38px 10px 40px;}
+  .searchwrap{margin-bottom:8px;}
+  .turs{margin-bottom:10px;}
+  .mswrap{margin-bottom:12px;}
+  .modeswitch button{font-size:10.5px;padding:9px 10px;}
+  .legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;}
+  .legend::-webkit-scrollbar{display:none;}
+  .legend .lg{flex:0 0 auto;white-space:nowrap;}
+  .note{font-size:11.5px;margin-bottom:10px;}
+}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Haşlanmış yumurta"},{"@type":"ListItem","position":3,"name":"Haşlanmış patates"},{"@type":"ListItem","position":4,"name":"Miso çorbası"},{"@type":"ListItem","position":5,"name":"Mercimek çorbası"},{"@type":"ListItem","position":6,"name":"Wonton çorbası"},{"@type":"ListItem","position":7,"name":"Minestrone çorbası"},{"@type":"ListItem","position":8,"name":"Yayla çorbası"},{"@type":"ListItem","position":9,"name":"Ceviche"},{"@type":"ListItem","position":10,"name":"Sashimi"},{"@type":"ListItem","position":11,"name":"Sıcak ekşi çorba"},{"@type":"ListItem","position":12,"name":"Izgara tavuk göğsü"},{"@type":"ListItem","position":13,"name":"Buharda levrek"},{"@type":"ListItem","position":14,"name":"Siyah fasulye çorbası"},{"@type":"ListItem","position":15,"name":"Yulaf lapası"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış yumurta, haşlanmış patates, mercimek ve miso gibi çorbalar, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Holt (1995) tokluk indeksi mantığından uyarlanan skor, protein, lif ve su hacmini artı; şeker, rafine un ve yağ yoğunluğunu eksi yönde değerlendirir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), haşlanmış yumurta (78 kcal), miso çorbası (80 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -378,9 +410,11 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 <div class="wrap">
   <div class="eyebrow">Doyuruculuk Ligi · Topluluk Sürümü</div>
   <h1>PlateRank</h1>
-  <p class="subtitle"><span class="toplam-sayi">380+</span> yemeğin besin değeri, doyuruculuğu ve şeker etkisi. Protein ihtiyacını hesapla, aradığın yemeği bul, ne kadar tok tutacağını gör.</p>
-  <button class="manif-link" id="btn-manif">Neden bu site var? →</button>
-  <div class="authbar" id="authbar"></div>
+  <p class="subtitle"><span class="toplam-sayi">380+</span> yemeğin besin değeri, doyuruculuğu ve şeker etkisi.<span class="sub-uzun"> Protein ihtiyacını hesapla, aradığın yemeği bul, ne kadar tok tutacağını gör.</span></p>
+  <div class="ustlinkler">
+    <button class="manif-link" id="btn-manif">Neden bu site var? →</button>
+    <div class="authbar" id="authbar"></div>
+  </div>
 
   <div id="manifesto">
     <div class="card">
@@ -402,12 +436,14 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
   </div>
 
   <div id="banner"></div>
+  <div id="stickybar">
   <div class="searchwrap" id="searchwrap">
   <span class="sic">⌕</span>
   <input type="text" id="q" placeholder="Bir yemek ara: mercimek, pizza, cips…" autocomplete="off">
   <button class="sclr" id="q-clear" title="Temizle">×</button>
 </div>
 <div class="tabwrap" id="tabwrap"><div class="tabs" id="tabs"></div><div id="tabink"></div></div>
+  </div>
   <div class="turs" id="turs"></div>
   <div class="mswrap" id="mswrap"><div class="modeswitch">
     <button id="mode-auto" class="active">Besin değerleri</button>
@@ -740,22 +776,39 @@ async function loadCuisine(cid, force){
   loadFailed[cid] = false;
   uyandirmaBitti();
   foodCache[cid] = foods||[];
-  const ids = foodCache[cid].map(f=>f.id);
-  voteCache[cid] = {};
-  if(ids.length){
-    const {data: votes} = await sb.from('oy_durumu').select('yemek_id,lig,adet').in('yemek_id', ids);
-    (votes||[]).forEach(v=>{
-      if(!voteCache[cid][v.yemek_id]) voteCache[cid][v.yemek_id]={S:0,A:0,B:0,C:0,D:0};
-      voteCache[cid][v.yemek_id][v.lig]=v.adet;
+  if(!voteCache[cid]) voteCache[cid] = {};
+  if(!sugCache[cid]) sugCache[cid] = [];
+  // Oylar ve oneriler listeyi cizmek icin gerekli degil: arkadan, paralel gelsinler.
+  if(force) ekstraYuklendi[cid] = false;
+  loadEkstra(cid);
+}
+const ekstraYuklendi = {};
+async function loadEkstra(cid){
+  if(ekstraYuklendi[cid]) return;
+  ekstraYuklendi[cid] = true;
+  const ids = (foodCache[cid]||[]).map(f=>f.id);
+  try{
+    const [votesRes, sugsRes] = await Promise.all([
+      ids.length ? sb.from('oy_durumu').select('yemek_id,lig,adet').in('yemek_id', ids)
+                 : Promise.resolve({data:[]}),
+      sb.from('oneriler').select('id,ad,kcal').eq('mutfak', cid).eq('durum','bekliyor').order('created_at',{ascending:false})
+    ]);
+    const vc = {};
+    (votesRes.data||[]).forEach(v=>{
+      if(!vc[v.yemek_id]) vc[v.yemek_id]={S:0,A:0,B:0,C:0,D:0};
+      vc[v.yemek_id][v.lig]=v.adet;
     });
-  }
-  const {data: sugs} = await sb.from('oneriler').select('id,ad,kcal').eq('mutfak', cid).eq('durum','bekliyor').order('created_at',{ascending:false});
-  sugCache[cid] = (sugs||[]).map(s=>({...s, oy:0}));
-  if(sugCache[cid].length){
-    const sids = sugCache[cid].map(s=>s.id);
-    const {data: sv} = await sb.from('oneri_oylar').select('oneri_id').in('oneri_id', sids);
-    (sv||[]).forEach(v=>{ const s=sugCache[cid].find(x=>x.id===v.oneri_id); if(s) s.oy++; });
-  }
+    Object.assign(voteCache[cid], vc);
+    sugCache[cid] = (sugsRes.data||[]).map(s=>({...s, oy:0}));
+    if(sugCache[cid].length){
+      const sids = sugCache[cid].map(s=>s.id);
+      const {data: sv} = await sb.from('oneri_oylar').select('oneri_id').in('oneri_id', sids);
+      (sv||[]).forEach(v=>{ const s=sugCache[cid].find(x=>x.id===v.oneri_id); if(s) s.oy++; });
+    }
+  }catch(e){ ekstraYuklendi[cid] = false; return; }
+  // Oy verisi gelince sadece oyu gosteren modlari tazele; kullanici yaziyorsa dokunma.
+  const yaziyor = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
+  if(cid===currentCuisine && !yaziyor && ['auto','comm','conflict'].indexOf(currentMode)>=0) render();
 }
 function communityTierOf(cid, foodId){
   const v = voteCache[cid][foodId];
@@ -942,7 +995,7 @@ function renderAuto(){
   if(aramaAktif) html += '<div class="sonucbilgi">"'+esc(arama)+'" için '+foods.length+' sonuç · tüm mutfaklarda arandı</div>';
   else if(currentCuisine==='hm') html += hmBanner();
   html += legendHtml();
-  html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör. (Resmi klinik veri değil, Holt 1995 mantığının mutfağa uyarlaması.)</p>`;
+  html += `<p class="note">Kalori başına tahmini doyuruculuk. Bir satıra dokun, detayını gör.</p>`;
   html += '<div class="card">';
   const favs = myFavs();
   const menuSet4 = new Set(myMenu());
@@ -1701,6 +1754,19 @@ function turBaslat(){ turIdx = 0; document.getElementById("tur-katman").classLis
 document.getElementById("tur-ileri").onclick = function(){ buzz(10); turIdx++; if(turIdx >= TUR_ADIM.length) turBitti(); else turGoster(turIdx); };
 document.getElementById("tur-gec").onclick = turBitti;
 document.getElementById("tur-katman").onclick = function(e){ if(e.target.id==="tur-katman") turBitti(); };
+// yapisik seride kaydirinca golge
+(function(){
+  const sb_el = document.getElementById('stickybar');
+  if(!sb_el) return;
+  let tikli = false;
+  const guncelle = ()=>{
+    const y = window.scrollY > 8;
+    if(y !== tikli){ tikli = y; sb_el.classList.toggle('yapisik', y); }
+  };
+  window.addEventListener('scroll', ()=>requestAnimationFrame(guncelle), {passive:true});
+  guncelle();
+})();
+
 document.getElementById("btn-tur").onclick = function(){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(turBaslat, 500); };
 
 (async ()=>{
@@ -1711,8 +1777,9 @@ document.getElementById("btn-tur").onclick = function(){ window.scrollTo({top:0,
       TUR_ADIM[0].met = TUR_ADIM[0].met.replace('{N}', count);
     }
   });
-  await loadSettings();
+  const ayarlarHazir = loadSettings().catch(()=>{});   // banner icin; listeyi bekletmez
   await refresh();
+  ayarlarHazir;
   moveInk(false); updateFade(); updateModeFade(); renderAuthBar();
   if(!localStorage.getItem("pr_tur_gordu")) setTimeout(turBaslat, 1200);
 })();
