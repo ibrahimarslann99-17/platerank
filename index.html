@@ -740,6 +740,9 @@ function isProfane(s){
 let currentCuisine = 'tr';
 let currentMode = 'auto';
 let selectedFood = null;
+// Acilan satirlarin kimligi. render() innerHTML'i bastan yaziyor; bu kume olmadan
+// arkadan gelen bir render (ör. oy verisi) kullanicinin actigi detayi kapatiyordu.
+let acikSatirlar = new Set();
 let foodCache = {};   // cid -> [foods]
 let loadFailed = {};  // cid -> true if last fetch attempt errored and no cache exists yet
 let voteCache = {};   // cid -> {foodId:{S..D}}
@@ -808,8 +811,10 @@ async function loadEkstra(cid){
     }
   }catch(e){ ekstraYuklendi[cid] = false; return; }
   // Oy verisi gelince sadece oyu gosteren modlari tazele; kullanici yaziyorsa dokunma.
+  // Ana liste (auto) oy verisini kullanmiyor; orada tazelemek gereksiz yere
+  // kullanicinin altindan DOM'u degistiriyordu. Sadece oyu gosteren modlar tazelenir.
   const yaziyor = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
-  if(cid===currentCuisine && !yaziyor && ['auto','comm','conflict'].indexOf(currentMode)>=0) render();
+  if(cid===currentCuisine && !yaziyor && ['comm','conflict'].indexOf(currentMode)>=0) render();
 }
 function communityTierOf(cid, foodId){
   const v = voteCache[cid][foodId];
@@ -1018,7 +1023,7 @@ function arowHtml(f,i,max,favs,menuSet){
     const t = acikmaSuresi(f);
     const fav = favs.has(f.id);
     const inMenu = menuSet ? menuSet.has(f.id) : false;
-    return `<div class="arow" style="--i:${i}" data-exp="1">
+    return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
       <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
@@ -1109,7 +1114,7 @@ function renderComm(){
   html += legendHtml();
   html += `<p class="note">${cid==='hm' ? 'Keşifleri tarifi deneyenler oylar; denemeden oy verme, sahtekârlık olur. 🔦' : 'Halkın verdiği oylar. Bir yemeğe dokun, sonra alttan lig ver. Yeşil nokta = senin oyun. Oylar herkese açık ve ortak sayılır.'}</p>`;
   TIER_ORDER.forEach((t,i)=>{
-    html += `<div class="tier tier-${t}" style="--i:${i}"><div class="tier-label">${t}</div><div class="tier-items">`;
+    html += `<div class="tier tier-${t}" style="--i:${Math.min(i,12)}"><div class="tier-label">${t}</div><div class="tier-items">`;
     groups[t].forEach(({f,total})=>{ html += chipHtml(f,total); });
     html += `</div></div>`;
   });
@@ -1141,7 +1146,7 @@ function renderComm(){
     html += '<div class="card">';
     sugs.forEach((s,i)=>{
       const voted = mySugVotes()[s.id];
-      html += `<div class="crow" style="--i:${i}">
+      html += `<div class="crow" style="--i:${Math.min(i,12)}">
         <div class="name">${esc(s.ad)}
           <small>${s.kcal?s.kcal+' kcal · ':''}${s.oy}/5 oy</small>
           <div class="sugbar"><div class="sugfill" style="width:${Math.min(100,(s.oy/5)*100)}%"></div></div>
@@ -1533,7 +1538,11 @@ function wireUp(){
     el.onclick = ()=>{ localStorage.setItem('pr_durum', el.dataset.d); buzz(12); render(); };
   });
   document.querySelectorAll('[data-exp]').forEach(r=>{
-    r.onclick = ()=> r.classList.toggle('acik');
+    r.onclick = ()=>{
+      const id = r.dataset.exp;
+      if(acikSatirlar.has(id)){ acikSatirlar.delete(id); r.classList.remove('acik'); }
+      else { acikSatirlar.add(id); r.classList.add('acik'); }
+    };
   });
   document.querySelectorAll('.favbtn').forEach(b=>{
     b.onclick = (e)=>{
