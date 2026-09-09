@@ -692,7 +692,7 @@ let favFoodsCache = [];
 async function loadFavs(){
   const ids = [...myFavs()];
   if(!ids.length){ favFoodsCache = []; return; }
-  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme').in('id', ids);
+  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak').in('id', ids);
   favFoodsCache = data || [];
 }
 // menü (sıra korunur, favoriler gibi ayrı bir kavram)
@@ -717,7 +717,7 @@ let menuFoodsCache = [];
 async function loadMenu(){
   const ids = myMenu();
   if(!ids.length){ menuFoodsCache = []; return; }
-  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme').in('id', ids);
+  const {data} = await sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak').in('id', ids);
   const byId = new Map((data||[]).map(f=>[f.id,f]));
   menuFoodsCache = ids.map(id=>byId.get(id)).filter(Boolean); // eklenme sırası korunur
 }
@@ -765,7 +765,7 @@ async function loadSettings(){
 }
 async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
-  let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme');
+  let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak');
   if(cid !== 'hepsi') qy = qy.eq('mutfak', cid);
   const {data: foods, error} = await qy.order('doyuruculuk',{ascending:false}).limit(400);
   if(error){
@@ -844,7 +844,7 @@ async function aramaYap(){
   const n = trNorm(s);
   let bulunan = hepsi.filter(f=> trNorm(f.ad).includes(n));
   if(bulunan.length < 3){
-    const {data} = await sb.from("yemekler").select("id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme").ilike("ad","%"+s+"%").limit(40);
+    const {data} = await sb.from("yemekler").select("id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak").ilike("ad","%"+s+"%").limit(40);
     const gorulen = new Set(bulunan.map(f=>f.id));
     (data||[]).forEach(f=>{ if(!gorulen.has(f.id)) bulunan.push(f); });
   }
@@ -1024,7 +1024,7 @@ function arowHtml(f,i,max,favs,menuSet){
       <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       <div class="lig lig-${lig}">${lig}</div>
       <div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
-        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?'<br><span style="opacity:0.7">besin değerleri ve metrikler tahminidir</span>':''}</div>
+        <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}</div>
       </div>
       <div class="kcal">${f.kcal} kcal${t?`<span class="mini-t">⏱ ${saatStr(t)} sa</span>`:''}</div>
     </div>`;
