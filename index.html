@@ -1194,6 +1194,19 @@ const P_ACLIK = [
   {id:"cok", p:0.50, ad:"Çok açım", not:"doyurucu olsun"}
 ];
 const P_TAT = [{id:"farketmez",ad:"Fark etmez"},{id:"tuzlu",ad:"Tuzlu"},{id:"tatli",ad:"Tatlı"}];
+// "Canin ne cekiyor" filtresi. Sadece seker gramina bakmak yanlisti: BBQ soslu tavuk,
+// imam bayildi, orange chicken gibi tuzlu yemekler 10 g sekeri gectigi icin tatli sayiliyordu.
+// Asil sinyal yemegin turu; seker sadece atistirmalik/icecek/kahvalti icinde ayirt edici.
+const TATLI_ADAY_TUR = ['atistirmalik','icecek','kahvalti'];
+function tatliSayilir(f){
+  if(f.tur === 'tatli') return true;
+  return TATLI_ADAY_TUR.indexOf(f.tur) >= 0 && (f.seker||0) >= 10;
+}
+function tatUyar(f, tat){
+  if(tat === 'tatli') return tatliSayilir(f);
+  if(tat === 'tuzlu') return !tatliSayilir(f);
+  return true;
+}
 function pg(k,v){
   if(currentUser && acctProfil) return (acctProfil[k]!=null && acctProfil[k]!=='') ? String(acctProfil[k]) : v;
   return localStorage.getItem("pr_"+k) || v;
@@ -1284,16 +1297,14 @@ function neYesem(){
   var havuz = (foodCache[currentCuisine]||[]).filter(function(f){
     if(f.sadece_malzeme) return false;
     if(f.kcal > porsiyon*1.35 || f.kcal < porsiyon*0.55) return false;
-    if(tat==="tatli" && (f.seker||0) < 10) return false;
-    if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
+    if(!tatUyar(f, tat)) return false;
     return true;
   });
   if(havuz.length < 4){
     havuz = (foodCache[currentCuisine]||[]).filter(function(f){
       if(f.sadece_malzeme) return false;
       if(f.kcal > porsiyon*1.7 || f.kcal < porsiyon*0.35) return false;
-      if(tat==="tatli" && (f.seker||0) < 10) return false;
-      if(tat==="tuzlu" && (f.seker||0) >= 12) return false;
+      if(!tatUyar(f, tat)) return false;
       return true;
     });
   }
