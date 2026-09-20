@@ -565,6 +565,40 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 .menuozet .mo-lig{border:none;border-radius:999px;background:var(--teal-wash);padding:3px 9px;}
 .menuozet .pshare{justify-content:flex-start;}
 .verdict{border-radius:999px;padding:3px 9px;margin-right:4px;}
+
+/* ---------- ilk ziyaret tanıtımı: cam kabarcık ---------- */
+#tanitim{position:fixed;inset:0;z-index:200;display:none;}
+#tanitim.acik{display:block;}
+#tn-lens{position:fixed;border-radius:999px;pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(10,24,16,.58), inset 0 1px 0 rgba(255,255,255,.55), inset 0 -10px 22px rgba(255,255,255,.07), 0 18px 40px -10px rgba(0,0,0,.45);
+  border:1.5px solid rgba(255,255,255,.6);
+  backdrop-filter:blur(3px) saturate(1.4);-webkit-backdrop-filter:blur(3px) saturate(1.4);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  transition:left .45s cubic-bezier(.34,1.3,.5,1),top .45s cubic-bezier(.34,1.3,.5,1),width .45s cubic-bezier(.34,1.3,.5,1),height .45s cubic-bezier(.34,1.3,.5,1),background .3s ease,color .3s ease;}
+#tn-lens.koyu{background:rgba(14,34,23,.82);color:#FFFFFF;}
+#tn-lens.acik-z{background:rgba(255,255,255,.86);color:var(--ink);}
+#tn-lens.acik-z::before,#tn-lens.acik-z::after{background:rgba(14,34,23,.06);}
+/* referanstaki mercek kapakları: üstte ve altta açık renkli yay */
+#tn-lens::before,#tn-lens::after{content:'';position:absolute;left:22%;right:22%;height:11px;border-radius:999px;background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.06));}
+#tn-lens::before{top:7px;} #tn-lens::after{bottom:7px;}
+#tn-lens svg{width:28px;height:28px;}
+#tn-lens .tn-lab{font-family:'Figtree',system-ui,sans-serif;font-weight:700;font-size:14px;white-space:nowrap;}
+#tn-lens.pop{animation:tnPop .5s cubic-bezier(.34,1.5,.5,1) both;}
+@keyframes tnPop{from{transform:scale(.55);opacity:0;}to{transform:none;opacity:1;}}
+#tn-kart{position:fixed;width:min(320px,calc(100vw - 32px));background:var(--card);border-radius:var(--r-md);padding:16px 18px 14px;
+  box-shadow:0 20px 44px -14px rgba(0,0,0,.5);transition:left .4s cubic-bezier(.4,0,.2,1),top .4s cubic-bezier(.4,0,.2,1);}
+#tn-kart.gir{animation:fadeUp .3s ease both;}
+#tn-kart .tn-b{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:5px;}
+#tn-kart .tn-m{font-size:13.5px;line-height:1.55;color:var(--ink-muted);}
+#tn-kart .tn-alt{display:flex;align-items:center;gap:10px;margin-top:14px;}
+#tn-kart .tn-nok{display:flex;gap:5px;}
+#tn-kart .tn-nok i{width:6px;height:6px;border-radius:50%;background:var(--line-strong);transition:background .2s,width .2s;}
+#tn-kart .tn-nok i.on{background:var(--forest);width:16px;border-radius:999px;}
+#tn-kart .tn-btns{margin-left:auto;display:flex;gap:6px;}
+#tn-kart button{font-family:'Figtree',system-ui,sans-serif;font-weight:700;font-size:13px;border-radius:999px;padding:9px 16px;cursor:pointer;border:none;}
+#tn-kart .tn-gec{background:none;color:var(--ink-muted);}
+#tn-kart .tn-ileri{background:var(--forest);color:#FFFFFF;}
+@media (prefers-reduced-motion: reduce){ #tn-lens,#tn-kart{transition:none;} #tn-lens.pop,#tn-kart.gir{animation:none;} }
 /* ---------- masaüstü ---------- */
 @media (min-width:900px){
   body{padding:34px 32px 130px;}
@@ -689,6 +723,11 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
   <button class="nbtn nprof" data-nav="bilgi" aria-label="Profil"><span class="avatar" id="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="nlab">Profil</span></button>
 </nav>
 <div id="toast"></div>
+<div id="tanitim" aria-live="polite"><div id="tn-lens"></div>
+  <div id="tn-kart" role="dialog" aria-label="Kısa tanıtım"><div class="tn-b" id="tn-b"></div><div class="tn-m" id="tn-m"></div>
+    <div class="tn-alt"><div class="tn-nok" id="tn-nok"></div><div class="tn-btns"><button class="tn-gec" id="tn-gec">Geç</button><button class="tn-ileri" id="tn-ileri">İleri</button></div></div>
+  </div></div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -1245,7 +1284,8 @@ function renderBilgi(){
     h += '</div><button class="link-btn" data-seg="protein">Protein hedefini ayarla →</button>';
   }
   h += '</div>';
-  h += '<button class="link-btn sil-link" id="btn-reset">Bu cihazdaki oy işaretlerimi temizle</button>';
+  h += '<button class="link-btn sil-link" id="btn-tn">Tanıtımı tekrar izle</button>';
+  h += '<button class="link-btn sil-link" style="margin-top:8px" id="btn-reset">Bu cihazdaki oy işaretlerimi temizle</button>';
   return h;
 }
 function animateBars(){
@@ -1781,6 +1821,8 @@ function wireUp(){
     await modAc('auto');
     setTimeout(()=>{ const r = document.querySelector('[data-exp="'+id+'"]'); if(r) r.scrollIntoView({behavior:'smooth', block:'center'}); }, 80);
   };
+  const btn = document.getElementById('btn-tn');
+  if(btn) btn.onclick = ()=>{ evDon(); setTimeout(tnBaslat, 350); };
   const br = document.getElementById('btn-reset');
   if(br) br.onclick = ()=>{
     if(!confirm('Bu cihazdaki kişisel oy işaretlerin (yeşil noktalar) temizlenecek. Ortak sayaçlar etkilenmez. Emin misin?')) return;
@@ -2028,6 +2070,85 @@ document.getElementById("q-clear").onclick = ()=>{
 })();
 
 
+
+// ---------- ilk ziyaret tanıtımı ----------
+// Ayrı bir katman: sayfanın durumuna dokunmaz, sadece üstüne cam kabarcık koyar.
+const TANITIM = [
+  {sec:'#ara-hap', lab:'Ara', b:'Aradığın yemeği bul', m:'Simit, mercimek, cips… Yaz, kalorisini ve kaç saat tok tuttuğunu gör.'},
+  {sec:'.nbtn[data-nav="auto"]', lab:'Besin değerleri', b:'Besin değerleri', m:'Yemekler liglere ayrılmış: S en uzun tok tutan, D boş kalori. Satıra dokun, protein, lif ve şekeri gör.'},
+  {sec:'.nbtn[data-nav="yesem"]', lab:'Ne yesem?', b:'Ne yesem? · Protein', m:'Ne kadar aç olduğunu söyle, sana uygun porsiyonu ve seçenekleri sıralayalım. Günlük protein ihtiyacın da burada.'},
+  {sec:'.nbtn[data-nav="comm"]', lab:'Halk oyu', b:'Halk oyu', m:'Sence bu yemek hangi ligde? Oy ver, halkın sıralamasına katıl.'},
+  {sec:'.nbtn[data-nav="conflict"]', lab:'Çelişki', b:'Çelişki', m:'Halkın sevdiğiyle mideyi gerçekten doyuranın ayrıştığı yerler. En eğlenceli sekme.'},
+  {sec:'.nbtn[data-nav="bilgi"]', lab:'Profil', b:'Profil', m:'Bilgilerin, menün ve favorilerin. Giriş yaparsan cihazların arasında seninle gelir.'}
+];
+let tnIdx = -1;
+function tnAcikMi(){ return tnIdx >= 0; }
+function tnKapat(){
+  tnIdx = -1;
+  document.getElementById('tanitim').classList.remove('acik');
+  try{ localStorage.setItem('pr_tanitim_v2','1'); }catch(e){}
+}
+function tnYerlestir(){
+  if(!tnAcikMi()) return;
+  const a = TANITIM[tnIdx], el = document.querySelector(a.sec);
+  if(!el){ return tnIleri(); }
+  const r = el.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
+  const lens = document.getElementById('tn-lens'), kart = document.getElementById('tn-kart');
+  const navda = !!el.closest('#altmenu');
+  const svg = el.querySelector('svg');
+  lens.innerHTML = (svg ? svg.outerHTML : '') + '<span class="tn-lab">'+a.lab+'</span>';
+  const labW = lens.querySelector('.tn-lab').offsetWidth;
+  let w, h;
+  if(navda){ const nav = document.getElementById('altmenu').getBoundingClientRect(); w = Math.max(r.width+40, 124, labW+44); h = nav.height + 24; }
+  else { w = Math.max(r.width + 26, labW + 36); h = r.height + 26; }
+  const cx = r.left + r.width/2, cy = navda ? document.getElementById('altmenu').getBoundingClientRect().top + document.getElementById('altmenu').getBoundingClientRect().height/2 : r.top + r.height/2;
+  const lx = Math.min(Math.max(8, cx - w/2), vw - w - 8);
+  lens.style.width = w+'px'; lens.style.height = h+'px';
+  lens.style.left = lx+'px'; lens.style.top = (cy - h/2)+'px';
+  lens.className = navda ? 'koyu' : 'acik-z';
+  // kart: nav öğelerinde kabarcığın üstünde, üstteki öğelerde altında
+  const kw = kart.offsetWidth, kh = kart.offsetHeight;
+  const kx = Math.min(Math.max(16, cx - kw/2), vw - kw - 16);
+  const ky = navda ? (cy - h/2 - kh - 16) : Math.min(vh - kh - 16, cy + h/2 + 16);
+  kart.style.left = kx+'px'; kart.style.top = Math.max(16, ky)+'px';
+}
+function tnGoster(i){
+  tnIdx = i;
+  const a = TANITIM[i];
+  document.getElementById('tn-b').textContent = a.b;
+  document.getElementById('tn-m').textContent = a.m;
+  document.getElementById('tn-nok').innerHTML = TANITIM.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+  document.getElementById('tn-ileri').textContent = i===TANITIM.length-1 ? 'Başla' : 'İleri';
+  const lens = document.getElementById('tn-lens'), kart = document.getElementById('tn-kart');
+  kart.classList.remove('gir'); void kart.offsetWidth; kart.classList.add('gir');
+  if(i===0){ lens.classList.remove('pop'); void lens.offsetWidth; }
+  tnYerlestir();
+  if(i===0) lens.classList.add('pop');
+}
+function tnIleri(){ buzz(8); if(tnIdx+1 >= TANITIM.length) tnKapat(); else tnGoster(tnIdx+1); }
+function tnBaslat(){
+  window.scrollTo({top:0});
+  document.getElementById('tanitim').classList.add('acik');
+  tnGoster(0);
+}
+document.getElementById('tn-ileri').onclick = tnIleri;
+document.getElementById('tn-gec').onclick = tnKapat;
+document.getElementById('tanitim').addEventListener('click', e=>{ if(e.target.id==='tanitim') tnKapat(); });
+document.addEventListener('keydown', e=>{
+  if(!tnAcikMi()) return;
+  e.stopImmediatePropagation(); e.preventDefault();
+  if(e.key==='Escape') tnKapat();
+  else if(e.key==='ArrowRight' || e.key==='Enter' || e.key===' ') tnIleri();
+  else if(e.key==='ArrowLeft' && tnIdx>0) tnGoster(tnIdx-1);
+}, true);
+window.addEventListener('resize', ()=>requestAnimationFrame(tnYerlestir));
+function tnIlkZiyaret(){
+  let gordu = false;
+  try{ gordu = !!localStorage.getItem('pr_tanitim_v2'); }catch(e){ gordu = true; }
+  // sadece ana ekrandayken ve kullanıcı henüz bir şeye başlamamışsa
+  if(!gordu && !currentMode && !arama) tnBaslat();
+}
+
 (async ()=>{
   document.getElementById('hero').innerHTML = heroHtml();
   document.body.classList.add('ev');
@@ -2040,6 +2161,7 @@ document.getElementById("q-clear").onclick = ()=>{
   await refresh();
   ayarlarHazir;
   updateFade(); renderAuthBar();
+  setTimeout(tnIlkZiyaret, 900);
 })();
 </script>
 </body>
