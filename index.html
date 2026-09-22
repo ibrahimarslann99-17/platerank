@@ -2089,11 +2089,12 @@ document.getElementById("q-clear").onclick = ()=>{
 
 // ---------- ilk ziyaret tanıtımı ----------
 // Ayrı bir katman: sayfanın durumuna dokunmaz, sadece üstüne cam kabarcık koyar.
-// Açılış turu kısa (3 adım); bölümlerin ayrıntısı o bölüme ilk girişte kendi kabarcığıyla gelir.
+// Açılış turu kısa (4 adım); bölümlerin ayrıntısı o bölüme ilk girişte kendi kabarcığıyla gelir.
 const TANITIM = [
   {sec:'#ara-hap', lab:'Ara', b:'Aradığın yemeği bul', m:'Simit, mercimek, cips… Yaz, kalorisini ve kaç saat tok tuttuğunu gör.'},
   {sec:'.nbtn[data-nav="auto"]', lab:'Besin değerleri', b:'Besin değerleri', m:'Yemekler liglere ayrılmış: S en uzun tok tutan, D boş kalori. Satıra dokun, protein, lif ve şekeri gör.'},
-  {sec:'.nbtn[data-nav="bilgi"]', lab:'Profil', b:'Profil', m:'Bilgilerin, menün ve favorilerin. Giriş yaparsan cihazların arasında seninle gelir. Diğer bölümler ilk açtığında kendini kısaca anlatır.'}
+  {sec:'.nbtn[data-nav="yesem"]', lab:'Ne yesem?', b:'Ne yesem? · Protein', m:'Ne kadar aç olduğunu söyle, sana en uzun tok tutacak seçenekleri sıralayalım; günlük protein ihtiyacını da burada hesapla.'},
+  {sec:'.nbtn[data-nav="bilgi"]', lab:'Profil', b:'Profil', m:'Bilgilerin, menün ve favorilerin. Giriş yaparsan cihazların arasında seninle gelir.'}
 ];
 // Ne yesem? ve Protein ihtiyacım tek bölüm: iki sekmesi için tek bilgi kutusu.
 // İki adım: önce iki sekmenin ne işe yaradığı, sonra mutfak şeridinden bir mutfak.
