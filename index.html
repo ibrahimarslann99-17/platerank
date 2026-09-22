@@ -1215,7 +1215,7 @@ function render(){
   else if(currentMode==='protein' || currentMode==='yesem'){
     beslenAlt = currentMode;
     content.innerHTML = '<div class="seg-sat">' + segHtml([['yesem','Ne yesem?'],['protein','Protein ihtiyacım']], currentMode) +
-      '<button class="sb-soru" data-sb="'+currentMode+'" aria-label="Bu bölüm ne işe yarar?">?</button></div>' +
+      '<button class="sb-soru" data-sb="beslen" aria-label="Bu bölüm ne işe yarar?">?</button></div>' +
       (currentMode==='protein' ? renderProtein() : renderYesem());
   }
   else if(currentMode==='bilgi' || currentMode==='fav' || currentMode==='menu'){
@@ -2095,11 +2095,24 @@ const TANITIM = [
   {sec:'.nbtn[data-nav="auto"]', lab:'Besin değerleri', b:'Besin değerleri', m:'Yemekler liglere ayrılmış: S en uzun tok tutan, D boş kalori. Satıra dokun, protein, lif ve şekeri gör.'},
   {sec:'.nbtn[data-nav="bilgi"]', lab:'Profil', b:'Profil', m:'Bilgilerin, menün ve favorilerin. Giriş yaparsan cihazların arasında seninle gelir. Diğer bölümler ilk açtığında kendini kısaca anlatır.'}
 ];
-// Bölüm kabarcıkları: her biri bir kez kendiliğinden, sonra "?" ile.
-var SEKME_BILGI = {
-  yesem:{lab:'Ne yesem?', b:'Ne yesem?', m:'Bilgilerini bir kez gir, bu cihazda kalır. Sonra en son ne yediğini, ne kadar aç olduğunu ve canının tatlı mı tuzlu mu çektiğini seç. Sana uygun porsiyonda, en uzun tok tutandan başlayarak sıralarım. Üstteki şeritten mutfak seçersen öneriler oradan gelir.'},
-  protein:{lab:'Protein ihtiyacım', b:'Protein ihtiyacım', m:'Kilonu gir, durumunu seç: günlük protein hedefin kilo × katsayıyla çıkar. Altında, seçili mutfaktan bu hedefi en az kaloriyle tamamlayan örnek tabaklar var. Mutfağı değiştirirsen tabak da değişir.'}
-};
+// Ne yesem? ve Protein ihtiyacım tek bölüm: iki sekmesi için tek bilgi kutusu.
+// İki adım: önce iki sekmenin ne işe yaradığı, sonra mutfak şeridinden bir mutfak.
+// Bir kez kendiliğinden çıkar (hangi sekmeden girilirse girilsin), sonra "?" ile.
+var BESLEN_BILGI = [
+  {sec:'.seg-sat .seg', lab:'Ne yesem? · Protein', b:'Ne yesem? · Protein ihtiyacım',
+   m:'Kilo, boy ve yaşını bir kez gir, bu cihazda kalır; iki sekme de aynı bilgileri kullanır. Ne yesem? açlığına ve canının çektiğine göre en uzun tok tutanları sıralar. Protein ihtiyacım günlük hedefini çıkarır ve onu en az kaloriyle tamamlayan örnek tabakları gösterir.'},
+  {sec:()=>mutfakCipi(), lab:null, b:'Mutfağı değiştir',
+   m:'Öneriler ve örnek tabaklar seçili mutfaktan gelir. Buradan başka bir mutfağa geçersen liste de tabak da değişir. "Tümü" hepsine birden bakar.'}
+];
+// Kabarcığın göstereceği mutfak: ekranda tam görünen, seçili olmayan bir ülke
+// mutfağı (Market, Zincir gibi özel sekmeler değil); yoksa görünen herhangi biri.
+const ULKE_MUTFAKLARI = ['tr','it','jp','mx','cn','us','kr','th','in','me'];
+function mutfakCipi(){
+  const hepsi = [...document.querySelectorAll('#tabs .tab')];
+  const gorunur = hepsi.filter(b=>{ const r = b.getBoundingClientRect(); return r.width && r.left >= 0 && r.right <= innerWidth; });
+  const secilmemis = gorunur.filter(b=>!b.classList.contains('active'));
+  return secilmemis.find(b=>ULKE_MUTFAKLARI.indexOf(b.dataset.c) >= 0) || secilmemis[0] || gorunur[0] || hepsi[0] || null;
+}
 var tnIdx = -1, tnAdimlar = null, tnAnahtar = 'pr_tanitim_v2';
 function tnAcikMi(){ return tnIdx >= 0; }
 function tnKapat(){
@@ -2109,13 +2122,16 @@ function tnKapat(){
 }
 function tnYerlestir(){
   if(!tnAcikMi()) return;
-  const a = tnAdimlar[tnIdx], el = document.querySelector(a.sec);
+  const a = tnAdimlar[tnIdx], el = typeof a.sec === 'function' ? a.sec() : document.querySelector(a.sec);
   if(!el){ return tnIleri(); }
   const r = el.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
   const lens = document.getElementById('tn-lens'), kart = document.getElementById('tn-kart');
   const navda = !!el.closest('#altmenu');
   const svg = el.querySelector('svg');
-  lens.innerHTML = (svg ? svg.outerHTML : '') + '<span class="tn-lab">'+a.lab+'</span>';
+  let lab = a.lab;
+  if(!lab){ const tic = el.querySelector('.tic'); const tam = el.textContent.trim();
+    lab = tic ? tic.textContent + ' ' + tam.slice(tic.textContent.length).trim() : tam; }
+  lens.innerHTML = (svg ? svg.outerHTML : '') + '<span class="tn-lab">'+esc(lab)+'</span>';
   const labW = lens.querySelector('.tn-lab').offsetWidth;
   let w, h;
   if(navda){ const nav = document.getElementById('altmenu').getBoundingClientRect(); w = Math.max(r.width+40, 124, labW+44); h = nav.height + 24; }
@@ -2137,7 +2153,8 @@ function tnGoster(i){
   document.getElementById('tn-b').textContent = a.b;
   document.getElementById('tn-m').textContent = a.m;
   document.getElementById('tn-nok').innerHTML = tnAdimlar.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
-  document.getElementById('tn-ileri').textContent = tek ? 'Anladım' : i===tnAdimlar.length-1 ? 'Başla' : 'İleri';
+  const sonAdim = tnAnahtar === 'pr_tanitim_v2' ? 'Başla' : 'Anladım';
+  document.getElementById('tn-ileri').textContent = tek ? 'Anladım' : i===tnAdimlar.length-1 ? sonAdim : 'İleri';
   const lens = document.getElementById('tn-lens'), kart = document.getElementById('tn-kart');
   kart.classList.toggle('tek', tek);
   kart.setAttribute('aria-label', tek ? a.b : 'Kısa tanıtım');
@@ -2154,26 +2171,23 @@ function tnBaslat(adimlar, anahtar){
   document.getElementById('tanitim').classList.add('acik');
   tnGoster(0);
 }
-// Bölüm kabarcığı: seçicideki o bölümün düğmesini gösterir.
-function sbGoster(mod){
-  const bilgi = SEKME_BILGI[mod];
-  if(!bilgi || tnAcikMi()) return;
-  tnBaslat([Object.assign({sec:'.seg [data-seg="'+mod+'"]'}, bilgi)], 'pr_sb_'+mod);
+function beslenBolumu(){ return currentMode==='yesem' || currentMode==='protein'; }
+function sbGoster(){
+  if(!BESLEN_BILGI || tnAcikMi()) return;
+  tnBaslat(BESLEN_BILGI, 'pr_sb_beslen');
 }
-var sbBuOturum = {};   // var: render bu blok çalışmadan önce çağrılırsa hata vermesin
+var sbBuOturum = false;   // var: render bu blok çalışmadan önce çağrılırsa hata vermesin
 function sbKontrol(){
-  const mod = currentMode;
-  if(!SEKME_BILGI || !sbBuOturum) return;
-  if(!SEKME_BILGI[mod] || sbBuOturum[mod] || tnAcikMi()) return;
+  if(!BESLEN_BILGI || sbBuOturum || !beslenBolumu() || tnAcikMi()) return;
   let gordu = false;
-  try{ gordu = !!localStorage.getItem('pr_sb_'+mod); }catch(e){ gordu = true; }
+  try{ gordu = !!localStorage.getItem('pr_sb_beslen'); }catch(e){ gordu = true; }
   if(gordu) return;
-  sbBuOturum[mod] = true;   // render sık çağrılıyor; aynı oturumda ikinci kez tetiklenmesin
-  setTimeout(()=>{ if(currentMode===mod) sbGoster(mod); }, 380);
+  sbBuOturum = true;   // render sık çağrılıyor; aynı oturumda ikinci kez tetiklenmesin
+  setTimeout(()=>{ if(beslenBolumu()) sbGoster(); }, 380);
 }
 document.addEventListener('click', e=>{
   const b = e.target.closest && e.target.closest('[data-sb]');
-  if(b){ buzz(8); sbGoster(b.dataset.sb); }
+  if(b){ buzz(8); sbGoster(); }
 });
 document.getElementById('tn-ileri').onclick = tnIleri;
 document.getElementById('tn-gec').onclick = tnKapat;
