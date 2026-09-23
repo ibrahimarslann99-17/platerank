@@ -1824,6 +1824,20 @@ async function doVote(fid, t){
   buzz([14,40,22]);
   toast('Oyun kaydedildi: '+t+' ✓');
 }
+// acilan detay alt menunun arkasinda kalmasin: gerekiyorsa sadece aradaki fark kadar kaydir
+function detayiGoster(r){
+  requestAnimationFrame(()=>{
+    const nav = document.getElementById('altmenu');
+    const sinir = nav ? nav.getBoundingClientRect().top - 12 : window.innerHeight - 12;
+    const kutu = r.getBoundingClientRect();
+    const fark = kutu.bottom - sinir;
+    if(fark <= 0) return;
+    // satir ekrandan uzunsa basini yukarida tut
+    const ustBosluk = 90;
+    const kaydir = Math.min(fark, kutu.top - ustBosluk);
+    if(kaydir > 0) window.scrollBy({top:kaydir, behavior:'smooth'});
+  });
+}
 function wireUp(){
   const cid = currentCuisine;
   document.querySelectorAll('[data-seg]').forEach(b=>{ b.onclick = ()=>{ buzz(8); modAc(b.dataset.seg); }; });
@@ -1888,7 +1902,7 @@ function wireUp(){
     r.onclick = ()=>{
       const id = r.dataset.exp;
       if(acikSatirlar.has(id)){ acikSatirlar.delete(id); r.classList.remove('acik'); }
-      else { acikSatirlar.add(id); r.classList.add('acik'); }
+      else { acikSatirlar.add(id); r.classList.add('acik'); detayiGoster(r); }
     };
   });
   document.querySelectorAll('.favbtn').forEach(b=>{
