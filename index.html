@@ -2132,7 +2132,7 @@ async function temel100Yukle(){
 }
 // "Mercimek (pişmiş) (1 su bardağı)" -> "Mercimek (pişmiş)": gram girilen yerde porsiyon adı kafa karıştırır
 function temelAd(ad){
-  return String(ad||'').replace(/\s*\((?=[^)]*(\d|avuç|kaşı|bardağ|dilim|adet|kutu|kase|porsiyon))[^)]*\)\s*$/i,'');
+  return String(ad||'').replace(/\s*\((?=[^()]*(\d|avuç|kaşı|bardağ|dilim|adet|kutu|kase|porsiyon)).*$/i,'');
 }
 function kesifToplam(){
   const t = {kcal:0, protein:0, lif:0, yag:0, seker:0, eksik:false};
