@@ -75,7 +75,8 @@ const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const CUISINES = {tr:'Türk', it:'İtalyan', jp:'Japon', mx:'Meksika', cn:'Çin', us:'Amerikan', hm:'Keşifler 🔦'};
+// Sitedeki bütün mutfaklar; listede olmayan bir mutfak id'si gelirse de gizlenmez (aşağıda kendi adıyla eklenir).
+const CUISINES = {temel:'Temel Gıdalar', veg:'Vejeteryan', zincir:'Zincir', market:'Market', tr:'Türk', it:'İtalyan', jp:'Japon', mx:'Meksika', cn:'Çin', us:'Amerikan', kr:'Kore', th:'Tayland', in:'Hint', me:'Ortadoğu', hm:'Keşifler 🔦'};
 let currentTab = 'oneriler';
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -175,17 +176,19 @@ async function renderYemekler(){
   const {data, error} = await sb.from('yemekler').select('*').order('mutfak').order('doyuruculuk',{ascending:false});
   if(error){ el.innerHTML = `<div class="err">Okunamadı: ${esc(error.message)}</div>`; return; }
   let html = '';
-  Object.keys(CUISINES).forEach(cid=>{
+  const mutfaklar = Object.keys(CUISINES);
+  (data||[]).forEach(f=>{ if(mutfaklar.indexOf(f.mutfak)<0) mutfaklar.push(f.mutfak); });
+  mutfaklar.forEach(cid=>{
     const foods = (data||[]).filter(f=>f.mutfak===cid);
     if(!foods.length) return;
-    html += `<div class="section-title">${CUISINES[cid]} (${foods.length})</div><div class="card">`;
+    html += `<div class="section-title">${esc(CUISINES[cid]||cid)} (${foods.length})</div><div class="card">`;
     foods.forEach(f=>{
       html += `<div class="row">
         <div class="info"><div class="name">${esc(f.ad)} ${f.yayinda?'':'<span class="badge">yayında değil</span>'}</div>
         <small>${f.kcal} kcal · skor ${f.doyuruculuk}</small></div>
         <button class="btn small secondary" data-skor="${f.id}" data-cur="${f.doyuruculuk}">Skor</button>
         <button class="btn small secondary" data-toggle="${f.id}" data-cur="${f.yayinda}">${f.yayinda?'Gizle':'Yayınla'}</button>
-        <button class="btn small secondary" data-resetvotes="${f.id}">Oyları sıfırla</button>
+        <button class="btn small secondary" data-resetvotes="${f.id}" data-ad="${esc(f.ad)}">Oyları sıfırla</button>
         <button class="btn small danger" data-del="${f.id}">Sil</button>
       </div>`;
     });
@@ -208,9 +211,13 @@ async function renderYemekler(){
   });
   el.querySelectorAll('[data-resetvotes]').forEach(b=>{
     b.onclick = async ()=>{
-      if(!confirm('Bu yemeğin TÜM oyları silinecek. Emin misin?')) return;
-      await sb.from('oylar').delete().eq('yemek_id', b.dataset.resetvotes);
-      alert('Oylar silindi.');
+      // Sadece bu yemeğin oyları: lig/saat oyları ve rozetler. Tüm tabloyu silen bir yol yok.
+      if(!confirm('"'+b.dataset.ad+'" için bütün lig oyları ve rozetler silinecek. Emin misin?')) return;
+      const id = b.dataset.resetvotes;
+      const o = await sb.from('oylar').delete().eq('yemek_id', id).select('id');
+      const r = await sb.from('rozet_oylar').delete().eq('yemek_id', id).select('id');
+      if(o.error || r.error){ alert('Silinemedi: '+((o.error||r.error).message)); return; }
+      alert('"'+b.dataset.ad+'" sıfırlandı: '+(o.data||[]).length+' oy, '+(r.data||[]).length+' rozet satırı silindi.');
     };
   });
   el.querySelectorAll('[data-del]').forEach(b=>{
