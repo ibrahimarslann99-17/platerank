@@ -1637,10 +1637,11 @@ async function meclisYukle(force){
   meclis.yukleniyor = (async ()=>{
     try{
       const [oz, kk, sah, rz] = await Promise.all([
-        sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').limit(5000),
+        // sunucu tek istekte en fazla 1000 satır veriyor: özet ve rozetler de sayfa sayfa gelir
+        tumunuCek(()=>sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').order('yemek_id')),
         sb.from('meclis_k').select('toplam_saatli,uygun_yemek,k,site_min,site_max').maybeSingle(),
         sb.from('oneriler').select('id,mutfak,ad,kcal,protein,lif,yag,seker,seker_eksik,tarif').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60),
-        sb.from('rozet_durumu').select('yemek_id,rozet,adet').limit(5000),
+        tumunuCek(()=>sb.from('rozet_durumu').select('yemek_id,rozet,adet').order('yemek_id').order('rozet')),
         temel100Yukle()
       ]);
       if(oz.error) throw oz.error;
