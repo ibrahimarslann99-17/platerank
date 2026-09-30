@@ -715,6 +715,47 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
   .sonuckart{animation:mSolma .2s ease both;}
 }
 @keyframes mSolma{from{opacity:0;}to{opacity:1;}}
+/* ---------- rozetler ---------- */
+.oysar{margin-top:22px;}
+.oykart{flex-wrap:wrap;}
+.rz-cik{position:absolute;top:-15px;right:16px;display:flex;gap:4px;z-index:3;}
+.sonuckart{position:relative;margin-top:22px;}
+.rz-st{width:34px;height:34px;display:grid;place-items:center;border:none;background:none;padding:0;cursor:pointer;transform:rotate(var(--r,0deg));filter:drop-shadow(0 2px 1.5px rgba(14,34,23,.28));}
+.rz-st svg{display:block;}
+.rz-alan{flex-basis:100%;border-top:1px dashed var(--line);padding-top:12px;margin-top:2px;}
+.sonuckart .rz-alan{border-top-color:rgba(255,255,255,.16);margin-top:14px;}
+.rz-bas{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px;}
+.rz-bas span{font-weight:400;color:var(--ink-muted);font-size:11px;margin-left:4px;}
+.sonuckart .rz-bas{color:#FFFFFF;} .sonuckart .rz-bas span{color:rgba(255,255,255,.6);}
+.rz-tepsi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+.rz-t{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:8px 4px 7px;border:1px solid var(--line);border-radius:12px;background:var(--paper);cursor:pointer;text-align:center;font-family:'Figtree',system-ui,sans-serif;color:var(--ink);}
+.sonuckart .rz-t{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#FFFFFF;}
+.rz-t .rz-i{flex:none;display:grid;place-items:center;filter:grayscale(1);opacity:.42;transition:filter .2s ease,opacity .2s ease;}
+.rz-t .rz-ad{font-size:10.5px;line-height:1.2;font-weight:600;min-width:0;}
+.rz-t .rz-ad b{font-weight:700;opacity:.6;}
+.rz-t.on{border-color:var(--rc);box-shadow:inset 0 0 0 1px var(--rc);background:var(--card);}
+.sonuckart .rz-t.on{background:rgba(255,255,255,.16);}
+.rz-t.on .rz-i{filter:none;opacity:1;transform:rotate(-8deg);}
+.rz-t.carp .rz-i{animation:rzCarp .35s cubic-bezier(.3,1.3,.5,1) both;}
+.rz-t.kalk .rz-i{animation:rzKalk .3s ease both;}
+@keyframes rzCarp{0%{transform:scale(1.4) rotate(-8deg);opacity:.7;filter:none;}70%{transform:scale(.93) rotate(-8deg);opacity:1;}100%{transform:rotate(-8deg);}}
+@keyframes rzKalk{0%{transform:rotate(-8deg);opacity:1;filter:none;}60%{transform:scale(1.4) rotate(0deg);opacity:.6;filter:none;}100%{transform:none;}}
+.rz-t::after{content:'';position:absolute;left:50%;top:22px;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--rc);opacity:0;pointer-events:none;}
+.rz-t.murekkep::after{animation:rzMurekkep .35s ease-out both;}
+@keyframes rzMurekkep{from{transform:scale(.5);opacity:.9;}to{transform:scale(2.1);opacity:0;}}
+.sars{animation:rzSars .3s ease both;}
+@keyframes rzSars{0%,100%{transform:none;}25%{transform:translateX(-2px);}50%{transform:translateX(2px);}75%{transform:translateX(-1px);}}
+.rz-balon{position:absolute;z-index:5;width:min(300px,calc(100% - 12px));display:flex;gap:12px;align-items:center;background:var(--card);color:var(--ink);border-radius:var(--r-md);padding:12px 14px 12px 10px;box-shadow:0 18px 38px -14px rgba(14,34,23,.55),0 0 0 1px var(--line);animation:fadeUp .2s ease both;}
+.rz-balon svg{flex:none;width:92px;height:92px;}
+.rzb-ad{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;line-height:1.15;}
+.rzb-sayi{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;margin:4px 0 2px;}
+.rzb-acik{font-size:12px;color:var(--ink-muted);line-height:1.4;}
+@media (max-width:370px){ .rz-tepsi{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (prefers-reduced-motion: reduce){
+  .rz-t.carp .rz-i,.rz-t.kalk .rz-i,.sars,.rz-balon{animation:mSolma .2s ease both;}
+  .rz-t.on .rz-i{transform:none;}
+  .rz-t.murekkep::after{animation:none;}
+}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1519,6 +1560,7 @@ const meclis = {
   k: null,                // {toplam_saatli, uygun_yemek, k, site_min, site_max}
   yemek: new Map(),       // yemek_id -> yemek satırı (mutfaktan bağımsız)
   sahne: [],              // bekleyen öneriler (tüm mutfaklar)
+  rozet: new Map(),       // yemek_id -> {slug: adet}
   yuklendi: false, yukleniyor: null
 };
 // kullanıcı durumu
@@ -1563,14 +1605,18 @@ async function meclisYukle(force){
   if(meclis.yuklendi && !force) return;
   meclis.yukleniyor = (async ()=>{
     try{
-      const [oz, kk, sah] = await Promise.all([
+      const [oz, kk, sah, rz] = await Promise.all([
         sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').limit(5000),
         sb.from('meclis_k').select('toplam_saatli,uygun_yemek,k,site_min,site_max').maybeSingle(),
-        sb.from('oneriler').select('id,mutfak,ad,kcal').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60)
+        sb.from('oneriler').select('id,mutfak,ad,kcal').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60),
+        sb.from('rozet_durumu').select('yemek_id,rozet,adet').limit(5000)
       ]);
       if(oz.error) throw oz.error;
       meclis.ozet = new Map((oz.data||[]).map(r=>[r.yemek_id, r]));
       meclis.k = kk.data || null;
+      const rm = new Map();
+      (rz.data||[]).forEach(r=>{ const o = rm.get(r.yemek_id) || {}; o[r.rozet] = r.adet; rm.set(r.yemek_id, o); });
+      meclis.rozet = rm;
       const sahne = (sah.data||[]).map(s=>({...s, oy:0}));
       if(sahne.length){
         const {data: sv} = await sb.from('oneri_oylar').select('oneri_id').in('oneri_id', sahne.map(s=>s.id));
@@ -1670,8 +1716,9 @@ function oyKartHtml(){
       ${k==null?'':'<div class="oy-not" style="margin-top:4px">Saati girince tambur o saatin ligine kendiliğinden kayar.</div>'}
     </div>`;
   const tb = TIER_ORDER.map((t,i)=>`<span class="tb-h" data-i="${i}">${t}</span>`).join('');
-  return `<div class="oysar" id="oysar" style="--kc:${kc}">
+  return `<div class="oysar rz-kap" id="oysar" style="--kc:${kc}">
     <div class="oy-halka" id="oy-halka"></div>
+    <div class="rz-cik" data-rzy="${f.id}">${cikartmaHtml(f.id)}</div>
     <div class="oykart" id="oykart">
       <div class="tambur ${lig?'secili':''}" id="tambur" tabindex="0" role="slider" aria-label="Lig seç" aria-valuemin="1" aria-valuemax="5" aria-valuetext="${lig||'seçilmedi'}">
         <div class="tb-pencere"></div><div class="tb-serit" id="tb-serit">${tb}</div>
@@ -1686,6 +1733,7 @@ function oyKartHtml(){
           <button class="link-btn" id="oy-vazgec">Vazgeç</button>
         </div>
       </div>
+      ${tepsiHtml(f.id)}
     </div>
   </div>`;
 }
@@ -1708,11 +1756,13 @@ function sonucKartHtml(){
     const n = meclis.k ? meclis.k.toplam_saatli : 0;
     not = `Saatin puana çevrilmesi için sitede ${K_ESIK} saatli oy birikmesi gerekiyor (şu an ${Math.min(n,K_ESIK)}/${K_ESIK}). O zamana kadar meclis medyan saati gösterir.`;
   }
-  return `<div class="sonuckart" id="sonuckart">
+  return `<div class="sonuckart rz-kap" id="sonuckart">
+    <div class="rz-cik" data-rzy="${f.id}">${cikartmaHtml(f.id)}</div>
     <div class="sk-ust">Oyun mecliste · ${oySonuc.lig} ligi</div>
     <div class="sk-ad">${esc(f.ad)}</div>
     <div class="sk-satir">${parcalar.join('<span style="opacity:.45">·</span>')}</div>
     ${not?`<div class="sk-not">${not}</div>`:''}
+    ${tepsiHtml(f.id)}
     <div class="oy-btns"><button class="btn" id="sk-baska">Başka yemek oyla</button><button class="link-btn" id="sk-tekrar">Oyumu değiştir</button></div>
   </div>`;
 }
@@ -1771,6 +1821,172 @@ function meclisSahneHtml(){
     <div class="ok" id="m-nf-ok"></div>
   </div>`;
   return h;
+}
+
+// ---------- rozetler ----------
+// Referans: kalın eşit kontur, düz dolgu, her rozet ayrı silüet, rozet başına tek vurgu rengi.
+// Küçük sürüm (kart üstü, 28 px): silüet + tek ikon. Büyük sürüm (balon): sahneli.
+const RZ_INK = '#0F1A13', RZ_KREM = '#FBF7EA';
+const ROZETLER = {
+  cennetten_indi:{ad:'Cennetten İndi', renk:'#D5EC62', acik:'Tadı ayrı bir lig.',
+    sil:'M12 58 V28 A20 20 0 0 1 52 28 V58 Z',
+    ikon:`<ellipse cx="32" cy="22" rx="10" ry="4" fill="none" stroke="${RZ_INK}" stroke-width="4"/><path d="M20 38 Q32 52 44 38" fill="none" stroke="${RZ_INK}" stroke-width="4.5" stroke-linecap="round"/>`},
+  cadi_kazani:{ad:'Cadı Kazanı', renk:'#5A9135', acik:'Mideyi kazan gibi kaynatır.',
+    sil:'M8 8 H56 V34 L32 59 L8 34 Z',
+    ikon:`<path d="M19 26 H45 Q45 44 32 44 Q19 44 19 26 Z" fill="${RZ_INK}"/><circle cx="26" cy="18" r="3" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="2.5"/><circle cx="36" cy="14" r="2.5" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="2.5"/>`},
+  soda_lazim:{ad:'Soda Lazım', renk:'#1F7A96', acik:'Arkasından bir soda şart.',
+    sil:'M9 7 H55 L50 54 Q49.5 58 45.5 58 H18.5 Q14.5 58 14 54 Z',
+    ikon:`<circle cx="26" cy="42" r="6" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="4"/><circle cx="37" cy="29" r="4.5" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="4"/><circle cx="29" cy="17" r="3" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="3.5"/>`},
+  kafa_kapatir:{ad:'Kafa Kapatır', renk:'#C2961B', acik:'Yedikten sonra uyku bastırır.',
+    sil:'M32 4 L57 18 V46 L32 60 L7 46 V18 Z',
+    ikon:`<path d="M19 20 H33 L19 34 H33" fill="none" stroke="${RZ_INK}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M36 36 H45 L36 45 H45" fill="none" stroke="${RZ_INK}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`},
+  tatli_krizi:{ad:'Tatlı Krizi', renk:'#B84A72', acik:'Bitince tatlı canı çeker.',
+    sil:'M32 5 L38.5 9 L46 8.5 L49 15.5 L55.5 19 L54.5 26.5 L59 32 L54.5 37.5 L55.5 45 L49 48.5 L46 55.5 L38.5 55 L32 59 L25.5 55 L18 55.5 L15 48.5 L8.5 45 L9.5 37.5 L5 32 L9.5 26.5 L8.5 19 L15 15.5 L18 8.5 L25.5 9 Z',
+    ikon:`<path d="M24 32 L14 25 V39 Z M40 32 L50 25 V39 Z" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="3.5" stroke-linejoin="round"/><circle cx="32" cy="32" r="8.5" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="4"/>`},
+  gece_3:{ad:'Gece 3', renk:'#15432A', acik:'En iyi gece 3\'te yenir.',
+    sil:'M19 6 H45 L58 19 V45 L45 58 H19 L6 45 V19 Z',
+    ikon:`<path d="M35 16 A15 15 0 1 0 46 42 A12 12 0 1 1 35 16 Z" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="44" cy="22" r="2" fill="${RZ_KREM}"/>`},
+  // otomatik tokluk rozetleri (saat_dk medyanından; tabloda tutulmaz)
+  oto_15dk:{ad:'15 Dakikada Mutfaktayım', renk:'#BF3B38', acik:'Meclisin medyanı 1 saat ya da altı.', oto:true,
+    sil:'M12 12 H52 Q58 12 58 18 V46 Q58 52 52 52 H12 Q6 52 6 46 V18 Q6 12 12 12 Z',
+    ikon:`<circle cx="32" cy="32" r="13" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="4"/><path d="M32 32 V24 M32 32 L38 35" stroke="${RZ_INK}" stroke-width="4" stroke-linecap="round"/>`},
+  oto_aksam:{ad:'Akşama Kadar Yeter', renk:'#D06C28', acik:'Meclisin medyanı 4 saat ya da üstü.', oto:true,
+    sil:'M6 9 H58 V33 A26 25 0 0 1 6 33 Z',
+    ikon:`<path d="M19 34 A13 13 0 0 1 45 34 Z" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="4" stroke-linejoin="round"/><path d="M12 34 H52 M32 14 V18 M18 20 L21 23 M46 20 L43 23" stroke="${RZ_INK}" stroke-width="4" stroke-linecap="round"/>`}
+};
+const ELLE_ROZET = ['cennetten_indi','cadi_kazani','soda_lazim','kafa_kapatir','tatli_krizi','gece_3'];
+const OTO_ESIK = 3;   // otomatik rozet için en az bu kadar saatli oy
+
+function rozetSvg(slug, px){
+  const r = ROZETLER[slug]; if(!r) return '';
+  return `<svg viewBox="0 0 64 64" width="${px}" height="${px}" aria-hidden="true"><path d="${r.sil}" fill="${r.renk}" stroke="${RZ_INK}" stroke-width="5" stroke-linejoin="round"/>${r.ikon}</svg>`;
+}
+// Balondaki sahneli sürüm: aynı silüet, içinde ufuk, kesikli dalga çizgileri, yıldızlar.
+function rozetSahneSvg(slug){
+  const r = ROZETLER[slug]; if(!r) return '';
+  const id = 'rzc_'+slug;
+  const cizgi = [0,1,2].map(i=>{ const y = 47 + i*4.2; return `<path d="M${10+i*3} ${y} h7 m4 0 h11 m4 0 h6 m4 0 h9" stroke="${RZ_INK}" stroke-width="1.6" stroke-linecap="round"/>`; }).join('');
+  const yildiz = [[14,14],[50,12],[44,24],[18,26]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.1" fill="${RZ_KREM}"/>`).join('');
+  return `<svg viewBox="0 0 64 64" width="104" height="104" aria-hidden="true">
+    <defs><clipPath id="${id}"><path d="${r.sil}"/></clipPath></defs>
+    <g clip-path="url(#${id})">
+      <rect width="64" height="64" fill="${r.renk}"/>
+      ${yildiz}
+      <path d="M0 40 Q16 34 32 38 T64 36 V64 H0 Z" fill="${RZ_KREM}" stroke="${RZ_INK}" stroke-width="2"/>
+      ${cizgi}
+    </g>
+    <g transform="translate(32 27) scale(.62) translate(-32 -32)">${r.ikon}</g>
+    <path d="${r.sil}" fill="none" stroke="${RZ_INK}" stroke-width="3.2" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+// yerel: bu cihazın bastığı rozetler (sunucudaki olay kaydının önbelleği)
+function benimRozetlerim(id){ try{ const m = JSON.parse(localStorage.getItem('pr_rozetlerim')||'{}'); return m[id]||[]; }catch(e){ return []; } }
+function setBenimRozetlerim(id, arr){ try{ const m = JSON.parse(localStorage.getItem('pr_rozetlerim')||'{}'); if(arr.length) m[id]=arr; else delete m[id]; localStorage.setItem('pr_rozetlerim', JSON.stringify(m)); }catch(e){} }
+
+function rozetSayilari(id){ return meclis.rozet.get(id) || {}; }
+function otoRozet(o){
+  if(!o || !o.saatli || o.saatli < OTO_ESIK || o.medyan_dk==null) return null;
+  if(o.medyan_dk <= 60) return 'oto_15dk';
+  if(o.medyan_dk >= 240) return 'oto_aksam';
+  return null;
+}
+// kart üstündeki çıkartmalar: en çok basılan 2 elle rozet
+function enCokRozet(id, n){
+  const s = rozetSayilari(id);
+  return ELLE_ROZET.filter(k=>(s[k]||0)>0).sort((a,b)=>(s[b]||0)-(s[a]||0) || ELLE_ROZET.indexOf(a)-ELLE_ROZET.indexOf(b)).slice(0,n);
+}
+function cikartmaHtml(id){
+  const ust = enCokRozet(id, 2);
+  const aci = ['-7deg','6deg'];
+  return ust.map((k,i)=>`<button class="rz-st" style="--r:${aci[i]}" data-rzb="${k}" data-rzy="${id}" aria-label="${ROZETLER[k].ad} rozeti">${rozetSvg(k,28)}</button>`).join('');
+}
+function tepsiHtml(id){
+  const benim = benimRozetlerim(id);
+  const s = rozetSayilari(id);
+  return `<div class="rz-alan"><div class="rz-bas">Rozet bas <span>en fazla 2 · tekrar basınca geri alınır</span></div>
+    <div class="rz-tepsi">${ELLE_ROZET.map(k=>`<button class="rz-t ${benim.includes(k)?'on':''}" data-rzt="${k}" data-rzy="${id}" style="--rc:${ROZETLER[k].renk}" aria-pressed="${benim.includes(k)}"><span class="rz-i">${rozetSvg(k,28)}</span><span class="rz-ad">${ROZETLER[k].ad}${s[k]?` <b>${s[k]}</b>`:''}</span></button>`).join('')}</div></div>`;
+}
+function rozetYuzde(id, k){
+  const o = meclis.ozet.get(id);
+  const adet = (rozetSayilari(id)[k])||0;
+  const payda = Math.max(o ? o.oy : 0, adet, 1);
+  return {adet, yuzde: Math.round(adet*100/payda)};
+}
+function balonHtml(id, k){
+  const r = ROZETLER[k];
+  let alt;
+  if(r.oto){ const o = meclis.ozet.get(id); alt = o ? `medyan ${saatYaz(o.medyan_dk)} · ${o.saatli} kişi` : ''; }
+  else { const y = rozetYuzde(id, k); alt = `%${y.yuzde} · ${y.adet} kişi`; }
+  return `<div class="rz-balon" id="rz-balon" role="dialog" aria-label="${r.ad}">${rozetSahneSvg(k)}<div><div class="rzb-ad">${r.ad}</div><div class="rzb-sayi">${alt}</div><div class="rzb-acik">${r.acik}</div></div></div>`;
+}
+let rzBalon = null;   // {id, k}
+function balonKapat(){ rzBalon = null; const b = document.getElementById('rz-balon'); if(b) b.remove(); }
+function balonAc(btn){
+  const id = btn.dataset.rzy, k = btn.dataset.rzb;
+  if(rzBalon && rzBalon.id===id && rzBalon.k===k){ balonKapat(); return; }
+  balonKapat();
+  rzBalon = {id, k};
+  const kap = btn.closest('.rz-kap') || btn.closest('.oysar') || btn.closest('.sonuckart') || btn.parentElement;
+  kap.insertAdjacentHTML('beforeend', balonHtml(id, k));
+  const b = document.getElementById('rz-balon');
+  const kr = kap.getBoundingClientRect(), br = btn.getBoundingClientRect();
+  const w = b.offsetWidth;
+  const left = Math.max(6, Math.min(kr.width - w - 6, br.left - kr.left + br.width/2 - w/2));
+  b.style.left = left+'px';
+  b.style.top = (br.bottom - kr.top + 8)+'px';
+  buzz(6);
+}
+document.addEventListener('pointerdown', e=>{
+  if(!rzBalon) return;
+  if(e.target.closest && (e.target.closest('#rz-balon') || e.target.closest('[data-rzb]'))) return;
+  balonKapat();
+}, true);
+
+// basma: iyimser güncelle, animasyon, sunucuya olay satırı
+async function rozetBas(btn){
+  if(!votingOpen) return;
+  const id = btn.dataset.rzy, k = btn.dataset.rzt;
+  const benim = benimRozetlerim(id).slice();
+  const acik = !benim.includes(k);
+  if(acik && benim.length >= 2){ toast('En fazla 2 rozet: önce birini kaldır'); buzz([10,40,10]); return; }
+  const sayi = Object.assign({}, rozetSayilari(id));
+  sayi[k] = Math.max(0, (sayi[k]||0) + (acik?1:-1));
+  meclis.rozet.set(id, sayi);
+  setBenimRozetlerim(id, acik ? benim.concat(k) : benim.filter(x=>x!==k));
+  rozetAnim(btn, acik);
+  const {error} = await sb.from('rozet_oylar').insert({yemek_id:id, cihaz:deviceId(), rozet:k, aktif:acik});
+  if(error){
+    console.error(error);
+    // geri al
+    sayi[k] = Math.max(0, (sayi[k]||0) + (acik?-1:1));
+    meclis.rozet.set(id, sayi);
+    setBenimRozetlerim(id, benim);
+    rozetAnim(btn, !acik, true);
+    toast(/rozet_siniri/.test(error.message||'') ? 'En fazla 2 rozet: önce birini kaldır' : 'Rozet kaydedilemedi');
+  }
+}
+function rozetAnim(btn, acik, sessiz){
+  btn.classList.toggle('on', acik);
+  btn.setAttribute('aria-pressed', acik);
+  btn.classList.remove('carp','kalk','murekkep'); void btn.offsetWidth;
+  if(!sessiz){
+    btn.classList.add(acik ? 'carp' : 'kalk');
+    if(acik){
+      btn.classList.add('murekkep');
+      const kart = btn.closest('.oykart, .sonuckart');
+      if(kart){ kart.classList.remove('sars'); void kart.offsetWidth; kart.classList.add('sars'); }
+      buzz([8,30,14]);
+    } else buzz(6);
+  }
+  // sayı ve kart üstü çıkartmalar: sadece o parçalar yeniden yazılır
+  const id = btn.dataset.rzy, k = btn.dataset.rzt, n = (rozetSayilari(id)[k])||0;
+  const ad = btn.querySelector('.rz-ad'); if(ad) ad.innerHTML = ROZETLER[k].ad + (n?` <b>${n}</b>`:'');
+  document.querySelectorAll(`.rz-cik[data-rzy="${id}"]`).forEach(el=>{ el.innerHTML = cikartmaHtml(id); el.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); }); });
+}
+function rozetBagla(){
+  document.querySelectorAll('[data-rzt]').forEach(b=>{ b.onclick = ()=>rozetBas(b); });
+  document.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); });
 }
 
 // ---------- tambur ----------
@@ -1880,6 +2096,8 @@ function tbLigeGit(lig){
 
 // ---------- bağlama ----------
 function meclisBagla(){
+  rzBalon = null;
+  rozetBagla();
   const q = document.getElementById('mq');
   if(q){
     q.oninput = ()=>{
