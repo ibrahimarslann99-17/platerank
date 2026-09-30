@@ -758,6 +758,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 }
 /* ---------- Meclis listesi + halk kartı ---------- */
 .mliste{padding:4px 14px;}
+.crow-m .crow{border-bottom:none;padding:11px 0;animation:none;}
 .mrow{border-bottom:1px dashed var(--line);animation:fadeUp .35s ease both;animation-delay:calc(var(--i,0)*35ms);}
 .mrow:last-child{border-bottom:none;}
 .mr-bas{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer;}
@@ -1151,8 +1152,6 @@ let selectedFood = null;
 let acikSatirlar = new Set();
 let foodCache = {};   // cid -> [foods]
 let loadFailed = {};  // cid -> true if last fetch attempt errored and no cache exists yet
-let voteCache = {};   // cid -> {foodId:{S..D}}
-let sugCache = {};
 let arama = "", turSec = "hepsi", aramaSonuc = null;
 const TURLER = [
   {id:"hepsi", ad:"Tümü"}, {id:"kahvalti", ad:"Kahvaltı"}, {id:"ana", ad:"Ana yemek"},
@@ -1186,51 +1185,7 @@ async function loadCuisine(cid, force){
   loadFailed[cid] = false;
   uyandirmaBitti();
   foodCache[cid] = foods||[];
-  if(!voteCache[cid]) voteCache[cid] = {};
-  if(!sugCache[cid]) sugCache[cid] = [];
-  // Oylar ve oneriler listeyi cizmek icin gerekli degil: arkadan, paralel gelsinler.
-  if(force) ekstraYuklendi[cid] = false;
-  loadEkstra(cid);
 }
-const ekstraYuklendi = {};
-async function loadEkstra(cid){
-  if(ekstraYuklendi[cid]) return;
-  ekstraYuklendi[cid] = true;
-  const ids = (foodCache[cid]||[]).map(f=>f.id);
-  try{
-    const [votesRes, sugsRes] = await Promise.all([
-      ids.length ? sb.from('oy_durumu').select('yemek_id,lig,adet').in('yemek_id', ids)
-                 : Promise.resolve({data:[]}),
-      sb.from('oneriler').select('id,ad,kcal').eq('mutfak', cid).eq('durum','bekliyor').order('created_at',{ascending:false})
-    ]);
-    const vc = {};
-    (votesRes.data||[]).forEach(v=>{
-      if(!vc[v.yemek_id]) vc[v.yemek_id]={S:0,A:0,B:0,C:0,D:0};
-      vc[v.yemek_id][v.lig]=v.adet;
-    });
-    Object.assign(voteCache[cid], vc);
-    sugCache[cid] = (sugsRes.data||[]).map(s=>({...s, oy:0}));
-    if(sugCache[cid].length){
-      const sids = sugCache[cid].map(s=>s.id);
-      const {data: sv} = await sb.from('oneri_oylar').select('oneri_id').in('oneri_id', sids);
-      (sv||[]).forEach(v=>{ const s=sugCache[cid].find(x=>x.id===v.oneri_id); if(s) s.oy++; });
-    }
-  }catch(e){ ekstraYuklendi[cid] = false; return; }
-  // Oy verisi gelince sadece oyu gosteren modlari tazele; kullanici yaziyorsa dokunma.
-  // Ana liste (auto) oy verisini kullanmiyor; orada tazelemek gereksiz yere
-  // kullanicinin altindan DOM'u degistiriyordu. Sadece oyu gosteren modlar tazelenir.
-  const yaziyor = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
-  if(cid===currentCuisine && !yaziyor && ['comm','conflict'].indexOf(currentMode)>=0) render();
-}
-function communityTierOf(cid, foodId){
-  const v = voteCache[cid][foodId];
-  if(!v) return null;
-  let best=null, bestN=-1, total=0;
-  TIER_ORDER.forEach(t=>{ const n=v[t]||0; total+=n; if(n>bestN){bestN=n;best=t;} });
-  if(total===0) return null;
-  return {tier:best, total};
-}
-
 // ---------- render ----------
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function renderTurs(){
@@ -1382,6 +1337,7 @@ function render(){
   if(currentMode==='bilgi') renderAuthBar();
   wireUp();
   if(currentMode==='comm') meclisBagla();
+  else if(currentMode==='conflict'){ rzBalon = null; rozetBagla(); meclisListeBagla(); }
   animateBars();
   sbKontrol();
 }
@@ -1929,12 +1885,16 @@ function meclisListeBagla(){
       // sadece bu satırı yeniden yaz: listenin geri kalanı ve kullanıcı durumu yerinde kalır
       const f = mYemek(id);
       const i = +(getComputedStyle(r).getPropertyValue('--i')||0);
-      r.outerHTML = mSatirHtml(f, i);
+      r.outerHTML = r.dataset.tip==='c' ? celiskiSatirHtml(id, i) : mSatirHtml(f, i);
       const yeni = document.querySelector(`[data-mexp="${id}"]`);
       if(yeni){ yeni.style.animation = 'none'; meclisListeBagla(); rozetBagla(); if(mAcik.has(id)) detayiGoster(yeni); }
     };
   });
-  document.querySelectorAll('[data-moyla]').forEach(b=>{ b.onclick = (e)=>{ e.stopPropagation(); buzz(8); oyAc(b.dataset.moyla); }; });
+  document.querySelectorAll('[data-moyla]').forEach(b=>{ b.onclick = (e)=>{
+    e.stopPropagation(); buzz(8);
+    if(currentMode!=='comm'){ currentMode = 'comm'; selectedFood = null; }   // Çelişki'den gelince Meclis'e geç
+    oyAc(b.dataset.moyla);
+  }; });
   const md = document.getElementById('m-daha');
   if(md) md.onclick = ()=>{ mListeN += 20; render(); };
 }
@@ -2313,7 +2273,7 @@ function meclisBagla(){
       const s = meclis.sahne.find(x=>x.id===id);
       if(s){
         s.oy++;
-        if(s.oy>=5){ buzz([20,60,20,60,40]); toast('"'+s.ad+'" yayına girdi!'); delete foodCache[s.mutfak]; delete foodCache['hepsi']; ekstraSifirla(); await meclisYukle(true); return; }
+        if(s.oy>=5){ buzz([20,60,20,60,40]); toast('"'+s.ad+'" yayına girdi!'); delete foodCache[s.mutfak]; delete foodCache['hepsi']; await meclisYukle(true); return; }
       }
       buzz(16); toast('Oyun sahnede');
       render();
@@ -2349,7 +2309,7 @@ function saatSil(){
   const d = document.getElementById('saat-deger'); if(d) d.textContent = 'isteğe bağlı';
   const b = document.getElementById('saat-sil'); if(b) b.remove();
 }
-function ekstraSifirla(){ Object.keys(ekstraYuklendi).forEach(k=>{ ekstraYuklendi[k] = false; }); }
+
 
 async function oyGonder(){
   if(!oyDurum || !oyDurum.lig || !votingOpen) return;
@@ -2368,7 +2328,6 @@ async function oyGonder(){
   }
   setMyVote(oyDurum.id, oyDurum.lig);
   setBenimSaatim(oyDurum.id, saat_dk);
-  ekstraSifirla();
   const {data} = await sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').eq('yemek_id', oyDurum.id).maybeSingle();
   if(data) meclis.ozet.set(data.yemek_id, data);
   oySonuc = {id:oyDurum.id, lig:oyDurum.lig, saat_dk, oyAdet: data ? data.oy : 1};
@@ -2606,71 +2565,105 @@ function renderProtein(){
   return html;
 }
 const TIER_NUM_X = null;
+// Çelişki: k hesaplandıysa ölçüt saat bazlı puan farkı (halk puanı - site puanı),
+// hesaplanmadıysa eski lig farkı. Satıra basınca Meclis'teki halk kartı açılır.
+let celiskiVeri = new Map();   // yemek id -> satır verisi (tek satırı yeniden çizmek için)
+function celiskiSatirHtml(id, i){
+  const r = celiskiVeri.get(id);
+  if(!r) return '';
+  const acik = mAcik.has(id);
+  let ic;
+  if(r.tip==='bekleyen'){
+    const ut = acikmaSuresi(r.f);
+    ic = `<div class="name">${esc(r.f.ad)}
+        <small>${r.votes===0?'hiç oylanmamış':r.votes+' oy · halk: '+r.comm} · ${r.f.kcal} kcal${ut?' · ⏱ ~'+saatStr(ut)+' sa':''}</small>
+      </div>
+      <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span></div>`;
+  } else {
+    let verdict, vclass, story;
+    if(r.puanli){
+      if(r.yon > 0){ verdict='Hesap Küçümsüyor'; vclass='v-under'; story='Meclis daha uzun tok diyor'; }
+      else if(r.yon < 0){ verdict='Hesap Abartıyor'; vclass='v-trap'; story='Midede çabuk bitiyor'; }
+      else { verdict='Uzlaşma'; vclass='v-agree'; story='Hesap ve mide aynı ligde'; }
+    }
+    else if(r.yon > 0){ verdict='Tatlı Tuzak'; vclass='v-trap'; story='Halk seviyor, miden doymuyor'; }
+    else if(r.yon < 0){ verdict='Hafife Alınan'; vclass='v-under'; story='Doyurucu ama hak ettiği sevgiyi görmüyor'; }
+    else { verdict='Uzlaşma'; vclass='v-agree'; story='Kafa ve mide aynı fikirde'; }
+    const g = r.puanli ? null : sekerSoku(r.f);
+    let ekstra = '';
+    if(g && r.yon > 0 && g.seviye===3){ ekstra = `<span class="verdict v-trap">🚨 şeker şoku: roket · "tok tutuyor" hissi ${saatStr(acikmaSuresi(r.f))} saatte çöker</span>`; }
+    else if(g && r.yon < 0 && g.seviye===1){ ekstra = `<span class="verdict v-under">⏱ ~${saatStr(acikmaSuresi(r.f))} sa tok tutar · halk daha farkında değil</span>`; }
+    const alt = r.puanli ? `${r.votes} oy · medyan ${saatYaz(r.dk)} · halk ${r.hp} / site ${r.f.doyuruculuk}` : `${r.votes} oy · ${r.f.kcal} kcal`;
+    ic = `<div class="name">${esc(r.f.ad)}
+        <small>${alt}</small>
+        <span class="verdict ${vclass}">${verdict} · ${story}</span>
+        ${ekstra}
+      </div>
+      <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span><span class="arrow">→</span><span class="tp-${r.comm}">${r.comm}</span></div>
+      <div class="gap ${r.gapClass}">${r.diff>0?'+':''}${r.diff}</div>`;
+  }
+  return `<div class="mrow crow-m${acik?' acik':''}" style="--i:${Math.min(i||0,12)}" data-mexp="${id}" data-tip="c"><div class="mr-bas crow">${ic}</div>${acik?halkKartHtml(r.f):''}</div>`;
+}
 function renderConflict(){
+  if(!meclis.yuklendi){ meclisYukle(); return '<p class="note">Meclis kayıtları geliyor…</p>'+skeleton(5); }
   const cid = currentCuisine;
   const foods = foodCache[cid]||[];
-  const rows = [];
-  const undiscovered = [];
+  const k = mKDegeri();
+  const rows = [], undiscovered = [];
+  celiskiVeri = new Map();
   foods.forEach(f=>{
+    mYemekKaydet([f]);
     const sci = satietyToTier(f.doyuruculuk);
-    const ct = communityTierOf(cid, f.id);
-    if(ct){
-      const diff = TIER_NUM[ct.tier] - TIER_NUM[sci];
-      rows.push({f, sci, comm:ct.tier, votes:ct.total, diff, mag:Math.abs(diff)});
-      if((sci==='S'||sci==='A') && diff<=-2) undiscovered.push({f, sci, comm:ct.tier, votes:ct.total});
-    } else {
-      if(sci==='S'||sci==='A') undiscovered.push({f, sci, comm:null, votes:0});
+    const o = meclis.ozet.get(f.id);
+    const hl = halkLigi(o);
+    if(k!=null){
+      // saat bazlı: sadece medyan saati olan (ve saat sorulan) yemekler
+      if(o && o.medyan_dk!=null && !saatsiz(f)){
+        const hp = halkPuani(o.medyan_dk, f.kcal);
+        const comm = satietyToTier(hp);
+        const diff = hp - f.doyuruculuk;
+        const yon = comm===sci ? 0 : Math.sign(diff);
+        const mag = Math.abs(diff);
+        rows.push({tip:'celiski', puanli:true, f, sci, comm, votes:o.oy, dk:o.medyan_dk, hp, diff, yon, mag, gapClass: mag>=100?'gap-hi':(mag>=50?'gap-mid':'gap-lo')});
+        if((sci==='S'||sci==='A') && TIER_NUM[comm]-TIER_NUM[sci] <= -2) undiscovered.push({tip:'bekleyen', f, sci, comm, votes:o.oy});
+        return;
+      }
+    } else if(hl){
+      const diff = TIER_NUM[hl] - TIER_NUM[sci];
+      const mag = Math.abs(diff);
+      rows.push({tip:'celiski', puanli:false, f, sci, comm:hl, votes:o.oy, diff, yon:Math.sign(diff), mag, gapClass: mag>=3?'gap-hi':(mag>=2?'gap-mid':'gap-lo')});
+      if((sci==='S'||sci==='A') && diff<=-2) undiscovered.push({tip:'bekleyen', f, sci, comm:hl, votes:o.oy});
+      return;
     }
+    if(sci==='S'||sci==='A') undiscovered.push({tip:'bekleyen', f, sci, comm:hl, votes:o?o.oy:0});
   });
   rows.sort((a,b)=> b.mag - a.mag);
-  let html = `<p class="note">Kafan ne diyor, miden ne diyor? Bilim ligini (doyuruculuk) halk oyuyla (sevgi) karşılaştırır. Fark ne kadar büyükse çelişki o kadar sert.</p>`;
+  const n = meclis.k ? meclis.k.toplam_saatli : 0;
+  let html = `<p class="note">Kafan ne diyor, miden ne diyor? Hesaplanan doyuruculuğu Meclis-i Mide'nin oylarıyla karşılaştırır. ${k!=null
+    ? 'Ölçüt saat: meclisin medyan tok tutma süresi puana çevrilir, fark ne kadar büyükse çelişki o kadar sert.'
+    : `Şimdilik ölçüt lig farkı; sitede ${K_ESIK} saatli oy birikince (şu an ${Math.min(n,K_ESIK)}/${K_ESIK}) saat bazlı puan farkına geçer.`} Satıra dokun, halkın kartını gör.</p>`;
   if(rows.length===0){
-    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Henüz çelişki yok, çünkü kimse oy vermemiş. Önce Meclis-i Mide'den birkaç yemeği oyla, sonra buraya dön.</p></div>`;
+    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Bu mutfakta henüz çelişki yok. Meclis-i Mide'den birkaç yemeği oyla, sonra buraya dön.</p></div>`;
   } else {
-    html += '<div class="card">';
-    rows.forEach(r=>{
-      let verdict, vclass, story;
-      if(r.diff > 0){ verdict='Tatlı Tuzak'; vclass='v-trap'; story='Halk seviyor, miden doymuyor'; }
-      else if(r.diff < 0){ verdict='Hafife Alınan'; vclass='v-under'; story='Doyurucu ama hak ettiği sevgiyi görmüyor'; }
-      else { verdict='Uzlaşma'; vclass='v-agree'; story='Kafa ve mide aynı fikirde'; }
-      const gapClass = r.mag>=3?'gap-hi':(r.mag>=2?'gap-mid':'gap-lo');
-      const g = sekerSoku(r.f);
-      let ekstra = '';
-      if(g && r.diff > 0 && g.seviye===3){ ekstra = `<span class="verdict v-trap">🚨 şeker şoku: roket · "tok tutuyor" hissi ${saatStr(acikmaSuresi(r.f))} saatte çöker</span>`; }
-      else if(g && r.diff < 0 && g.seviye===1){ ekstra = `<span class="verdict v-under">⏱ ~${saatStr(acikmaSuresi(r.f))} sa tok tutar · halk daha farkında değil</span>`; }
-      html += `<div class="crow">
-        <div class="name">${esc(r.f.ad)}
-          <small>${r.votes} oy · ${r.f.kcal} kcal</small>
-          <span class="verdict ${vclass}">${verdict} · ${story}</span>
-          ${ekstra}
-          ${metrHtml(r.f)}
-        </div>
-        <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span><span class="arrow">→</span><span class="tp-${r.comm}">${r.comm}</span></div>
-        <div class="gap ${gapClass}">${r.diff>0?'+':''}${r.diff}</div>
-      </div>`;
-    });
+    html += '<div class="card mliste">';
+    rows.forEach((r,i)=>{ celiskiVeri.set(r.f.id, r); html += celiskiSatirHtml(r.f.id, i); });
     html += '</div>';
   }
-  // Kesfedilmeyi Bekleyenler
   html += `<div class="section-title">Keşfedilmeyi Bekleyenler</div>
-  <p class="note">Bilim S/A ligi verdiği hâlde halkın henüz keşfetmediği (hiç oylanmamış ya da düşük oylanmış) yemekler.</p>`;
+  <p class="note">Hesabın S/A ligi verdiği hâlde meclisin henüz keşfetmediği (hiç oylanmamış ya da düşük oylanmış) yemekler.</p>`;
+  // yukarıda çelişki satırı olarak zaten görünenler burada tekrar etmez
+  for(let j=undiscovered.length-1; j>=0; j--) if(celiskiVeri.has(undiscovered[j].f.id)) undiscovered.splice(j,1);
   if(undiscovered.length===0){
     html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Bu mutfakta bekleyen yok, halk ödevini yapmış.</p></div>`;
   } else {
     undiscovered.sort((a,b)=> TIER_NUM[b.sci]-TIER_NUM[a.sci] || a.votes-b.votes);
-    html += '<div class="card">';
-    undiscovered.forEach(u=>{
-      const ut = acikmaSuresi(u.f);
-      html += `<div class="crow">
-        <div class="name">${esc(u.f.ad)}
-          <small>${u.votes===0?'hiç oylanmamış':u.votes+' oy · halk: '+u.comm} · ${u.f.kcal} kcal${ut?' · ⏱ ~'+saatStr(ut)+' sa':''}</small>
-        </div>
-        <div class="tierpair"><span class="tp-${u.sci}">${u.sci}</span></div>
-      </div>`;
-    });
+    html += '<div class="card mliste">';
+    undiscovered.forEach((u,i)=>{ celiskiVeri.set(u.f.id, u); html += celiskiSatirHtml(u.f.id, i); });
     html += '</div>';
   }
-  html += `<p class="note" style="margin-top:12px;">Sol harf = bilim, sağ harf = halk. <b>Tatlı Tuzak</b>'lar diyetini sessizce bozan, <b>Hafife Alınan</b>'lar keşfetmen gereken yemekler.</p>`;
+  html += k!=null
+    ? `<p class="note" style="margin-top:12px;">Sol harf = hesap, sağ harf = meclisin medyan saatinden çıkan lig. Sağdaki sayı puan farkı.</p>`
+    : `<p class="note" style="margin-top:12px;">Sol harf = hesap, sağ harf = meclis. <b>Tatlı Tuzak</b>'lar diyetini sessizce bozan, <b>Hafife Alınan</b>'lar keşfetmen gereken yemekler.</p>`;
   return html;
 }
 
