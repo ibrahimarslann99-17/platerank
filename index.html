@@ -756,6 +756,39 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
   .rz-t.on .rz-i{transform:none;}
   .rz-t.murekkep::after{animation:none;}
 }
+/* ---------- Meclis listesi + halk kartı ---------- */
+.mliste{padding:4px 14px;}
+.mrow{border-bottom:1px dashed var(--line);animation:fadeUp .35s ease both;animation-delay:calc(var(--i,0)*35ms);}
+.mrow:last-child{border-bottom:none;}
+.mr-bas{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer;}
+.mr-ic{flex:none;width:20px;text-align:center;font-size:15px;}
+.mr-ad{flex:1;min-width:0;font-weight:600;font-size:14px;}
+.mr-ad small{display:block;font-weight:400;font-size:11px;color:var(--ink-muted);margin-top:2px;}
+.mr-rz{flex:none;display:flex;gap:2px;}
+.mr-rz svg{display:block;}
+.mr-lig{flex:none;width:22px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;}
+.mrow.acik .mr-ad{color:var(--teal-dark);}
+.halkkart{position:relative;background:var(--paper);border-radius:var(--r-sm);padding:12px 12px 10px;margin:0 0 12px;animation:fadeUp .25s ease both;}
+.hk-ust{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--teal-dark);}
+.halkkart .dist{margin-top:8px;}
+.halkkart .dbar{background:var(--card);height:7px;}
+.hk-kutular{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px;}
+.hk-kutular > div{background:var(--card);border-radius:10px;padding:9px 8px;min-width:0;}
+.hk-kutular b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;line-height:1.1;}
+.hk-kutular span{display:block;font-size:10.5px;color:var(--ink-muted);line-height:1.3;margin-top:3px;}
+.hk-rz{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.hk-r{display:inline-flex;align-items:center;gap:6px;border:none;background:var(--card);border-radius:999px;padding:3px 10px 3px 4px;font-family:'Figtree',system-ui,sans-serif;font-size:11.5px;font-weight:600;color:var(--ink);cursor:pointer;}
+.hk-r svg{display:block;}
+.hk-yok{font-size:11.5px;color:var(--ink-muted);margin-top:10px;font-style:italic;}
+.hk-oyla{display:inline-block;margin-top:10px;}
+.m-bekle{padding:16px;}
+.m-bekle .mb-b{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;}
+.m-bekle p{font-size:13px;color:var(--ink-muted);line-height:1.5;margin:6px 0 12px;}
+.mb-cip{display:flex;flex-wrap:wrap;gap:6px;}
+.mb-cip button{border:1px solid var(--line-strong);background:var(--paper);border-radius:999px;padding:7px 12px;font-family:'Figtree',system-ui,sans-serif;font-size:12.5px;color:var(--ink);cursor:pointer;}
+.mb-cip button b{color:var(--teal);margin-left:3px;}
+.m-daha{display:block;margin:4px auto 0;}
+@media (prefers-reduced-motion: reduce){ .mrow,.halkkart{animation:mSolma .2s ease both;} }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1623,6 +1656,7 @@ async function meclisYukle(force){
         (sv||[]).forEach(v=>{ const s = sahne.find(x=>x.id===v.oneri_id); if(s) s.oy++; });
       }
       meclis.sahne = sahne;
+      await meclisYemekleriGetir();
       meclis.yuklendi = true;
     }catch(e){ console.error('meclis verisi alınamadı', e); }
     meclis.yukleniyor = null;
@@ -1776,6 +1810,7 @@ function meclisBolumHtml(){
   if(!votingOpen) h += '<div class="card bos">Oylama geçici olarak kapalı.</div>';
   else if(oySonuc) h += sonucKartHtml();
   else if(oyDurum) h += oyKartHtml();
+  h += meclisListeHtml();
   h += meclisSahneHtml();
   return h;
 }
@@ -1785,11 +1820,130 @@ function renderComm(){
   return meclisBolumHtml();
 }
 
+// ---------- Meclis sayfası: Oylananlar + halk kartı ----------
+const MECLIS_ESIK = 5;      // bu kadar oydan azı listede görünmez
+let mAcik = new Set();       // açık halk kartları (yemek id); render'ı aşar
+let mListeN = 20;            // Oylananlar'da gösterilen satır sayısı
+
+async function meclisYemekleriGetir(){
+  const eksik = [...meclis.ozet.keys()].filter(id=>!mYemek(id));
+  for(let i=0; i<eksik.length; i+=100){
+    const {data} = await sb.from('yemekler').select(YEMEK_ALAN).in('id', eksik.slice(i, i+100));
+    mYemekKaydet(data);
+  }
+  if(!meclis.kesifYuklendi){
+    const {data, error} = await sb.from('yemekler').select(YEMEK_ALAN).eq('mutfak','hm').order('created_at',{ascending:false}).limit(60);
+    if(!error){ mYemekKaydet(data); meclis.kesifler = (data||[]).map(f=>f.id); meclis.kesifYuklendi = true; }
+  }
+}
+
+function halkKartHtml(f){
+  const o = meclis.ozet.get(f.id) || {oy:0,s:0,a:0,b:0,c:0,d:0,saatli:0,medyan_dk:null};
+  const maxc = Math.max(1, ...TIER_ORDER.map(t=>o[t.toLowerCase()]||0));
+  const dagilim = TIER_ORDER.map(t=>{ const n = o[t.toLowerCase()]||0;
+    return `<div class="dl"><span class="tp-${t}">${t}</span><div class="dbar"><div class="dfill dfill-${t}" style="width:${(n/maxc)*100}%"></div></div><span class="dn">${n}</span></div>`; }).join('');
+  const siteLig = satietyToTier(f.doyuruculuk);
+  const hp = o.medyan_dk!=null ? halkPuani(o.medyan_dk, f.kcal) : null;
+  const k = mKDegeri();
+  let halkKutu;
+  if(hp!=null) halkKutu = `<b class="lig-${satietyToTier(hp)}">${hp}</b><span>halk puanı · ${satietyToTier(hp)}</span>`;
+  else if(o.medyan_dk!=null) halkKutu = `<b>–</b><span>halk puanı ${K_ESIK} saatli oyla açılır (${Math.min(meclis.k?meclis.k.toplam_saatli:0,K_ESIK)}/${K_ESIK})</span>`;
+  else halkKutu = `<b>–</b><span>halk puanı için saatli oy yok</span>`;
+  if(saatsiz(f)) halkKutu = `<b>–</b><span>${f.tur==='icecek'?'içecekte':'malzemede'} saat sorulmaz</span>`;
+  const s = rozetSayilari(f.id);
+  const rz = ELLE_ROZET.filter(x=>(s[x]||0)>0).sort((a,b)=>s[b]-s[a]);
+  const oto = otoRozet(o);
+  if(oto) rz.unshift(oto);
+  const rzHtml = rz.length ? `<div class="hk-rz">${rz.map(x=>`<button class="hk-r" data-rzb="${x}" data-rzy="${f.id}">${rozetSvg(x,28)}<span>${ROZETLER[x].ad}${ROZETLER[x].oto?'':' · '+s[x]}</span></button>`).join('')}</div>` : '<div class="hk-yok">Henüz rozet basılmamış.</div>';
+  return `<div class="halkkart rz-kap">
+    <div class="hk-ust"><span>Halkın ligi</span><span>${o.oy} oy</span></div>
+    <div class="dist">${dagilim}</div>
+    <div class="hk-kutular">
+      <div><b>${o.medyan_dk!=null?saatYaz(o.medyan_dk):'–'}</b><span>medyan tokluk${o.saatli?' · '+o.saatli+' kişi':''}</span></div>
+      <div>${halkKutu}</div>
+      <div><b class="lig-${siteLig}">${f.doyuruculuk}</b><span>site puanı · ${siteLig}</span></div>
+    </div>
+    ${rzHtml}
+    <button class="link-btn hk-oyla" data-moyla="${f.id}">${benimOyum(f.id)?'Oyumu değiştir':'Sen de oyla'} →</button>
+  </div>`;
+}
+
+function mSatirHtml(f, i){
+  const o = meclis.ozet.get(f.id);
+  const hl = halkLigi(o);
+  const acik = mAcik.has(f.id);
+  const ust = enCokRozet(f.id, 2);
+  const oto = otoRozet(o);
+  const mini = (oto?[oto]:[]).concat(ust).slice(0,2).map(x=>rozetSvg(x,20)).join('');
+  const alt = [o ? o.oy+' oy' : 'oy yok'];
+  if(o && o.medyan_dk!=null) alt.push('medyan '+saatYaz(o.medyan_dk));
+  alt.push(f.kcal+' kcal');
+  return `<div class="mrow${acik?' acik':''}" style="--i:${Math.min(i,12)}" data-mexp="${f.id}">
+    <div class="mr-bas">
+      <span class="mr-ic">${mutfakIc(f.mutfak)}</span>
+      <div class="mr-ad">${esc(f.ad)}<small>${alt.join(' · ')}</small></div>
+      <span class="mr-rz">${mini}</span>
+      ${hl?`<span class="mr-lig lig-${hl}">${hl}</span>`:'<span class="mr-lig" style="color:var(--line-strong)">?</span>'}
+    </div>
+    ${acik?halkKartHtml(f):''}
+  </div>`;
+}
+
+function meclisListeHtml(){
+  if(!meclis.yuklendi) return '<div class="section-title">Oylananlar</div>'+skeleton(4);
+  let h = '<div class="section-title">Oylananlar</div>';
+  const hepsi = [...meclis.ozet.values()].filter(o=>mYemek(o.yemek_id));
+  const gecen = hepsi.filter(o=>o.oy >= MECLIS_ESIK).sort((a,b)=> (b.son_oy||'').localeCompare(a.son_oy||''));
+  const esikte = hepsi.filter(o=>o.oy < MECLIS_ESIK).sort((a,b)=> b.oy-a.oy || (b.son_oy||'').localeCompare(a.son_oy||''));
+  if(!gecen.length){
+    h += `<div class="card m-bekle"><div class="mb-b">Meclis toplanıyor</div>
+      <p>Bir yemek ${MECLIS_ESIK} oy alınca burada, halk kartıyla görünür. Eşiğe en yakın olanlar:</p>
+      ${esikte.length ? '<div class="mb-cip">'+esikte.slice(0,8).map(o=>{ const f = mYemek(o.yemek_id); return `<button data-moyla="${f.id}">${esc(f.ad)} <b>${o.oy}/${MECLIS_ESIK}</b></button>`; }).join('')+'</div>' : '<p style="margin:0">Henüz hiç oy yok. İlk oyu sen ver.</p>'}
+    </div>`;
+  } else {
+    h += '<p class="note">En son oylananlar üstte. Satıra dokun, halkın kartını gör.</p><div class="card mliste">';
+    gecen.slice(0, mListeN).forEach((o,i)=>{ h += mSatirHtml(mYemek(o.yemek_id), i); });
+    h += '</div>';
+    if(gecen.length > mListeN) h += `<button class="link-btn m-daha" id="m-daha">${gecen.length - mListeN} yemek daha</button>`;
+    if(esikte.length) h += `<p class="note" style="margin-top:10px">Eşikte bekleyen ${esikte.length} yemek var; ${MECLIS_ESIK} oya ulaşınca listeye girerler.</p>`;
+  }
+  return h;
+}
+
+function kesifRafHtml(){
+  const ids = (meclis.kesifler||[]).filter(id=>mYemek(id));
+  if(!ids.length) return '';
+  let h = '<p class="note" style="margin-bottom:8px"><b>Rafa girenler.</b> 5 ateş oyuyla yayına giren keşifler.</p><div class="card mliste">';
+  ids.forEach((id,i)=>{ h += mSatirHtml(mYemek(id), i); });
+  return h + '</div>';
+}
+
+function meclisListeBagla(){
+  document.querySelectorAll('[data-mexp]').forEach(r=>{
+    const bas = r.querySelector('.mr-bas');
+    if(!bas) return;
+    bas.onclick = ()=>{
+      const id = r.dataset.mexp;
+      buzz(6);
+      if(mAcik.has(id)) mAcik.delete(id); else mAcik.add(id);
+      // sadece bu satırı yeniden yaz: listenin geri kalanı ve kullanıcı durumu yerinde kalır
+      const f = mYemek(id);
+      const i = +(getComputedStyle(r).getPropertyValue('--i')||0);
+      r.outerHTML = mSatirHtml(f, i);
+      const yeni = document.querySelector(`[data-mexp="${id}"]`);
+      if(yeni){ yeni.style.animation = 'none'; meclisListeBagla(); rozetBagla(); if(mAcik.has(id)) detayiGoster(yeni); }
+    };
+  });
+  document.querySelectorAll('[data-moyla]').forEach(b=>{ b.onclick = (e)=>{ e.stopPropagation(); buzz(8); oyAc(b.dataset.moyla); }; });
+  const md = document.getElementById('m-daha');
+  if(md) md.onclick = ()=>{ mListeN += 20; render(); };
+}
+
 // ---------- halkın keşifleri: öneri sahnesi (tüm mutfaklar) ----------
 const ONERI_MUTFAK = CUISINES.filter(c=>['hepsi','temel','zincir','market'].indexOf(c.id)<0);
 function meclisSahneHtml(){
-  let h = `<div class="section-title">Halkın Keşifleri</div>
-  <p class="note">Topluluğun önerdiği yemekler. 5 ateş oyu toplayan otomatik yayına girer.</p>`;
+  let h = `<div class="section-title">Halkın Keşifleri</div>` + kesifRafHtml() +
+  `<p class="note" style="margin-bottom:8px"><b>Sahne.</b> Topluluğun önerdiği yemekler; 5 ateş oyu toplayan otomatik yayına girer.</p>`;
   const sugs = meclis.sahne.slice().sort((a,b)=>b.oy-a.oy);
   if(!sugs.length){
     h += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Sahne boş, ilk öneriyi sen yap.</p></div>`;
@@ -1979,6 +2133,8 @@ function rozetAnim(btn, acik, sessiz){
       buzz([8,30,14]);
     } else buzz(6);
   }
+  // açık balon artık kart üstünde olmayan bir rozeti gösteriyorsa kapat
+  if(rzBalon && rzBalon.id===btn.dataset.rzy && enCokRozet(rzBalon.id,2).indexOf(rzBalon.k)<0 && !ROZETLER[rzBalon.k].oto) balonKapat();
   // sayı ve kart üstü çıkartmalar: sadece o parçalar yeniden yazılır
   const id = btn.dataset.rzy, k = btn.dataset.rzt, n = (rozetSayilari(id)[k])||0;
   const ad = btn.querySelector('.rz-ad'); if(ad) ad.innerHTML = ROZETLER[k].ad + (n?` <b>${n}</b>`:'');
@@ -2098,6 +2254,7 @@ function tbLigeGit(lig){
 function meclisBagla(){
   rzBalon = null;
   rozetBagla();
+  meclisListeBagla();
   const q = document.getElementById('mq');
   if(q){
     q.oninput = ()=>{
