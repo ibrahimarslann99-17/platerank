@@ -6,5 +6,31 @@
     "api/menu-card.js": {
       "includeFiles": "node_modules/**"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/tt",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ig",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/eksi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/r",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/x",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/yt",
+      "destination": "/index.html"
+    }
+  ]
 }

@@ -1012,9 +1012,14 @@ function renderAuthBar(){
     };
   }
 }
-((event, session)=>{
-  if(event==='SIGNED_IN' && session && session.user){
-    acctYukle(session.user);
+// 20.09 yeniden tasarımında bu kayıt düşmüştü: giriş yapan kimse hesaba bağlanmıyordu.
+// INITIAL_SESSION: sayfa açılırken kayıtlı oturum; SIGNED_IN: magic link dönüşü.
+// Supabase çağrıları geri çağırmanın içinde beklenmez (kilitlenme riski), bir sonraki tura ertelenir.
+sb.auth.onAuthStateChange((event, session)=>{
+  if((event==='SIGNED_IN' || event==='INITIAL_SESSION') && session && session.user){
+    if(currentUser && currentUser.id===session.user.id) return;
+    const u = session.user;
+    setTimeout(()=>acctYukle(u), 0);
   } else if(event==='SIGNED_OUT'){
     currentUser = null; acctFavIds = null; acctMenuIds = null;
     renderAuthBar();
@@ -1193,11 +1198,26 @@ async function loadSettings(){
   document.getElementById('banner').innerHTML = votingOpen ? '' :
     '<div class="banner">Oylama geçici olarak durduruldu. Sıralamalar görüntülenebilir, yeni oy kabul edilmiyor.</div>';
 }
+// Sunucu tek istekte en fazla 1000 satır döndürüyor; eskiden limit(400) Tümü'nü kesiyordu.
+// range ile sayfa sayfa hepsini çek. Sıralama id ile sabitlenir ki sayfalar kaymasın.
+const SAYFA = 500;
+async function tumunuCek(sorgu){
+  let hepsi = [];
+  for(let bas = 0; ; bas += SAYFA){
+    const {data, error} = await sorgu().range(bas, bas + SAYFA - 1);
+    if(error) return {data:null, error};
+    hepsi = hepsi.concat(data || []);
+    if(!data || data.length < SAYFA) return {data:hepsi, error:null};
+  }
+}
 async function loadCuisine(cid, force){
   if(foodCache[cid] && !force) return;
-  let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak');
-  if(cid !== 'hepsi') qy = qy.eq('mutfak', cid);
-  const {data: foods, error} = await qy.order('doyuruculuk',{ascending:false}).limit(400);
+  const sorgu = ()=>{
+    let qy = sb.from('yemekler').select('id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak');
+    if(cid !== 'hepsi') qy = qy.eq('mutfak', cid);
+    return qy.order('doyuruculuk',{ascending:false}).order('id',{ascending:true});
+  };
+  const {data: foods, error} = await tumunuCek(sorgu);
   if(error){
     console.error(error);
     loadFailed[cid] = true;
