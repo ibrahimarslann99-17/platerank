@@ -790,6 +790,27 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .mb-cip button b{color:var(--teal);margin-left:3px;}
 .m-daha{display:block;margin:4px auto 0;}
 @media (prefers-reduced-motion: reduce){ .mrow,.halkkart{animation:mSolma .2s ease both;} }
+/* ---------- keşif formu ---------- */
+.kesif label{margin-top:4px;}
+.kf-ipucu{text-transform:none;letter-spacing:0;font-size:11px;opacity:.8;margin-left:4px;}
+#kf-kalemler{display:grid;gap:6px;margin-bottom:8px;}
+#kf-kalemler:empty{display:none;}
+.kf-kalem{display:flex;align-items:center;gap:8px;background:var(--paper);border-radius:12px;padding:6px 6px 6px 12px;}
+.kf-ad{flex:1;min-width:0;font-size:13.5px;font-weight:600;}
+.kf-ad small{display:block;font-weight:400;font-size:10.5px;color:var(--ink-muted);}
+.kesif input.kf-g{width:74px;flex:none;margin:0;text-align:right;font-size:16px;padding:7px 8px;background:var(--card);}
+.kf-birim{font-size:12px;color:var(--ink-muted);}
+.kf-sil{flex:none;width:32px;height:32px;border:none;border-radius:50%;background:none;color:var(--ink-muted);font-size:20px;cursor:pointer;}
+.kf-ekle{position:relative;}
+.kf-ekle input{margin-bottom:0;font-size:16px;}
+.kf-ekle .m-sonuc{margin:6px 0 0;}
+.kf-toplam{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;background:var(--teal-wash);border-radius:12px;padding:10px 12px;margin:10px 0 12px;font-size:12px;color:var(--ink-muted);}
+.kf-toplam b{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;color:var(--teal-dark);}
+.kf-bos{font-style:italic;}
+.kesif textarea{width:100%;font-family:'Figtree',system-ui,sans-serif;font-size:16px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--paper);color:var(--ink);margin-bottom:12px;resize:vertical;}
+.sh-tarif{font-style:italic;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hk-ic{font-size:12px;color:var(--ink-muted);line-height:1.5;margin-top:10px;background:var(--card);border-radius:10px;padding:9px 10px;}
+.hk-ic b{color:var(--ink);font-weight:600;}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1597,8 +1618,9 @@ async function meclisYukle(force){
       const [oz, kk, sah, rz] = await Promise.all([
         sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').limit(5000),
         sb.from('meclis_k').select('toplam_saatli,uygun_yemek,k,site_min,site_max').maybeSingle(),
-        sb.from('oneriler').select('id,mutfak,ad,kcal').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60),
-        sb.from('rozet_durumu').select('yemek_id,rozet,adet').limit(5000)
+        sb.from('oneriler').select('id,mutfak,ad,kcal,protein,lif,yag,seker,seker_eksik,tarif').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60),
+        sb.from('rozet_durumu').select('yemek_id,rozet,adet').limit(5000),
+        temel100Yukle()
       ]);
       if(oz.error) throw oz.error;
       meclis.ozet = new Map((oz.data||[]).map(r=>[r.yemek_id, r]));
@@ -1788,7 +1810,7 @@ async function meclisYemekleriGetir(){
     mYemekKaydet(data);
   }
   if(!meclis.kesifYuklendi){
-    const {data, error} = await sb.from('yemekler').select(YEMEK_ALAN).eq('mutfak','hm').order('created_at',{ascending:false}).limit(60);
+    const {data, error} = await sb.from('yemekler').select(YEMEK_ALAN+',icindekiler,tarif').eq('mutfak','hm').order('created_at',{ascending:false}).limit(60);
     if(!error){ mYemekKaydet(data); meclis.kesifler = (data||[]).map(f=>f.id); meclis.kesifYuklendi = true; }
   }
 }
@@ -1819,6 +1841,7 @@ function halkKartHtml(f){
       <div>${halkKutu}</div>
       <div><b class="lig-${siteLig}">${f.doyuruculuk}</b><span>site puanı · ${siteLig}</span></div>
     </div>
+    ${icindekilerHtml(f)}
     ${rzHtml}
     <button class="link-btn hk-oyla" data-moyla="${f.id}">${benimOyum(f.id)?'Oyumu değiştir':'Sen de oyla'} →</button>
   </div>`;
@@ -1913,7 +1936,8 @@ function meclisSahneHtml(){
       const voted = mySugVotes()[s.id];
       h += `<div class="crow" style="--i:${Math.min(i,12)}">
         <div class="name">${mutfakIc(s.mutfak)} ${esc(s.ad)}
-          <small>${s.kcal?s.kcal+' kcal · ':''}${s.oy}/5 oy</small>
+          <small>${s.kcal?s.kcal+' kcal · ':''}${s.protein!=null?'protein '+s.protein+' g · ':''}${s.oy}/5 oy</small>
+          ${s.tarif?`<small class="sh-tarif">${esc(s.tarif)}</small>`:''}
           <div class="sugbar"><div class="sugfill" style="width:${Math.min(100,(s.oy/5)*100)}%"></div></div>
         </div>
         <button class="btn sm ${voted?'secondary':''}" data-msug="${s.id}" ${voted?'disabled':''}>${voted?'Oyladın ✓':'🔥 İsterim'}</button>
@@ -1921,19 +1945,7 @@ function meclisSahneHtml(){
     });
     h += '</div>';
   }
-  h += `<div class="section-title">Bir keşfin mi var? 🔦</div>
-  <div class="card">
-    <p class="note" style="margin-top:0">Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer.</p>
-    <label for="m-nf-mutfak">Mutfak</label>
-    <select id="m-nf-mutfak" class="m-sec">${ONERI_MUTFAK.map(c=>`<option value="${c.id}" ${c.id==='hm'?'selected':''}>${c.ic} ${c.name}</option>`).join('')}</select>
-    <div class="field-row">
-      <div style="flex:2"><label>Yemek adı</label><input type="text" id="m-nf-name" maxlength="60" placeholder="örn. Menemen"></div>
-      <div><label>kcal (tahmini)</label><input type="number" id="m-nf-kcal" placeholder="250"></div>
-    </div>
-    <button class="btn" id="m-nf-add">Sahneye gönder</button>
-    <div class="err" id="m-nf-err"></div>
-    <div class="ok" id="m-nf-ok"></div>
-  </div>`;
+  h += kesifFormHtml();
   return h;
 }
 
@@ -2103,6 +2115,143 @@ function rozetAnim(btn, acik, sessiz){
 function rozetBagla(){
   document.querySelectorAll('[data-rzt]').forEach(b=>{ b.onclick = ()=>rozetBas(b); });
   document.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); });
+}
+
+// ---------- keşif formu: içindekiler ----------
+// Malzeme Temel Gıdalar'dan seçilir, gramı yazılır. Kalori ve makrolar temel_100g'den
+// hesaplanır; kullanıcı kalori yazamaz. Sunucu da aynı hesabı yapar, istemcinin
+// gönderdiği değeri yok sayar. Form durumu JS'te: arkadan gelen render değerleri ezmez.
+let temel100 = null;   // Map yemek_id -> {ad, kcal, protein, lif, yag, seker}
+let kesif = {mutfak:'hm', ad:'', kalemler:[], tarif:'', ara:''};
+
+async function temel100Yukle(){
+  if(temel100) return;
+  const {data, error} = await sb.from('temel_100g').select('yemek_id,kcal,protein,lif,yag,seker,yemekler(ad)');
+  if(error){ console.error('temel_100g alınamadı', error); return; }
+  temel100 = new Map((data||[]).map(r=>[r.yemek_id, {ad: r.yemekler ? r.yemekler.ad : '?', kcal:+r.kcal, protein:+r.protein, lif:+r.lif, yag:+r.yag, seker: r.seker==null ? null : +r.seker}]));
+}
+// "Mercimek (pişmiş) (1 su bardağı)" -> "Mercimek (pişmiş)": gram girilen yerde porsiyon adı kafa karıştırır
+function temelAd(ad){
+  return String(ad||'').replace(/\s*\((?=[^)]*(\d|avuç|kaşı|bardağ|dilim|adet|kutu|kase|porsiyon))[^)]*\)\s*$/i,'');
+}
+function kesifToplam(){
+  const t = {kcal:0, protein:0, lif:0, yag:0, seker:0, eksik:false};
+  if(!temel100) return t;
+  kesif.kalemler.forEach(k=>{
+    const r = temel100.get(k.id); const g = +k.g;
+    if(!r || !(g>0)) return;
+    t.kcal += r.kcal*g/100; t.protein += r.protein*g/100; t.lif += r.lif*g/100; t.yag += r.yag*g/100;
+    if(r.seker==null) t.eksik = true; else t.seker += r.seker*g/100;
+  });
+  return t;
+}
+function kesifToplamHtml(){
+  const t = kesifToplam();
+  if(!kesif.kalemler.length) return '<span class="kf-bos">Malzeme ekledikçe kalori ve makrolar burada hesaplanır.</span>';
+  const r = Math.round;
+  return `<b>${r(t.kcal)} kcal</b><span>protein ${r(t.protein)} g</span><span>lif ${r(t.lif)} g</span><span>yağ ${r(t.yag)} g</span><span>şeker ${t.eksik?'en az ':''}${r(t.seker)} g</span>`;
+}
+function kesifKalemlerHtml(){
+  if(!kesif.kalemler.length) return '';
+  return kesif.kalemler.map((k,i)=>{
+    const r = temel100 && temel100.get(k.id);
+    return `<div class="kf-kalem"><span class="kf-ad">${esc(r?temelAd(r.ad):'?')}${r && r.seker==null?'<small>şeker verisi yok</small>':''}</span>
+      <input type="number" inputmode="numeric" min="1" max="2000" class="kf-g" data-kfi="${i}" value="${k.g}" aria-label="Gram">
+      <span class="kf-birim">g</span>
+      <button class="kf-sil" data-kfsil="${i}" aria-label="Kaldır">×</button></div>`;
+  }).join('');
+}
+function kesifFormHtml(){
+  if(!temel100){ temel100Yukle().then(()=>{ const el = document.getElementById('kf-kalemler'); if(el) meclisTazele(); }); }
+  return `<div class="section-title">Bir keşfin mi var? 🔦</div>
+  <div class="card kesif">
+    <p class="note" style="margin-top:0">Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer. Kalori yazılmaz: içindekilerden hesaplanır.</p>
+    <label for="kf-mutfak">Mutfak</label>
+    <select id="kf-mutfak" class="m-sec">${ONERI_MUTFAK.map(c=>`<option value="${c.id}" ${c.id===kesif.mutfak?'selected':''}>${c.ic} ${c.name}</option>`).join('')}</select>
+    <label for="kf-ad">Yemek adı</label>
+    <input type="text" id="kf-ad" maxlength="60" placeholder="örn. Yulaflı yoğurt kasesi" value="${esc(kesif.ad)}">
+    <label>İçindekiler <span class="kf-ipucu">Temel Gıdalar'dan seç, gramını yaz</span></label>
+    <div id="kf-kalemler">${kesifKalemlerHtml()}</div>
+    <div class="kf-ekle"><input type="text" id="kf-ara" autocomplete="off" placeholder="Malzeme ara: yumurta, yulaf, nohut…" value="${esc(kesif.ara)}"><div class="m-sonuc" id="kf-sonuc"></div></div>
+    <div class="kf-toplam" id="kf-toplam">${kesifToplamHtml()}</div>
+    <label for="kf-tarif">Tarif <span class="kf-ipucu">isteğe bağlı</span></label>
+    <textarea id="kf-tarif" maxlength="1500" rows="3" placeholder="Nasıl yapılır? Kısa yaz.">${esc(kesif.tarif)}</textarea>
+    <button class="btn" id="kf-gonder">Sahneye gönder</button>
+    <div class="err" id="kf-err"></div>
+  </div>`;
+}
+function kesifAraCiz(){
+  const el = document.getElementById('kf-sonuc');
+  if(!el) return;
+  const s = trNorm(kesif.ara.trim());
+  if(s.length < 2 || !temel100){ el.innerHTML = ''; return; }
+  const secili = new Set(kesif.kalemler.map(k=>k.id));
+  const bul = [...temel100.entries()].filter(([id,r])=>!secili.has(id) && trNorm(r.ad).includes(s)).slice(0,6);
+  el.innerHTML = bul.length ? bul.map(([id,r])=>`<button class="m-sn" data-kfek="${id}"><span class="ad">${esc(temelAd(r.ad))}<small>100 g: ${Math.round(r.kcal)} kcal · protein ${r.protein} g</small></span><span class="lg" style="color:var(--teal)">+</span></button>`).join('')
+    : '<div class="m-sn-bos">Temel Gıdalar\'da bulunamadı.</div>';
+  el.querySelectorAll('[data-kfek]').forEach(b=>{ b.onclick = ()=>{
+    kesif.kalemler.push({id:b.dataset.kfek, g:100});
+    kesif.ara = '';
+    const a = document.getElementById('kf-ara'); if(a) a.value = '';
+    kesifKalemleriYenile();
+    kesifAraCiz();
+    buzz(8);
+    const son = document.querySelector(`[data-kfi="${kesif.kalemler.length-1}"]`);
+    if(son){ son.focus(); son.select(); }
+  }; });
+}
+// sadece kalem listesi ve toplam yeniden yazılır; diğer alanlara dokunulmaz
+function kesifKalemleriYenile(){
+  const el = document.getElementById('kf-kalemler'); if(el) el.innerHTML = kesifKalemlerHtml();
+  const t = document.getElementById('kf-toplam'); if(t) t.innerHTML = kesifToplamHtml();
+  kesifKalemBagla();
+}
+function kesifKalemBagla(){
+  document.querySelectorAll('[data-kfi]').forEach(inp=>{
+    inp.oninput = ()=>{ const i = +inp.dataset.kfi; if(kesif.kalemler[i]) kesif.kalemler[i].g = inp.value; const t = document.getElementById('kf-toplam'); if(t) t.innerHTML = kesifToplamHtml(); };
+  });
+  document.querySelectorAll('[data-kfsil]').forEach(b=>{ b.onclick = ()=>{ kesif.kalemler.splice(+b.dataset.kfsil, 1); kesifKalemleriYenile(); buzz(6); }; });
+}
+function kesifBagla(){
+  const m = document.getElementById('kf-mutfak'); if(m) m.onchange = ()=>{ kesif.mutfak = m.value; };
+  const ad = document.getElementById('kf-ad'); if(ad) ad.oninput = ()=>{ kesif.ad = ad.value; };
+  const tf = document.getElementById('kf-tarif'); if(tf) tf.oninput = ()=>{ kesif.tarif = tf.value; };
+  const ara = document.getElementById('kf-ara');
+  if(ara){
+    let tm;
+    ara.oninput = ()=>{ kesif.ara = ara.value; clearTimeout(tm); tm = setTimeout(()=>{ if(!temel100) temel100Yukle().then(kesifAraCiz); else kesifAraCiz(); }, 150); };
+    ara.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); const b = document.querySelector('[data-kfek]'); if(b) b.click(); } };
+    if(kesif.ara) kesifAraCiz();
+  }
+  kesifKalemBagla();
+  const g = document.getElementById('kf-gonder');
+  if(g) g.onclick = async ()=>{
+    const err = document.getElementById('kf-err'); err.textContent = '';
+    const ad2 = kesif.ad.trim();
+    if(ad2.length < 2){ err.textContent = 'İsim gerekli (en az 2 harf).'; return; }
+    if(isProfane(ad2) || isProfane(kesif.tarif||'')){ err.textContent = 'Bu metin uygun değil.'; return; }
+    if(!kesif.kalemler.length){ err.textContent = 'En az bir malzeme ekle.'; return; }
+    const kotu = kesif.kalemler.find(k=>!(+k.g>=1 && +k.g<=2000));
+    if(kotu){ err.textContent = 'Her malzemenin gramı 1 ile 2000 arasında olmalı.'; return; }
+    const t = kesifToplam();
+    if(Math.round(t.kcal) < 1 || Math.round(t.kcal) > 5000){ err.textContent = 'Toplam 1 ile 5000 kcal arasında olmalı.'; return; }
+    g.disabled = true; g.textContent = 'Gönderiliyor…';
+    const satir = {mutfak:kesif.mutfak, ad:ad2, icindekiler:kesif.kalemler.map(k=>({id:k.id, g:Math.round(+k.g)}))};
+    if(kesif.tarif.trim()) satir.tarif = kesif.tarif.trim().slice(0,1500);
+    const {error} = await sb.from('oneriler').insert(satir);
+    g.disabled = false; g.textContent = 'Sahneye gönder';
+    if(error){ console.error(error); err.textContent = 'Gönderilemedi, biraz sonra tekrar dene.'; return; }
+    kesif = {mutfak:kesif.mutfak, ad:'', kalemler:[], tarif:'', ara:''};
+    toast('Keşfin sahneye düştü');
+    buzz([14,40,22]);
+    await meclisYukle(true);
+    render();
+  };
+}
+function icindekilerHtml(f){
+  if(!f.icindekiler || !Array.isArray(f.icindekiler) || !f.icindekiler.length) return '';
+  const liste = f.icindekiler.map(k=>{ const r = temel100 && temel100.get(k.id); return `${esc(r?temelAd(r.ad):'malzeme')} ${k.g} g`; }).join(', ');
+  return `<div class="hk-ic"><b>İçindekiler:</b> ${liste}${f.tarif?`<br><b>Tarif:</b> ${esc(f.tarif)}`:''}</div>`;
 }
 
 // ---------- tambur ----------
@@ -2279,28 +2428,7 @@ function meclisBagla(){
       render();
     };
   });
-  const add = document.getElementById('m-nf-add');
-  if(add){
-    add.onclick = async ()=>{
-      const name = document.getElementById('m-nf-name').value.trim();
-      const kcalStr = document.getElementById('m-nf-kcal').value;
-      const kcal = parseFloat(kcalStr);
-      const mutfak = document.getElementById('m-nf-mutfak').value;
-      const err = document.getElementById('m-nf-err'), ok = document.getElementById('m-nf-ok');
-      err.textContent=''; ok.textContent='';
-      if(!name || name.length<2){ err.textContent='İsim gerekli (en az 2 harf).'; return; }
-      if(isProfane(name)){ err.textContent='Bu isim uygun değil.'; return; }
-      if(kcalStr && (!kcal||kcal<=0||kcal>5000)){ err.textContent='kcal 1-5000 arası olmalı.'; return; }
-      add.disabled = true;
-      const payload = {mutfak, ad:name};
-      if(kcal>0) payload.kcal = Math.round(kcal);
-      const {error} = await sb.from('oneriler').insert(payload);
-      add.disabled = false;
-      if(error){ err.textContent='Gönderilemedi, biraz sonra tekrar dene.'; return; }
-      toast('Öneri sahneye düştü');
-      await meclisYukle(true);
-    };
-  }
+  kesifBagla();
 }
 function saatSil(){
   if(!oyDurum) return;
