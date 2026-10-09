@@ -10,10 +10,10 @@ API anahtarı ekranda görünmeden sorulur (ya da GEMINI_API_KEY ortam değişke
 Anahtar hiçbir dosyaya yazılmaz. Resimler gorsel-ham/ klasörüne iner; zaten olanlar atlanır.
 Sadece Python'un kendi kütüphanesini kullanır, kurulum gerekmez.
 """
-import argparse, base64, getpass, json, os, sys, time, urllib.error, urllib.request
+import argparse, base64, getpass, json, os, re, sys, time, urllib.error, urllib.request
 
 MODEL = 'gemini-nano-banana-2.1'
-RESIM_BASI_DOLAR = 0.0336          # 1K, normal gönderim (Ekim 2026 fiyat sayfası)
+RESIM_BASI_DOLAR = 0.05            # gerçekleşen: ~419 resim ~21 dolarlık krediyi bitirdi
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LISTE = os.path.join(KOK, 'araclar', 'gorsel_listesi.json')
 HAM = os.path.join(KOK, 'gorsel-ham')
@@ -68,7 +68,7 @@ def uret(prompt, anahtar, yol):
         try:
             return resim_bul(istek(url(), govde(prompt), anahtar)), None
         except urllib.error.HTTPError as e:
-            mesaj = e.read().decode(errors='replace')[:400]
+            mesaj = e.read().decode(errors='replace')[:900]
             if e.code in (429, 500, 502, 503, 504) and deneme < 3:
                 print(f'   {e.code}, {bekle} sn bekleyip tekrar deniyorum')
                 time.sleep(bekle); bekle *= 2
@@ -102,9 +102,13 @@ def main():
         if input('Devam edeyim mi? (e/h): ').strip().lower() != 'e':
             print('Vazgeçildi.'); return
 
-    anahtar = os.environ.get('GEMINI_API_KEY') or getpass.getpass('Gemini API anahtarı (yapıştır, ekranda görünmez): ').strip()
-    if not anahtar:
-        print('Anahtar girilmedi.'); return
+    anahtar = os.environ.get('GEMINI_API_KEY') or getpass.getpass('Gemini API anahtarı (yapıştır, ekranda görünmez, sonra Enter): ')
+    # Terminal yapıştırırken görünmez işaretler (ESC[200~ ... ESC[201~), boşluk ve tırnak ekleyebiliyor: temizle
+    anahtar = re.sub(r'\x1b\[20[01]~', '', anahtar)
+    anahtar = re.sub(r'[^A-Za-z0-9_.\-]', '', anahtar)
+    if len(anahtar) < 20:
+        print(f'Anahtar okunamadı ({len(anahtar)} karakter). Tekrar çalıştırıp yapıştır.'); return
+    print(f'Anahtar okundu: {anahtar[:4]}… ({len(anahtar)} karakter)')
 
     yol, basarili, hatalar = 'gc', 0, []
     for i, x in enumerate(sec, 1):
@@ -116,6 +120,8 @@ def main():
             sonuc, hata = uret(x['prompt'], anahtar, yol)
         if hata and ('401' in hata or '403' in hata):
             print('   Yetki hatası: anahtar ya da faturalandırma sorunu. Duruyorum.\n   ' + hata); break
+        if hata and '402' in hata:
+            print('   Kredi bitti (402). Duruyorum; AI Studio > Billing üzerinden kredi ekleyip aynı komutla devam et.'); break
         if not sonuc:
             print('   Hata: ' + (hata or 'yanıtta resim yok')); hatalar.append((x['slug'], hata or 'resim yok'))
             if len(hatalar) >= 5 and basarili == 0:

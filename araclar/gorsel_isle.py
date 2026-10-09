@@ -33,7 +33,7 @@ def main():
         im = ImageOps.exif_transpose(Image.open(kaynak)).convert('RGB')
         im = ImageOps.fit(im, (W, H), Image.LANCZOS, centering=(0.5, 0.5))
         var_miydi = os.path.exists(cikti)
-        im.save(cikti + '.tmp', 'WEBP', quality=78, method=6)
+        im.save(cikti + '.tmp', 'WEBP', quality=78, method=4)
         os.replace(cikti + '.tmp', cikti)
         guncel += var_miydi; yeni += not var_miydi
 
