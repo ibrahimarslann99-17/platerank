@@ -50,7 +50,7 @@ function komsular(y, d) {
 }
 
 function satir(x) {
-  const kucuk = x.gorsel ? `<img class="kc" src="${x.gorsel}" alt="" width="48" height="36" loading="lazy">` : '';
+  const kucuk = x.gorsel ? `<img class="kc" src="/img/yemek/k/${x.slug}.webp" alt="" width="48" height="36" loading="lazy" decoding="async">` : '';
   return `<li><a href="/yemek/${x.slug}">${kucuk}<span class="lg" style="background:${LIG_RENK[x.lig]}">${x.lig}</span>`
     + `<span class="ad">${esc(x.ad)}</span><span class="dg">${x.doyuruculuk} puan · ${x.kcal} kcal</span></a></li>`;
 }

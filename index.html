@@ -816,6 +816,9 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .hk-ic{font-size:12px;color:var(--ink-muted);line-height:1.5;margin-top:10px;background:var(--card);border-radius:10px;padding:9px 10px;}
 .hk-ic b{color:var(--ink);font-weight:600;}
 .seo-list a,#seo p a{color:inherit;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.arow .athumb{flex:none;width:48px;height:36px;border-radius:8px;object-fit:cover;background:var(--paper);display:block;}
+.arow .detay .adfoto{display:block;width:100%;max-width:420px;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:12px;margin:2px 0 8px;background:var(--paper);}
+.arow .detay .asayfa{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1235,6 +1238,19 @@ async function loadCuisine(cid, force){
 }
 // ---------- render ----------
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+// Yemek görselleri ve sayfaları: /img/yemek/<slug>.webp, küçükleri /img/yemek/k/<slug>.webp, sayfa /yemek/<slug>
+// slug kuralı api/_veri.js ile aynı olmalı.
+const TR_HARF = {ç:'c',ğ:'g',ı:'i',ö:'o',ş:'s',ü:'u',â:'a',î:'i',û:'u',Ç:'c',Ğ:'g',İ:'i',I:'i',Ö:'o',Ş:'s',Ü:'u','&':' ve '};
+function slugla(s){
+  return String(s).replace(/[çğıöşüâîûÇĞİIÖŞÜ&]/g,c=>TR_HARF[c]).toLowerCase()
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/['’]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+let GORSEL = new Set();
+fetch('/img/yemek/liste.json').then(r=>r.ok?r.json():[]).then(a=>{
+  GORSEL = new Set(a);
+  if(document.querySelector('.arow')) render();
+}).catch(()=>{});
 function renderTurs(){
   const el = document.getElementById("turs");
   if(!el) return;
@@ -1516,15 +1532,20 @@ function arowHtml(f,i,max,favs,menuSet){
     const t = acikmaSuresi(f);
     const fav = favs.has(f.id);
     const inMenu = menuSet ? menuSet.has(f.id) : false;
+    const slug = f.sadece_malzeme ? null : slugla(f.ad);
+    const gs = slug && GORSEL.has(slug) ? slug : null;
+    const kucukGorsel = gs ? `<img class="athumb" src="/img/yemek/k/${gs}.webp" alt="" width="48" height="36" loading="lazy" decoding="async">` : `<span class="athumb bos"></span>`;
+    const ust = gs ? `<img class="adfoto" src="/img/yemek/${gs}.webp" alt="${esc(f.ad)}" width="1200" height="900" loading="lazy" decoding="async">` : '';
+    const sayfaLink = slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '';
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
-      <div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
+      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
       </div>
       <div class="kcal">${f.kcal} kcal${t?`<span class="mini-t">⏱ ${saatStr(t)} sa</span>`:''}</div>
       <div class="acts">
         <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
         <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       </div>
-      <div class="detay">${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}</div>
+      <div class="detay">${ust}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
     </div>`;
 }
 

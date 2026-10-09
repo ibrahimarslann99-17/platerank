@@ -12,12 +12,14 @@ from PIL import Image, ImageOps
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HAM = os.path.join(KOK, 'gorsel-ham')
 HEDEF = os.path.join(KOK, 'img', 'yemek')
+KUCUK = os.path.join(HEDEF, 'k')   # liste önizlemeleri: 120x90, ~4 KB
 LISTE = os.path.join(HEDEF, 'liste.json')
 W, H = 1200, 900
 
 
 def main():
     os.makedirs(HEDEF, exist_ok=True)
+    os.makedirs(KUCUK, exist_ok=True)
     gecerli = {x['slug'] for x in json.load(open(os.path.join(KOK, 'araclar', 'gorsel_listesi.json'), encoding='utf-8'))}
     yeni = guncel = 0
     for f in sorted(os.listdir(HAM)):
@@ -28,13 +30,16 @@ def main():
             print('Listede olmayan dosya, atlandı:', f); continue
         kaynak = os.path.join(HAM, f)
         cikti = os.path.join(HEDEF, slug + '.webp')
-        if os.path.exists(cikti) and os.path.getmtime(cikti) >= os.path.getmtime(kaynak):
+        kucuk = os.path.join(KUCUK, slug + '.webp')
+        if os.path.exists(cikti) and os.path.getmtime(cikti) >= os.path.getmtime(kaynak) and os.path.exists(kucuk):
             continue
         im = ImageOps.exif_transpose(Image.open(kaynak)).convert('RGB')
         im = ImageOps.fit(im, (W, H), Image.LANCZOS, centering=(0.5, 0.5))
         var_miydi = os.path.exists(cikti)
         im.save(cikti + '.tmp', 'WEBP', quality=78, method=4)
         os.replace(cikti + '.tmp', cikti)
+        im.resize((120, 90), Image.LANCZOS).save(kucuk + '.tmp', 'WEBP', quality=72, method=4)
+        os.replace(kucuk + '.tmp', kucuk)
         guncel += var_miydi; yeni += not var_miydi
 
     hepsi = sorted(os.path.splitext(f)[0] for f in os.listdir(HEDEF) if f.endswith('.webp'))
