@@ -31,6 +31,18 @@
     {
       "source": "/yt",
       "destination": "/index.html"
+    },
+    {
+      "source": "/yemek",
+      "destination": "/api/yemek"
+    },
+    {
+      "source": "/yemek/:slug",
+      "destination": "/api/yemek?s=:slug"
+    },
+    {
+      "source": "/sitemap-yemekler.xml",
+      "destination": "/api/sitemap"
     }
   ]
 }

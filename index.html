@@ -815,6 +815,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .hk-kutular b.hk-bos{color:var(--line-strong);}
 .hk-ic{font-size:12px;color:var(--ink-muted);line-height:1.5;margin-top:10px;background:var(--card);border-radius:10px;padding:9px 10px;}
 .hk-ic b{color:var(--ink);font-weight:600;}
+.seo-list a,#seo p a{color:inherit;text-decoration-color:var(--line-strong);text-underline-offset:3px}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -874,21 +875,21 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
     <h2>En doyurucu yiyecekler: kalori başına tokluk şampiyonları</h2>
     <p>"En doyurucu yiyecekler hangileri?" sorusunun cevabı porsiyon büyüklüğünde değil, <b>kalori başına tokluk</b> oranında saklı. Aşağıdaki liste, PlateRank'teki <span class="toplam-sayi">380+</span> yemek arasından doyuruculuk skoru en yüksek 15'i gösteriyor. Ortak noktaları belli: yüksek su hacmi, yüksek protein, yüksek lif ve düşük şeker.</p>
     <ol class="seo-list">
-      <li><b>Ayran</b> · 65 kcal · skor 300 · protein ve su hacmi bir arada, sitedeki en verimli tokluk kaynağı</li>
-      <li><b>Lupin tabule salatası</b> · 230 kcal · skor 299 · 18 g protein ve 16 g lif aynı tabakta</li>
-      <li><b>Tempeh sote</b> · 290 kcal · skor 294 · 30 g fermente bitkisel protein</li>
-      <li><b>Haşlanmış patates</b> · 160 kcal · skor 280 · tokluk indeksi çalışmalarının klasik şampiyonu</li>
-      <li><b>Miso çorbası</b> · 80 kcal · skor 270 · sıcak sıvı hacmi mideyi erken doldurur</li>
-      <li><b>Seitan sote</b> · 195 kcal · skor 267 · 38 g protein, listedeki en yoğun protein kaynağı</li>
-      <li><b>Tempeh şiş (sebzeli)</b> · 280 kcal · skor 257 · 26 g protein, 10 g lif</li>
-      <li><b>Quorn taco kasesi</b> · 320 kcal · skor 255 · mikoprotein ve baklagil lifi bir arada</li>
-      <li><b>Kenevirli Quorn sezar salata</b> · 350 kcal · skor 254 · 33 g protein, düşük şeker</li>
-      <li><b>Wonton çorbası</b> · 150 kcal · skor 250 · hafif ama uzun süre tok tutar</li>
-      <li><b>Minestrone çorbası</b> · 150 kcal · skor 250 · sebze lifi yoğun</li>
-      <li><b>Mercimek çorbası</b> · 150 kcal · skor 250 · 9 g protein + 6 g lif</li>
-      <li><b>Yayla çorbası</b> · 120 kcal · skor 245 · yoğurt proteini + tahıl</li>
-      <li><b>Ezogelin çorbası</b> · 140 kcal · skor 245 · 8 g protein, 5 g lif</li>
-      <li><b>Ceviche</b> · 170 kcal · skor 245 · 22 g protein, yağsız</li>
+      <li><b><a href="/yemek/ayran">Ayran</a></b> · 65 kcal · skor 300 · protein ve su hacmi bir arada, sitedeki en verimli tokluk kaynağı</li>
+      <li><b><a href="/yemek/lupin-tabule-salatasi">Lupin tabule salatası</a></b> · 230 kcal · skor 299 · 18 g protein ve 16 g lif aynı tabakta</li>
+      <li><b><a href="/yemek/tempeh-sote">Tempeh sote</a></b> · 290 kcal · skor 294 · 30 g fermente bitkisel protein</li>
+      <li><b><a href="/yemek/haslanmis-patates">Haşlanmış patates</a></b> · 160 kcal · skor 280 · tokluk indeksi çalışmalarının klasik şampiyonu</li>
+      <li><b><a href="/yemek/miso-corbasi">Miso çorbası</a></b> · 80 kcal · skor 270 · sıcak sıvı hacmi mideyi erken doldurur</li>
+      <li><b><a href="/yemek/seitan-sote">Seitan sote</a></b> · 195 kcal · skor 267 · 38 g protein, listedeki en yoğun protein kaynağı</li>
+      <li><b><a href="/yemek/tempeh-sis-sebzeli">Tempeh şiş (sebzeli)</a></b> · 280 kcal · skor 257 · 26 g protein, 10 g lif</li>
+      <li><b><a href="/yemek/quorn-taco-kasesi">Quorn taco kasesi</a></b> · 320 kcal · skor 255 · mikoprotein ve baklagil lifi bir arada</li>
+      <li><b><a href="/yemek/kenevirli-quorn-sezar-salata">Kenevirli Quorn sezar salata</a></b> · 350 kcal · skor 254 · 33 g protein, düşük şeker</li>
+      <li><b><a href="/yemek/wonton-corbasi">Wonton çorbası</a></b> · 150 kcal · skor 250 · hafif ama uzun süre tok tutar</li>
+      <li><b><a href="/yemek/minestrone-corbasi">Minestrone çorbası</a></b> · 150 kcal · skor 250 · sebze lifi yoğun</li>
+      <li><b><a href="/yemek/mercimek-corbasi">Mercimek çorbası</a></b> · 150 kcal · skor 250 · 9 g protein + 6 g lif</li>
+      <li><b><a href="/yemek/yayla-corbasi">Yayla çorbası</a></b> · 120 kcal · skor 245 · yoğurt proteini + tahıl</li>
+      <li><b><a href="/yemek/ezogelin-corbasi">Ezogelin çorbası</a></b> · 140 kcal · skor 245 · 8 g protein, 5 g lif</li>
+      <li><b><a href="/yemek/ceviche">Ceviche</a></b> · 170 kcal · skor 245 · 22 g protein, yağsız</li>
     </ol>
     <p>Listenin diğer ucunda ne var? Cool Cake (skor 26), gulab jamun (37), tres leches (45) ve lokma (45) gibi şeker yoğun tatlılar; yüksek kalori verip kısa süreli tokluk sağladıkları için <b>D ligi</b>nde. Aradaki farkı görmek için yukarıdaki <b>Besin değerleri</b> sekmesinden tüm sıralamaya, <b>Çelişki</b> sekmesinden ise halkın algısıyla verinin çatıştığı yemeklere bakabilirsin.</p>
     <h3>Günde kaç gram protein almalıyım?</h3>
@@ -897,6 +898,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
     <p>100 kalorinin altında en çok tok tutanlar: ayran (65 kcal), miso çorbası (80 kcal), tofulu miso çorbası (90 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal), cacık (90 kcal). Ortak özellikleri su hacmi ve protein. Buna karşılık aynı kalorideki bir avuç kuruyemiş ya da iki bisküvi, seni yarım saat sonra tekrar mutfağa gönderir.</p>
     <h3>Hangi yemek kaç kalori?</h3>
     <p>Sitedeki <span class="toplam-sayi">380+</span> yemeğin her birinde porsiyon başına kalori, protein, lif, yağ ve şeker değeri var. Üstteki arama kutusuna yemeğin adını yaz: simit, lahmacun, pizza, cips, kola, ne olursa; kalorisini, kaç saat tok tuttuğunu ve kan şekerini ne hızda yükselttiğini görürsün. Kalemlerin yaklaşık beşte birinde değerler belgeli kaynaktan gelir (USDA FoodData Central, McDonald's Türkiye resmi tablosu, Open Food Facts etiketleri) ve kaynak adı yemeğin detayında yazar; geri kalanı tipik porsiyon tahminidir, porsiyon farkına göre ±%30 sapabilir.</p>
+    <p>Tüm yemeklerin kalorisi ve doyuruculuk puanı tek sayfada: <a href="/yemek"><b>yemek listesi</b></a>. Her yemeğin kendi sayfasında tok tutup tutmadığını ve aynı kaloride daha tok tutan alternatiflerini bulursun.</p>
     <h3>Puan nasıl oluşuyor?</h3>
     <p>Doyuruculuk puanı laboratuvarda ölçülmüş bir değer değil, yemekleri birbirine göre sıralamak için kurulmuş bir hesap. Dört girdisi var: porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür. Makro tablosu su hacmini göstermediği için çorba, ayran ve sulu yemekler ayrıca elle yukarı alınır; aynı şekilde her yeni yemek, kendi türündeki mevcut komşularına bakılarak yerleştirilir. Kalemlerin yaklaşık beşte birinde besin değerleri belgeli kaynaktan gelir (USDA FoodData Central, McDonald's Türkiye resmi tablosu, Open Food Facts etiketleri) ve kaynağın adı yemeğin detayında görünür; geri kalanında değerler tipik porsiyon tahminidir. Ligler: 200 üzeri S, 150-200 A, 100-150 B, 70-100 C, 70 altı D. <b>Şeker şoku hızı</b> ve <b>tahmini tekrar acıkma süresi</b> de aynı makrolardan türetilen tahminlerdir.</p>
     <h3>Veriye API ile erişebilir miyim?</h3>

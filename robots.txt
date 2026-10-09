@@ -3,3 +3,4 @@ Allow: /
 Disallow: /admin.html
 
 Sitemap: https://platerank.dev/sitemap.xml
+Sitemap: https://platerank.dev/sitemap-yemekler.xml
