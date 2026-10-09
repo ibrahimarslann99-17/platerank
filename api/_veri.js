@@ -5,6 +5,10 @@ const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
 const SITE = 'https://platerank.dev';
 
+// Yemek görselleri: araclar/gorsel_isle.py img/yemek/ altına WebP ve liste.json yazar
+let GORSELLER = new Set();
+try { GORSELLER = new Set(require('../img/yemek/liste.json')); } catch (e) { /* henüz görsel yok */ }
+
 const MUTFAKLAR = [
   { id: 'tr', ad: 'Türk', ic: '🇹🇷' }, { id: 'temel', ad: 'Temel Gıdalar', ic: '🥚' },
   { id: 'veg', ad: 'Vejeteryan', ic: '🥦' }, { id: 'zincir', ad: 'Zincir', ic: '🍟' },
@@ -82,6 +86,7 @@ function hazirla(satirlar) {
     while (kullanilan.has(s)) s = `${slugla(y.ad)}-${n++}`;
     kullanilan.add(s);
     y.slug = s;
+    y.gorsel = GORSELLER.has(s) ? `/img/yemek/${s}.webp` : null;
     const anahtar = y.ad.trim().toLocaleLowerCase('tr');
     if (adIlk.has(anahtar)) y.kanonikSlug = adIlk.get(anahtar); else adIlk.set(anahtar, s);
     y.lig = lig(y.doyuruculuk);

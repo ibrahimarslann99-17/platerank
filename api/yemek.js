@@ -50,7 +50,8 @@ function komsular(y, d) {
 }
 
 function satir(x) {
-  return `<li><a href="/yemek/${x.slug}"><span class="lg" style="background:${LIG_RENK[x.lig]}">${x.lig}</span>`
+  const kucuk = x.gorsel ? `<img class="kc" src="${x.gorsel}" alt="" width="48" height="36" loading="lazy">` : '';
+  return `<li><a href="/yemek/${x.slug}">${kucuk}<span class="lg" style="background:${LIG_RENK[x.lig]}">${x.lig}</span>`
     + `<span class="ad">${esc(x.ad)}</span><span class="dg">${x.doyuruculuk} puan · ${x.kcal} kcal</span></a></li>`;
 }
 
@@ -91,13 +92,18 @@ ul.liste .ad{flex:1;min-width:0}
 ul.liste .dg{color:var(--muted);font-size:14px;white-space:nowrap}
 .not{font-size:14px;color:var(--muted);margin-top:28px}
 .cta{margin:32px 0 0;text-align:center}
+figure.foto{margin:0 0 16px;border-radius:22px;overflow:hidden;position:relative;background:#cfd9d1;aspect-ratio:4/3}
+figure.foto img{display:block;width:100%;height:100%;object-fit:cover}
+figure.foto figcaption{position:absolute;right:10px;bottom:8px;font-size:12px;color:#fff;background:rgba(14,34,23,.55);padding:2px 8px;border-radius:999px}
+ul.liste img.kc{flex:0 0 48px;height:36px;border-radius:8px;object-fit:cover}
 footer{margin-top:40px;font-size:14px;color:var(--muted);text-align:center}
 .mutfak-nav{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 8px}
 .mutfak-nav a{background:var(--card);border-radius:999px;padding:6px 12px;text-decoration:none;font-size:14px;color:var(--ink)}
 @media (max-width:480px){h1{font-size:28px}.makro b{font-size:16px}.makro div{padding:9px 2px}.harf{flex-basis:72px;height:72px}.puan{font-size:38px}}
 `;
 
-function sayfa({ baslik, aciklama, kanonik, govde, jsonld }) {
+function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel }) {
+  const og = ogGorsel ? SITE + ogGorsel : `${SITE}/og.png`;
   return `<!doctype html>
 <html lang="tr">
 <head>
@@ -113,9 +119,9 @@ function sayfa({ baslik, aciklama, kanonik, govde, jsonld }) {
 <meta property="og:title" content="${esc(baslik)}">
 <meta property="og:description" content="${esc(aciklama)}">
 <meta property="og:url" content="${kanonik}">
-<meta property="og:image" content="${SITE}/og.png">
+<meta property="og:image" content="${og}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${SITE}/og.png">
+<meta name="twitter:image" content="${og}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600&display=swap">
@@ -151,6 +157,7 @@ function yemekSayfasi(y, d) {
 
   const govde = `
 <nav class="yol"><a href="/">PlateRank</a> › <a href="/yemek">Yemekler</a> › <a href="/yemek#${m.id}">${esc(m.ad)}</a></nav>
+${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Temsilî görsel</figcaption></figure>` : ''}
 <h1>${esc(y.ad)}</h1>
 <p class="alt">${m.ic} ${esc(m.ad)} mutfağı${porsiyon ? ` · porsiyon: ${esc(porsiyon)}` : ''}</p>
 
@@ -213,7 +220,7 @@ ${komsu.length ? `<h2>${esc(m.ad)} mutfağında yakın sıralar</h2><ul class="l
     ],
   };
 
-  return sayfa({ baslik, aciklama, kanonik, govde, jsonld });
+  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel });
 }
 
 function dizinSayfasi(d) {
