@@ -1,5 +1,6 @@
 // /sitemap-yemekler.xml → yemek dizini + her yemek sayfası
 const { veri, SITE } = require('./_veri.js');
+const { LISTELER } = require('./_listeler.js');
 
 module.exports = {
   fetch: async function () {
@@ -16,6 +17,8 @@ module.exports = {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${url(`${SITE}/yemek`, sonGuncelleme)}
+${url(`${SITE}/liste`, sonGuncelleme)}
+${LISTELER.map((t) => url(`${SITE}/liste/${t.slug}`, sonGuncelleme)).join('\n')}
 ${d.sirali.filter((y) => !y.kanonikSlug).map((y) => url(`${SITE}/yemek/${y.slug}`, gun(y.updated_at || y.created_at))).join('\n')}
 </urlset>`;
     return new Response(xml, {

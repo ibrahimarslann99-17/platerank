@@ -43,6 +43,14 @@
     {
       "source": "/sitemap-yemekler.xml",
       "destination": "/api/sitemap"
+    },
+    {
+      "source": "/liste",
+      "destination": "/api/liste"
+    },
+    {
+      "source": "/liste/:slug",
+      "destination": "/api/liste?s=:slug"
     }
   ]
 }

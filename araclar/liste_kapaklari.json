@@ -1,0 +1,614 @@
+[
+ {
+  "slug": "yuksek-proteinli-kahvalti",
+  "baslik": "Yüksek proteinli kahvaltı: en tok tutan seçenekler",
+  "kisa": "Yüksek proteinli kahvaltı",
+  "adet": 18,
+  "ilk": [
+   {
+    "slug": "sebzeli-omlet-3-yumurta",
+    "ad": "Sebzeli omlet",
+    "puan": 210,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tofulu-menemen",
+    "ad": "Tofulu menemen",
+    "puan": 205,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "natto",
+    "ad": "Natto",
+    "puan": 204,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "omlet-3-yumurta",
+    "ad": "Omlet",
+    "puan": 200,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "tok-tutan-kahvaltiliklar",
+  "baslik": "En tok tutan kahvaltılıklar",
+  "kisa": "Tok tutan kahvaltılıklar",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "yulaf-lapasi-sutlu",
+    "ad": "Yulaf lapası",
+    "puan": 230,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "cacik",
+    "ad": "Cacık",
+    "puan": 220,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "yulaf-sut-muz",
+    "ad": "Yulaf + süt + muz",
+    "puan": 215,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "sebzeli-omlet-3-yumurta",
+    "ad": "Sebzeli omlet",
+    "puan": 210,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "yuksek-proteinli-yemekler",
+  "baslik": "Yüksek proteinli yemekler: 30 g ve üzeri",
+  "kisa": "Yüksek proteinli yemekler",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "tempeh-sote",
+    "ad": "Tempeh sote",
+    "puan": 294,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "seitan-sote",
+    "ad": "Seitan sote",
+    "puan": 267,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "quorn-taco-kasesi",
+    "ad": "Quorn taco kasesi",
+    "puan": 255,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tvpli-mantar-ragu-makarna-ile",
+    "ad": "TVP'li mantar ragù",
+    "puan": 242,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "proteinli-atistirmaliklar",
+  "baslik": "Proteinli atıştırmalıklar: tok tutanlar önde",
+  "kisa": "Proteinli atıştırmalıklar",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "bezelye-proteinli-yogurt-kasesi",
+    "ad": "Bezelye proteinli yoğurt kasesi",
+    "puan": 242,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "edamame",
+    "ad": "Edamame",
+    "puan": 234,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "spirulinali-protein-dip",
+    "ad": "Spirulinalı protein dip",
+    "puan": 229,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "edamame-cipsi-kurutulmus",
+    "ad": "Edamame cipsi",
+    "puan": 205,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "100-kalori-alti-doyurucu",
+  "baslik": "100 kalorinin altında tok tutan yiyecekler",
+  "kisa": "100 kalori altı doyurucular",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "miso-corbasi-tofulu",
+    "ad": "Miso çorbası",
+    "puan": 287,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "pinar-ton-light-1-kutu-98-g",
+    "ad": "Pınar Ton Light",
+    "puan": 230,
+    "lig": "S",
+    "gorsel": false
+   },
+   {
+    "slug": "karpuz-2-dilim",
+    "ad": "Karpuz",
+    "puan": 230,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "yumurtali-corba-egg-drop",
+    "ad": "Yumurtalı çorba",
+    "puan": 230,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "200-kalori-alti-doyurucu",
+  "baslik": "200 kalorinin altında en doyurucu yiyecekler",
+  "kisa": "200 kalori altı doyurucular",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "miso-corbasi-tofulu",
+    "ad": "Miso çorbası",
+    "puan": 287,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "haslanmis-patates",
+    "ad": "Haşlanmış patates",
+    "puan": 280,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "seitan-sote",
+    "ad": "Seitan sote",
+    "puan": 267,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "diyet-icin-doyurucu-yemekler",
+  "baslik": "Diyette tok tutan ana yemekler (400 kcal altı)",
+  "kisa": "Diyette tok tutan yemekler",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "tempeh-sote",
+    "ad": "Tempeh sote",
+    "puan": 294,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "haslanmis-patates",
+    "ad": "Haşlanmış patates",
+    "puan": 280,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "seitan-sote",
+    "ad": "Seitan sote",
+    "puan": 267,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sis-sebzeli",
+    "ad": "Tempeh şiş",
+    "puan": 257,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "en-doyurucu-corbalar",
+  "baslik": "En doyurucu çorbalar",
+  "kisa": "En doyurucu çorbalar",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "miso-corbasi-tofulu",
+    "ad": "Miso çorbası",
+    "puan": 287,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "wonton-corbasi",
+    "ad": "Wonton çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "minestrone-corbasi",
+    "ad": "Minestrone çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "en-doyurucu-salatalar",
+  "baslik": "En doyurucu salatalar",
+  "kisa": "En doyurucu salatalar",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "lupin-tabule-salatasi",
+    "ad": "Lupin tabule salatası",
+    "puan": 299,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "kenevirli-quorn-sezar-salata",
+    "ad": "Kenevirli Quorn sezar salata",
+    "puan": 254,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "izgara-tavuk-salatasi",
+    "ad": "Izgara tavuk salatası",
+    "puan": 220,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "karisik-baklagil-salatasi",
+    "ad": "Karışık baklagil salatası",
+    "puan": 219,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "vejetaryen-protein-kaynaklari",
+  "baslik": "Vejetaryen protein kaynakları: 15 g ve üzeri",
+  "kisa": "Vejetaryen protein kaynakları",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "lupin-tabule-salatasi",
+    "ad": "Lupin tabule salatası",
+    "puan": 299,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sote",
+    "ad": "Tempeh sote",
+    "puan": 294,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "seitan-sote",
+    "ad": "Seitan sote",
+    "puan": 267,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sis-sebzeli",
+    "ad": "Tempeh şiş",
+    "puan": 257,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "lifli-yiyecekler",
+  "baslik": "Lifi yüksek yiyecekler: 8 g ve üzeri",
+  "kisa": "Lifi yüksek yiyecekler",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "lupin-tabule-salatasi",
+    "ad": "Lupin tabule salatası",
+    "puan": 299,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sote",
+    "ad": "Tempeh sote",
+    "puan": 294,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sis-sebzeli",
+    "ad": "Tempeh şiş",
+    "puan": 257,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "quorn-taco-kasesi",
+    "ad": "Quorn taco kasesi",
+    "puan": 255,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "kalori-basina-en-cok-protein",
+  "baslik": "Kalori başına en çok protein veren yiyecekler",
+  "kisa": "Kalori başına en çok protein",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "pinar-ton-light-1-kutu-98-g",
+    "ad": "Pınar Ton Light",
+    "puan": 230,
+    "lig": "S",
+    "gorsel": false
+   },
+   {
+    "slug": "ton-baligi-pismis-100-g",
+    "ad": "Ton balığı",
+    "puan": 244,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "hindi-gogsu-pismis-150-g",
+    "ad": "Hindi göğsü",
+    "puan": 241,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tavuk-gogsu-pismis-izgara-150-g",
+    "ad": "Tavuk göğsü",
+    "puan": 241,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "en-doyurucu-turk-yemekleri",
+  "baslik": "En doyurucu Türk yemekleri",
+  "kisa": "En doyurucu Türk yemekleri",
+  "adet": 25,
+  "ilk": [
+   {
+    "slug": "ayran",
+    "ad": "Ayran",
+    "puan": 300,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "yayla-corbasi",
+    "ad": "Yayla çorbası",
+    "puan": 245,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "ezogelin-corbasi",
+    "ad": "Ezogelin çorbası",
+    "puan": 245,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "tok-tutan-icecekler",
+  "baslik": "Tok tutan içecekler",
+  "kisa": "Tok tutan içecekler",
+  "adet": 15,
+  "ilk": [
+   {
+    "slug": "ayran",
+    "ad": "Ayran",
+    "puan": 300,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "whey-protein-shake-hazir",
+    "ad": "Whey protein shake",
+    "puan": 207,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "kefir-1-bardak",
+    "ad": "Kefir",
+    "puan": 200,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "kazein-shake-gece-icin",
+    "ad": "Kazein shake",
+    "puan": 194,
+    "lig": "A",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "en-doyurucu-tatlilar",
+  "baslik": "Tatlı yiyeceksen: en tok tutan tatlılar",
+  "kisa": "En tok tutan tatlılar",
+  "adet": 15,
+  "ilk": [
+   {
+    "slug": "gullac-1-dilim",
+    "ad": "Güllaç",
+    "puan": 103,
+    "lig": "B",
+    "gorsel": true
+   },
+   {
+    "slug": "kulah-dondurma-mcdonalds",
+    "ad": "Külah dondurma",
+    "puan": 100,
+    "lig": "B",
+    "gorsel": false
+   },
+   {
+    "slug": "asure",
+    "ad": "Aşure",
+    "puan": 95,
+    "lig": "C",
+    "gorsel": true
+   },
+   {
+    "slug": "sutlac",
+    "ad": "Sütlaç",
+    "puan": 90,
+    "lig": "C",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "mcdonalds-en-doyurucu",
+  "baslik": "McDonald's'ta en tok tutan ürünler",
+  "kisa": "McDonald's'ta tok tutanlar",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "chicken-mcnuggets-4lu",
+    "ad": "Chicken McNuggets",
+    "puan": 181,
+    "lig": "A",
+    "gorsel": false
+   },
+   {
+    "slug": "acili-tavuk-burger-mcdonalds",
+    "ad": "Acılı Tavuk burger",
+    "puan": 177,
+    "lig": "A",
+    "gorsel": false
+   },
+   {
+    "slug": "acili-chicken-mcbites-salata",
+    "ad": "Acılı Chicken McBites salata",
+    "puan": 167,
+    "lig": "A",
+    "gorsel": false
+   },
+   {
+    "slug": "double-mcchicken",
+    "ad": "Double McChicken",
+    "puan": 160,
+    "lig": "A",
+    "gorsel": false
+   }
+  ]
+ },
+ {
+  "slug": "en-az-doyurucu-yiyecekler",
+  "baslik": "En az doyuran yiyecekler: boş kalori listesi",
+  "kisa": "Boş kalori listesi",
+  "adet": 20,
+  "ilk": [
+   {
+    "slug": "cool-cake",
+    "ad": "Cool Cake",
+    "puan": 26,
+    "lig": "D",
+    "gorsel": false
+   },
+   {
+    "slug": "ceviz-1-avuc",
+    "ad": "Ceviz",
+    "puan": 36,
+    "lig": "D",
+    "gorsel": true
+   },
+   {
+    "slug": "gulab-jamun-2-adet",
+    "ad": "Gulab jamun",
+    "puan": 37,
+    "lig": "D",
+    "gorsel": true
+   },
+   {
+    "slug": "biskuvi-kremali-4-adet",
+    "ad": "Bisküvi",
+    "puan": 40,
+    "lig": "D",
+    "gorsel": true
+   }
+  ]
+ }
+]
