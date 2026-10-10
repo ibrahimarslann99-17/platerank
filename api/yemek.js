@@ -97,6 +97,7 @@ ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" wid
 <h2>${esc(kok)} tok tutar mı?</h2>
 <p class="cevap"><b>${hukum(y)}</b></p>
 ${sb.length ? `<ul class="sebep">${sb.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
+${y.tur === 'icecek' || y.sadece_malzeme ? '' : `<div class="halk"><b>Seni kaç saat tok tuttu?</b><p>Puan bir hesap. Yiyenlerin bildirdiği saatler Meclis-i Mide'de toplanıyor; 3 kişi bildirince ${esc(kok)} için halkın saati oturur.</p><a class="btn" href="/?bildir=${y.slug}" rel="nofollow">Saatini bildir</a></div>`}
 
 <h2>Benzer kaloride daha tok tutanlar</h2>
 ${alternatif.length

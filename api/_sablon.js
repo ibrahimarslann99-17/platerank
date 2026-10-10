@@ -19,6 +19,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;padding
 .logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--forest);text-decoration:none}
 .logo i{font-style:normal;color:var(--teal)}
 .btn{display:inline-block;background:var(--forest);color:var(--lime);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:999px;font-size:15px}
+.halk{background:var(--forest);color:#fff;border-radius:18px;padding:16px 18px;margin:18px 0}.halk b{color:var(--lime);font-size:17px}.halk p{margin:6px 0 12px;color:#cfe0d4}.halk .btn{background:var(--lime);color:var(--forest)}
 nav.yol{font-size:14px;color:var(--muted);margin:4px 0 12px}
 nav.yol a{color:var(--muted)}
 h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}

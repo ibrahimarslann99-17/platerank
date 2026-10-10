@@ -559,7 +559,6 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 /* SEO'daki uzun API adresleri dar ekranda sayfayı yana taşırıyordu (mobilde sayfa uzaklaşmış görünüyordu) */
 #seo code{word-break:break-all;overflow-wrap:anywhere;white-space:normal;font-size:12px;background:var(--card);padding:1px 5px;border-radius:6px;}
 
-
 .menuozet{border:none;border-radius:var(--r-md);box-shadow:var(--shadow);padding:18px;}
 .menuozet .mo-baslik{font-size:18px;}
 .menuozet .mo-lig{border:none;border-radius:999px;background:var(--teal-wash);padding:3px 9px;}
@@ -641,7 +640,7 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 }
 
 /* =========================================================
-   Meclis-i Mide · aramayla seçilen yemek, tambur, saat sürgüsü
+   Meclis-i Mide · aramayla seçilen yemek, saat, rozet
    ========================================================= */
 body.meclis #stickybar, body.meclis #turs{display:none;}
 .m-bas{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;letter-spacing:-0.015em;line-height:1.1;margin:0 0 4px;}
@@ -661,104 +660,74 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .m-sn .lg{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;flex:none;}
 .m-sn-bos{padding:14px;font-size:13px;color:var(--ink-muted);}
 
-.oysar{position:relative;isolation:isolate;margin:6px 0 16px;}
-.oykart{position:relative;z-index:1;display:flex;gap:14px;align-items:stretch;background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);
-  padding:16px 16px 16px 12px;border:2px solid var(--kc,var(--line));transition:border-color .18s ease;}
-.oy-halka{position:absolute;inset:0;border-radius:var(--r-md);box-shadow:0 0 0 4px var(--kc,var(--line));z-index:0;opacity:0;pointer-events:none;}
-.oy-halka.coz{animation:halka .5s cubic-bezier(.2,.7,.3,1) both;}
-@keyframes halka{from{transform:scale(.97);opacity:.85;}to{transform:scale(1.13);opacity:0;}}
 
-.tambur{flex:0 0 58px;height:156px;position:relative;overflow:hidden;border-radius:14px;background:var(--paper);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;outline:none;
-  -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);}
-.tambur:active{cursor:grabbing;}
-.tambur:focus-visible{box-shadow:0 0 0 3px rgba(31,92,59,0.3);}
-.tb-pencere{position:absolute;left:5px;right:5px;top:52px;height:52px;border-radius:11px;background:var(--card);box-shadow:inset 0 0 0 2px var(--kc,var(--line-strong));transition:box-shadow .18s ease;}
-.tb-serit{position:absolute;left:0;right:0;top:0;will-change:transform;}
-.tb-h{display:block;height:52px;line-height:52px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;color:var(--ink-muted);transform-origin:50% 50%;}
-.tambur.secili .tb-h.orta{color:var(--kc);}
-.tb-h.damga{animation:damga .34s cubic-bezier(.3,1.4,.5,1) both;}
-@keyframes damga{0%{transform:scale(1.9) rotate(-6deg);opacity:.15;}70%{transform:scale(.92);opacity:1;}100%{transform:none;opacity:1;}}
 
-.oy-govde{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
-.oy-ad{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1.2;}
-.oy-meta{font-size:12px;color:var(--ink-muted);margin-top:3px;}
-.oy-meta b{color:var(--ink);font-weight:600;}
-.oy-ipucu{font-size:12px;color:var(--ink-muted);line-height:1.45;}
-.oy-ipucu b{color:var(--kc,var(--ink));}
-.saat-ust{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-muted);}
-.saat-ust b{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;color:var(--ink);}
-.saat-ust .link-btn{font-size:11.5px;}
-#m-saat{width:100%;margin:6px 0 0;accent-color:var(--forest);height:28px;touch-action:pan-y;}
-.saatli.bos #m-saat{opacity:.45;}
-.saatli.bos #saat-deger{font-family:'Figtree',system-ui,sans-serif;font-size:12px;font-weight:500;color:var(--ink-muted);}
-.saat-olcek{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink-muted);margin-top:1px;padding:0 3px;}
-.oy-btns{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.oy-btns .btn{padding:11px 18px;}
-.oy-btns .link-btn{color:var(--ink-muted);font-weight:500;}
-.oy-not{font-size:11.5px;color:var(--ink-muted);font-style:italic;}
 .m-sec{width:100%;font-family:'Figtree',system-ui,sans-serif;font-size:16px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--paper);color:var(--ink);margin-bottom:10px;}
 
-.sonuckart{background:var(--forest);color:#FFFFFF;border-radius:var(--r-md);padding:18px 18px 16px;box-shadow:var(--shadow);margin:6px 0 16px;animation:fadeUp .3s ease both;}
-.sonuckart .sk-ust{font-family:'Figtree',system-ui,sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);}
-.sonuckart .sk-ad{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin:6px 0 12px;}
-.sonuckart .sk-satir{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;line-height:1.35;}
-.sonuckart .sk-satir span{white-space:nowrap;}
-.sonuckart .sk-satir b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;}
-.sonuckart .sk-not{font-size:12px;color:rgba(255,255,255,.72);margin-top:10px;line-height:1.5;}
-.sonuckart .oy-btns{margin-top:14px;}
-.sonuckart .btn{background:var(--lime);color:var(--forest);border-color:var(--lime);}
-.sonuckart .link-btn{color:rgba(255,255,255,.8);}
 
-@media (prefers-reduced-motion: reduce){
-  .tb-h.damga,.oy-halka.coz{animation:mSolma .2s ease both;}
-  .oy-halka.coz{display:none;}
-  .sonuckart{animation:mSolma .2s ease both;}
-}
 @keyframes mSolma{from{opacity:0;}to{opacity:1;}}
 /* ---------- rozetler ---------- */
-.oysar{margin-top:22px;}
-.oykart{flex-wrap:wrap;}
-.rz-cik{position:absolute;top:-15px;right:16px;display:flex;gap:4px;z-index:3;}
-.sonuckart{position:relative;margin-top:22px;}
-.rz-st{width:34px;height:34px;display:grid;place-items:center;border:none;background:none;padding:0;cursor:pointer;transform:rotate(var(--r,0deg));filter:drop-shadow(0 2px 1.5px rgba(14,34,23,.28));}
-.rz-st svg{display:block;}
-.rz-alan{flex-basis:100%;border-top:1px dashed var(--line);padding-top:12px;margin-top:2px;}
-.sonuckart .rz-alan{border-top-color:rgba(255,255,255,.16);margin-top:14px;}
-.rz-bas{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px;}
-.rz-bas span{font-weight:400;color:var(--ink-muted);font-size:11px;margin-left:4px;}
-.sonuckart .rz-bas{color:#FFFFFF;} .sonuckart .rz-bas span{color:rgba(255,255,255,.6);}
-.rz-tepsi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
-.rz-t{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:8px 4px 7px;border:1px solid var(--line);border-radius:12px;background:var(--paper);cursor:pointer;text-align:center;font-family:'Figtree',system-ui,sans-serif;color:var(--ink);}
-.sonuckart .rz-t{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#FFFFFF;}
-.rz-t .rz-i{flex:none;display:grid;place-items:center;transition:transform .2s ease;}
-.rz-t .rz-ad{font-size:10.5px;line-height:1.2;font-weight:600;min-width:0;}
-.rz-t .rz-ad b{font-weight:700;opacity:.6;}
-.rz-t.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--card);}
-.rz-t.on::before{content:'✓';position:absolute;top:4px;right:7px;font-size:11px;font-weight:800;color:var(--teal);}
-.sonuckart .rz-t.on{border-color:#FFFFFF;box-shadow:inset 0 0 0 1px #FFFFFF;}
-.sonuckart .rz-t.on::before{color:var(--lime);}
-.sonuckart .rz-t.on{background:rgba(255,255,255,.16);}
-.rz-t.on .rz-i{transform:rotate(-8deg);}
-.rz-t.carp .rz-i{animation:rzCarp .35s cubic-bezier(.3,1.3,.5,1) both;}
-.rz-t.kalk .rz-i{animation:rzKalk .3s ease both;}
 @keyframes rzCarp{0%{transform:scale(1.4) rotate(-8deg);opacity:.7;filter:none;}70%{transform:scale(.93) rotate(-8deg);opacity:1;}100%{transform:rotate(-8deg);}}
-@keyframes rzKalk{0%{transform:rotate(-8deg);opacity:1;filter:none;}60%{transform:scale(1.4) rotate(0deg);opacity:.6;filter:none;}100%{transform:none;}}
-.rz-t::after{content:'';position:absolute;left:50%;top:22px;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--rc);opacity:0;pointer-events:none;}
-.rz-t.murekkep::after{animation:rzMurekkep .35s ease-out both;}
-@keyframes rzMurekkep{from{transform:scale(.5);opacity:.9;}to{transform:scale(2.1);opacity:0;}}
-.sars{animation:rzSars .3s ease both;}
-@keyframes rzSars{0%,100%{transform:none;}25%{transform:translateX(-2px);}50%{transform:translateX(2px);}75%{transform:translateX(-1px);}}
 .rz-balon{position:absolute;z-index:5;width:min(300px,calc(100% - 12px));display:flex;gap:12px;align-items:center;background:var(--card);color:var(--ink);border-radius:var(--r-md);padding:12px 14px 12px 10px;box-shadow:0 18px 38px -14px rgba(14,34,23,.55),0 0 0 1px var(--line);animation:fadeUp .2s ease both;}
 .rz-balon svg{flex:none;width:92px;height:92px;}
 .rzb-ad{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;line-height:1.15;}
 .rzb-sayi{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;margin:4px 0 2px;}
 .rzb-acik{font-size:12px;color:var(--ink-muted);line-height:1.4;}
-@media (max-width:370px){ .rz-tepsi{grid-template-columns:repeat(2,minmax(0,1fr));} }
-@media (prefers-reduced-motion: reduce){
-  .rz-t.carp .rz-i,.rz-t.kalk .rz-i,.sars,.rz-balon{animation:mSolma .2s ease both;}
-  .rz-t.on .rz-i{transform:none;}
-  .rz-t.murekkep::after{animation:none;}
-}
+/* ---------- Meclis-i Mide · tokluk bildirimi ---------- */
+.bk{position:relative;background:var(--forest);color:#FFFFFF;border-radius:var(--r-md);padding:18px 16px 16px;box-shadow:var(--shadow);margin:4px 0 8px;animation:fadeUp .3s ease both;}
+.bk-ust{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);}
+.bk-ust span{letter-spacing:.04em;text-transform:none;font-weight:500;color:rgba(255,255,255,.65);}
+.bk-b{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;margin:6px 0 12px;}
+.bk-p{font-size:13px;line-height:1.5;color:rgba(255,255,255,.75);margin:-4px 0 12px;}
+.bk-ok{font-size:13.5px;line-height:1.5;background:rgba(213,236,98,.14);border-radius:12px;padding:10px 12px;margin:0;}
+.bk-giris{display:flex;gap:8px;flex-wrap:wrap;}
+.bk-giris input{flex:1 1 180px;min-width:0;margin:0;border:none;border-radius:999px;padding:12px 16px;font-size:16px;font-family:'Figtree',system-ui,sans-serif;}
+.bk .btn{background:var(--lime);color:var(--forest);border-color:var(--lime);}
+.bk .btn:disabled{opacity:.45;}
+.bk .link-btn{color:rgba(255,255,255,.8);}
+.bk .m-ara{margin:0;}
+.bk #mq{box-shadow:none;}
+.bk .m-sonuc{color:var(--ink);}
+.bk-ad{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:21px;line-height:1.2;margin:6px 0 2px;}
+.bk-meta{font-size:12px;color:rgba(255,255,255,.65);}
+.bk-soru{font-size:13px;font-weight:700;margin:16px 0 8px;}
+.bk-soru span{font-weight:400;color:rgba(255,255,255,.6);font-size:11.5px;margin-left:4px;}
+.bk-saat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+.bk-saat button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#FFFFFF;border-radius:12px;padding:11px 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;cursor:pointer;}
+.bk-saat button.on{background:var(--lime);border-color:var(--lime);color:var(--forest);}
+.bk-rz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+.bk-rz button{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:8px 4px 7px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.07);color:#FFFFFF;cursor:pointer;font-family:'Figtree',system-ui,sans-serif;font-size:10.5px;font-weight:600;line-height:1.2;}
+.bk-rz button svg{display:block;transition:transform .2s ease;}
+.bk-rz button.on{background:rgba(255,255,255,.18);border-color:#FFFFFF;box-shadow:inset 0 0 0 1px #FFFFFF;}
+.bk-rz button.on svg{transform:rotate(-8deg);}
+.bk-rz button.carp svg{animation:rzCarp .35s cubic-bezier(.3,1.3,.5,1) both;}
+.bk-btns{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;}
+.bk-btns .btn{padding:12px 22px;}
+.bk-sat{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
+.bk-sat span{flex:1 1 0;min-width:84px;background:rgba(255,255,255,.08);border-radius:12px;padding:9px 10px;font-size:11px;color:rgba(255,255,255,.7);}
+.bk-sat b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:#FFFFFF;margin-top:2px;}
+.bk-sat small{font-size:11px;color:rgba(255,255,255,.6);}
+.mr-saat{flex:none;min-width:46px;text-align:right;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;color:var(--teal-dark);}
+.mr-saat.az{color:var(--ink-muted);font-weight:700;}
+.hk-kavga{margin-top:10px;font-size:12.5px;line-height:1.45;background:#FBEFE6;border-left:3px solid var(--c, #D06C28);border-radius:8px;padding:8px 10px;}
+.hk-kavga.uyum{background:var(--card);border-left-color:var(--teal);}
+.m-bosnot{margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;line-height:1.5;}
+.rrehber{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px;padding:14px;}
+.rr{display:flex;gap:8px;align-items:flex-start;min-width:0;}
+.rr svg{flex:none;display:block;}
+.rr b{display:block;font-size:13px;line-height:1.2;}
+.rr span{display:block;font-size:11.5px;color:var(--ink-muted);line-height:1.35;margin-top:2px;}
+.rr small{display:block;font-size:10.5px;color:var(--teal);font-weight:600;margin-top:3px;}
+.m-oneri{margin-top:22px;}
+.m-oneri summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);padding:14px 16px;font-weight:600;font-size:14px;}
+.m-oneri summary::-webkit-details-marker{display:none;}
+.m-oneri summary span{flex:none;color:var(--teal);font-weight:700;}
+.m-oneri[open] summary span::after{content:' ▴';}
+.m-oneri:not([open]) summary span::after{content:' ▾';}
+.m-oneri-ic{padding-top:12px;}
+.abildir{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);padding:0;}
+@media (max-width:370px){ .rrehber{grid-template-columns:1fr;} .bk-rz{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (prefers-reduced-motion: reduce){ .bk,.bk-rz button.carp svg{animation:mSolma .2s ease both;} .bk-rz button.on svg{transform:none;} }
 /* ---------- Meclis listesi + halk kartı ---------- */
 .mliste{padding:4px 14px;}
 .crow-m .crow{border-bottom:none;padding:11px 0;animation:none;}
@@ -861,7 +830,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
     <div class="card">
       <h2>Kalori sayan çok, tokluk soran yok.</h2>
       <p>Her paketin üstünde kalori yazıyor, her uygulama kalori sayıyor. Ama kimse asıl soruyu sormuyor: <b>bu yemek beni doyuracak mı?</b> 450 kalorilik künefe ile 450 kalorilik kuru fasulye kâğıt üstünde eşit. Ama biri seni bir buçuk saat sonra buzdolabının kapısına geri getirir, öteki akşama kadar unutturur. Bu site o farkın peşinde.</p>
-      <p>PlateRank tek bir şeyi ölçmeye çalışır: <b>harcadığın kaloriye karşılık ne kadar tokluk satın alıyorsun.</b> İki hakemi var: Bilim (makrolardan hesaplanan skor) ve Halk (senin oyların). Çelişki sekmesi, ikisinin kavga ettiği yer. En sevdiğim sekme de o.</p>
+      <p>PlateRank tek bir şeyi ölçmeye çalışır: <b>harcadığın kaloriye karşılık ne kadar tokluk satın alıyorsun.</b> İki hakemi var: Bilim (makrolardan hesaplanan skor) ve Halk (yiyenlerin bildirdiği tok tutma saatleri). Meclis-i Mide, ikisinin kavga ettiği yer. En sevdiğim bölüm de o.</p>
 
       <h3>Puan nasıl oluşuyor?</h3>
       <p>Puan bir ölçüm değil, bir sıralama aracı. Girdiler porsiyon başına protein, lif, kalori yoğunluğu ve şeker: protein ile lif puanı yukarı iter, kalori yoğunluğu ile şeker aşağı çeker. Su hacmi makro tablosunda görünmediği için çorba, ayran ve sulu yemekler ayrıca elle yukarı alınır. Her yemek kendi türündeki komşularına göre yerleştirilir, çorba çorbayla tatlı tatlıyla karşılaştırılır. 200 üstü S ligi, 70 altı D ligi. Şeker Şoku ve Tekrar Acıkma süresi de aynı makrolardan türetilen tahminlerdir; kronometreyle değil, hesapla bulunur.</p>
@@ -922,7 +891,6 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
   <button class="nbtn" data-nav="auto" aria-label="Besin değerleri"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 16v-5"/><path d="M13 16V7"/><path d="M18 16v-8"/></svg><span class="nlab"><span class="nl-u">Besin değerleri</span><span class="nl-k">Besinler</span></span></button>
   <button class="nbtn" data-nav="yesem" aria-label="Ne yesem ve protein"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg><span class="nlab">Ne yesem?</span></button>
   <button class="nbtn" data-nav="comm" aria-label="Meclis-i Mide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nlab"><span class="nl-u">Meclis-i Mide</span><span class="nl-k">Meclis</span></span></button>
-  <button class="nbtn" data-nav="conflict" aria-label="Çelişki"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><span class="nlab">Çelişki</span></button>
   <button class="nbtn nprof" data-nav="bilgi" aria-label="Profil"><span class="avatar" id="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="nlab">Profil</span></button>
 </nav>
 <div id="toast"></div>
@@ -930,7 +898,6 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
   <div id="tn-kart" role="dialog" aria-label="Kısa tanıtım"><div class="tn-b" id="tn-b"></div><div class="tn-m" id="tn-m"></div>
     <div class="tn-alt"><div class="tn-nok" id="tn-nok"></div><div class="tn-btns"><button class="tn-gec" id="tn-gec">Geç</button><button class="tn-ileri" id="tn-ileri">İleri</button></div></div>
   </div></div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -962,7 +929,9 @@ async function acctYukle(user){
   if(ilkGiris){ await ilkGirisSenkronu(); try{ localStorage.setItem(birlestirmeAnahtari,'1'); }catch(e){} }
   renderAuthBar();
   await loadMenu();
+  await benimKayitlarimYukle();
   render();
+  donusUygula();
 }
 
 async function ilkGirisSenkronu(){
@@ -1039,6 +1008,7 @@ sb.auth.onAuthStateChange((event, session)=>{
     setTimeout(()=>acctYukle(u), 0);
   } else if(event==='SIGNED_OUT'){
     currentUser = null; acctFavIds = null; acctMenuIds = null;
+    benimBildirim = new Map(); benimRozet = new Map(); benimKimlik = null; bildirim = null; bildirimSonuc = null;
     renderAuthBar();
     loadMenu().then(render);
   }
@@ -1189,7 +1159,7 @@ function isProfane(s){
 let currentCuisine = 'tr';
 let currentMode = null;   // null = ana ekran; bölüm alt menüden seçilir
 let beslenAlt = 'yesem', profilAlt = 'bilgi';
-const MOD_NAV = {auto:'auto', yesem:'yesem', protein:'yesem', comm:'comm', conflict:'conflict', bilgi:'bilgi', fav:'bilgi', menu:'bilgi'};
+const MOD_NAV = {auto:'auto', yesem:'yesem', protein:'yesem', comm:'comm', conflict:'comm', bilgi:'bilgi', fav:'bilgi', menu:'bilgi'};
 let selectedFood = null;
 // Acilan satirlarin kimligi. render() innerHTML'i bastan yaziyor; bu kume olmadan
 // arkadan gelen bir render (ör. oy verisi) kullanicinin actigi detayi kapatiyordu.
@@ -1401,7 +1371,7 @@ function render(){
     content.innerHTML = segHtml([['bilgi','Bilgilerim'],['menu','🧾 Menüm'],['fav','★ Favoriler']], currentMode) +
       (currentMode==='fav' ? renderFav() : currentMode==='menu' ? renderMenu() : renderBilgi());
   }
-  else { content.innerHTML = renderConflict(); }
+  else { currentMode = 'comm'; content.innerHTML = renderComm(); }
   content.classList.remove('cfade');
   void content.offsetWidth;
   content.classList.add('cfade');
@@ -1409,7 +1379,6 @@ function render(){
   if(currentMode==='bilgi') renderAuthBar();
   wireUp();
   if(currentMode==='comm') meclisBagla();
-  else if(currentMode==='conflict'){ rzBalon = null; rozetBagla(); meclisListeBagla(); }
   animateBars();
   sbKontrol();
 }
@@ -1545,7 +1514,8 @@ function arowHtml(f,i,max,favs,menuSet){
     const gs = slug && GORSEL.has(slug) ? slug : null;
     const kucukGorsel = gs ? `<img class="athumb" src="/img/yemek/k/${gs}.webp" alt="" width="48" height="36" loading="lazy" decoding="async">` : `<span class="athumb bos"></span>`;
     const ust = gs ? `<img class="adfoto" src="/img/yemek/${gs}.webp" alt="${esc(f.ad)}" width="1200" height="900" loading="lazy" decoding="async">` : '';
-    const sayfaLink = slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '';
+    const bildirLink = saatsiz(f) ? '' : `<button class="link-btn abildir" data-bildir="${f.id}">⏱ Seni kaç saat tuttu? Bildir</button>`;
+    const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
       ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
       </div>
@@ -1611,14 +1581,13 @@ function renderMenu(){
 
 // =========================================================
 // Meclis-i Mide
-// Oy verilecek yemek aramadan seçilir. Lig tamburla, tok tutma süresi
-// adımlı sürgüyle verilir. Kullanıcı durumu (seçili yemek, lig, saat, arama)
-// JS'te tutulur; arkadan gelen render bunları DOM'dan okumaz, ezmez.
+// Yemek aramadan seçilir, kaç saat tok tuttuğu tek dokunuşla verilir.
+// Kullanıcı durumu (seçili yemek, saat, rozet, arama) JS'te tutulur;
+// arkadan gelen render bunları DOM'dan okumaz, ezmez.
 // =========================================================
 const YEMEK_ALAN = 'id,mutfak,ad,kcal,doyuruculuk,protein,lif,yag,seker,tur,sadece_malzeme,kaynak';
 const SAAT_ADIM = [30,60,90,120,180,240,300,360];
 const SAAT_AD = ['30 dk','1 sa','1,5 sa','2 sa','3 sa','4 sa','5 sa','6+ sa'];
-const TB_H = 52;          // tambur satır yüksekliği (px)
 const K_ESIK = 20;        // k hesaplanmadan önce sitede birikmesi gereken saatli oy
 
 const meclis = {
@@ -1632,9 +1601,6 @@ const meclis = {
 // kullanıcı durumu
 let mArama = '';                  // arama kutusundaki metin
 let mSonuclar = null;             // son arama sonucu (dizi) | null
-let oyDurum = null;               // {id, lig:null|'S'.., pos, saat:null|0..7}
-let oySonuc = null;               // {id, lig, saat_dk, oyAdet}
-let tbSurukleniyor = false;
 
 function mYemekKaydet(liste){ (liste||[]).forEach(f=>{ if(f && f.id) meclis.yemek.set(f.id, f); }); }
 function mYemek(id){
@@ -1677,7 +1643,8 @@ async function meclisYukle(force){
         sb.from('meclis_k').select('toplam_saatli,uygun_yemek,k,site_min,site_max').maybeSingle(),
         sb.from('oneriler').select('id,mutfak,ad,kcal,protein,lif,yag,seker,seker_eksik,tarif').eq('durum','bekliyor').order('created_at',{ascending:false}).limit(60),
         tumunuCek(()=>sb.from('rozet_durumu').select('yemek_id,rozet,adet').order('yemek_id').order('rozet')),
-        temel100Yukle()
+        temel100Yukle(),
+        benimKayitlarimYukle()
       ]);
       if(oz.error) throw oz.error;
       meclis.ozet = new Map((oz.data||[]).map(r=>[r.yemek_id, r]));
@@ -1699,11 +1666,11 @@ async function meclisYukle(force){
   await meclis.yukleniyor;
   meclisTazele();
 }
-// Arkadan gelen veri: kullanıcı yazıyor ya da tambur dönüyorsa dokunma.
+// Arkadan gelen veri: kullanıcı yazıyorsa dokunma.
 function meclisTazele(){
-  if(['comm','conflict'].indexOf(currentMode) < 0) return;
+  if(currentMode!=='comm') return;
   const yaziyor = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
-  if(yaziyor || tbSurukleniyor) return;
+  if(yaziyor) return;
   render();
 }
 
@@ -1728,7 +1695,7 @@ async function meclisAra(){
     const as = trNorm(a.ad).startsWith(n)?0:1, bs = trNorm(b.ad).startsWith(n)?0:1;
     return as-bs || a.ad.length-b.ad.length;
   });
-  mSonuclar = bulunan.slice(0,8);
+  mSonuclar = bulunan.filter(f=>!saatsiz(f)).slice(0,8);
   mYemekKaydet(mSonuclar);
   meclisSonucCiz();
 }
@@ -1737,128 +1704,143 @@ function meclisSonucCiz(){
   const el = document.getElementById('m-sonuc');
   if(!el) return;
   if(!mSonuclar){ el.innerHTML = ''; return; }
-  if(!mSonuclar.length){ el.innerHTML = '<div class="m-sn-bos">"'+esc(mArama.trim())+'" bulunamadı. Aşağıdan keşif olarak önerebilirsin.</div>'; return; }
+  if(!mSonuclar.length){ el.innerHTML = '<div class="m-sn-bos">"'+esc(mArama.trim())+'" bulunamadı. En alttan öneri olarak ekleyebilirsin.</div>'; return; }
   el.innerHTML = mSonuclar.map(f=>{
     const lig = satietyToTier(f.doyuruculuk);
     const o = meclis.ozet.get(f.id);
     return `<button class="m-sn" data-msec="${f.id}"><span class="ic">${mutfakIc(f.mutfak)}</span>
-      <span class="ad">${esc(f.ad)}<small>${f.kcal} kcal · site ${f.doyuruculuk}${o&&o.oy?' · meclis '+o.oy+' oy':''}</small></span>
+      <span class="ad">${esc(f.ad)}<small>${f.kcal} kcal${o&&o.saatli?' · '+o.saatli+' kişi bildirdi':''}${benimBildirim.has(f.id)?' · senin: '+saatYaz(benimBildirim.get(f.id)):''}</small></span>
       <span class="lg lig-${lig}">${lig}</span></button>`;
   }).join('');
   el.querySelectorAll('[data-msec]').forEach(b=>{ b.onclick = ()=>{ buzz(8); oyAc(b.dataset.msec); }; });
 }
 
-// ---------- oy kartı ----------
-function benimOyum(id){ return myVotes()[id] || null; }
-function benimSaatim(id){ try{ const m = JSON.parse(localStorage.getItem('pr_saatlerim')||'{}'); return m[id]!=null ? m[id] : null; }catch(e){ return null; } }
-function setBenimSaatim(id, dk){ try{ const m = JSON.parse(localStorage.getItem('pr_saatlerim')||'{}'); if(dk==null) delete m[id]; else m[id]=dk; localStorage.setItem('pr_saatlerim', JSON.stringify(m)); }catch(e){} }
+// ---------- Meclis-i Mide: tokluk bildirimi ----------
+// Tek soru: bu yemek seni kaç saat tok tuttu? İsteğe bağlı en fazla 2 rozet.
+// Yazma üyelere açık: sunucuda RLS + uye_damgala tetiği kimliği hesaptan alır
+// (istemcinin gönderdiği cihaz yok sayılır), her üye bir yemekte tek ses.
+// Okuma herkese açık.
+const RAPOR_ESIK = 3;          // bu kadar kişiden az bildirimde "az veri" etiketi
+let bildirim = null;           // {id, saat:null|0..7, rozet:[...]}
+let bildirimSonuc = null;      // {id, saat_dk}
+let benimKimlik = null;        // 'h:' + sha256('u:'+uid): sunucudaki cihaz alanıyla aynı
+let benimBildirim = new Map(); // yemek_id -> saat_dk (bu üyenin son bildirimi)
+let benimRozet = new Map();    // yemek_id -> [rozet]
+let mGirisGonderildi = false;
+let mOneriAcik = false;
 
+async function kimlikHash(uid){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('u:'+uid));
+  return 'h:' + [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function benimKayitlarimYukle(){
+  benimBildirim = new Map(); benimRozet = new Map(); benimKimlik = null;
+  if(!currentUser) return;
+  try{
+    benimKimlik = await kimlikHash(currentUser.id);
+    const [o, r] = await Promise.all([
+      sb.from('oylar').select('yemek_id,saat_dk,created_at').eq('cihaz', benimKimlik).order('created_at',{ascending:true}),
+      sb.from('rozet_oylar').select('yemek_id,rozet,aktif,created_at').eq('cihaz', benimKimlik).order('created_at',{ascending:true})
+    ]);
+    (o.data||[]).forEach(x=>{ if(x.saat_dk!=null) benimBildirim.set(x.yemek_id, x.saat_dk); });
+    const rr = new Map();
+    (r.data||[]).forEach(x=>{ const m = rr.get(x.yemek_id) || {}; m[x.rozet] = x.aktif; rr.set(x.yemek_id, m); });
+    rr.forEach((m,id)=>{ const a = Object.keys(m).filter(k=>m[k]); if(a.length) benimRozet.set(id, a); });
+  }catch(e){ console.error('kendi bildirimlerim alınamadı', e); }
+}
+
+// Bir yemeği bildirim kartına koyar; Meclis'e geçer.
 function oyAc(id){
   const f = mYemek(id);
   if(!f) return;
-  mArama = ''; mSonuclar = null; oySonuc = null;
-  const eskiLig = benimOyum(id), eskiDk = benimSaatim(id);
+  if(saatsiz(f)){ toast(f.tur==='icecek' ? 'İçeceklerde saat sorulmuyor' : 'Malzemelerde saat sorulmuyor'); return; }
+  mArama = ''; mSonuclar = null; bildirimSonuc = null;
+  const eskiDk = benimBildirim.get(id);
   const si = eskiDk!=null ? SAAT_ADIM.indexOf(eskiDk) : -1;
-  oyDurum = {id, lig: eskiLig, pos: eskiLig ? TIER_ORDER.indexOf(eskiLig) : 2, saat: (si>=0 && !saatsiz(f)) ? si : null};
+  bildirim = {id, saat: si>=0 ? si : null, rozet: (benimRozet.get(id)||[]).slice()};
+  if(currentMode!=='comm'){ currentMode = 'comm'; selectedFood = null; }
   render();
-  requestAnimationFrame(()=>{ const k = document.getElementById('oysar'); if(k) k.scrollIntoView({behavior: azHareket()?'auto':'smooth', block:'center'}); });
+  requestAnimationFrame(()=>{ const k = document.getElementById('bk'); if(k) k.scrollIntoView({behavior: azHareket()?'auto':'smooth', block:'center'}); });
 }
 function azHareket(){ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
-function oyKartHtml(){
-  const f = mYemek(oyDurum.id);
-  if(!f) return '';
-  const lig = oyDurum.lig;
-  const siteLig = satietyToTier(f.doyuruculuk);
-  const o = meclis.ozet.get(f.id);
-  const kc = lig ? `var(--${lig.toLowerCase()})` : 'var(--line)';
-  const saatVar = !saatsiz(f);
-  const si = oyDurum.saat;
-  const k = mKDegeri();
-  let ipucu = lig ? `Seçimin: <b>${lig}</b> · ${TIER_INFO[lig].split(' · ')[0]}` : 'Tamburu çevir ya da bir harfe dokun.';
-  const saatHtml = !saatVar ? `<div class="oy-not">${f.tur==='icecek'?'İçeceklerde':'Malzemelerde'} saat sorulmaz: kalorisi düşük kalemde süre/kalori oranı anlamsız büyüyor.</div>` : `
-    <div class="saatli ${si==null?'bos':''}" id="saatli">
-      <div class="saat-ust"><span>Kaç saat tok tuttu?</span>
-        <span><b id="saat-deger">${si==null?'isteğe bağlı':SAAT_AD[si]}</b>${si!=null?' <button class="link-btn" id="saat-sil">sil</button>':''}</span></div>
-      <input type="range" id="m-saat" min="0" max="7" step="1" value="${si==null?3:si}" aria-label="Tok tutma süresi">
-      <div class="saat-olcek"><span>30 dk</span><span>2 sa</span><span>4 sa</span><span>6+ sa</span></div>
-      ${k==null?'':'<div class="oy-not" style="margin-top:4px">Saati girince tambur o saatin ligine kendiliğinden kayar.</div>'}
-    </div>`;
-  const tb = TIER_ORDER.map((t,i)=>`<span class="tb-h" data-i="${i}">${t}</span>`).join('');
-  return `<div class="oysar rz-kap" id="oysar" style="--kc:${kc}">
-    <div class="oy-halka" id="oy-halka"></div>
-    <div class="rz-cik" data-rzy="${f.id}">${cikartmaHtml(f.id)}</div>
-    <div class="oykart" id="oykart">
-      <div class="tambur ${lig?'secili':''}" id="tambur" tabindex="0" role="slider" aria-label="Lig seç" aria-valuemin="1" aria-valuemax="5" aria-valuetext="${lig||'seçilmedi'}">
-        <div class="tb-pencere"></div><div class="tb-serit" id="tb-serit">${tb}</div>
-      </div>
-      <div class="oy-govde">
-        <div><div class="oy-ad">${esc(f.ad)}</div>
-          <div class="oy-meta">${mutfakIc(f.mutfak)} ${f.kcal} kcal · site <b class="lig-${siteLig}">${f.doyuruculuk} (${siteLig})</b>${o&&o.oy?' · meclis '+o.oy+' oy':''}</div></div>
-        <div class="oy-ipucu" id="oy-ipucu">${ipucu}</div>
-        ${saatHtml}
-        <div class="oy-btns">
-          <button class="btn" id="oy-gonder" ${lig?'':'disabled'}>Meclise sun</button>
-          <button class="link-btn" id="oy-vazgec">Vazgeç</button>
-        </div>
-      </div>
-      ${tepsiHtml(f.id)}
-    </div>
-  </div>`;
-}
-
-function sonucKartHtml(){
-  const f = mYemek(oySonuc.id);
-  if(!f) return '';
-  const k = mKDegeri();
-  const parcalar = [];
-  if(oySonuc.saat_dk!=null){
-    const hp = halkPuani(oySonuc.saat_dk, f.kcal);
-    parcalar.push(`<span>Sen: <b>${saatYaz(oySonuc.saat_dk)}${hp!=null?' → '+hp:''}</b></span>`);
-  } else {
-    parcalar.push(`<span>Sen: <b>${oySonuc.lig} ligi</b></span>`);
-  }
-  parcalar.push(`<span>Site: <b>${f.doyuruculuk}</b></span>`);
-  parcalar.push(`<span>Meclis: <b>${oySonuc.oyAdet} oy</b></span>`);
-  let not = '';
-  if(oySonuc.saat_dk!=null && k==null){
-    const n = meclis.k ? meclis.k.toplam_saatli : 0;
-    not = `Saatin puana çevrilmesi için sitede ${K_ESIK} saatli oy birikmesi gerekiyor (şu an ${Math.min(n,K_ESIK)}/${K_ESIK}). O zamana kadar meclis medyan saati gösterir.`;
-  }
-  return `<div class="sonuckart rz-kap" id="sonuckart">
-    <div class="rz-cik" data-rzy="${f.id}">${cikartmaHtml(f.id)}</div>
-    <div class="sk-ust">Oyun mecliste · ${oySonuc.lig} ligi</div>
-    <div class="sk-ad">${esc(f.ad)}</div>
-    <div class="sk-satir">${parcalar.join('<span style="opacity:.45">·</span>')}</div>
-    ${not?`<div class="sk-not">${not}</div>`:''}
-    ${tepsiHtml(f.id)}
-    <div class="oy-btns"><button class="btn" id="sk-baska">Başka yemek oyla</button><button class="link-btn" id="sk-tekrar">Oyumu değiştir</button></div>
-  </div>`;
-}
-
 function meclisBolumHtml(){
-  let h = `<div class="m-bas">Meclis-i Mide</div>
-  <p class="m-alt">Mide oy verir, meclis sayar. Yemeği ara, ligini ver, istersen kaç saat tok tuttuğunu da yaz.</p>
-  <div class="m-ara"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input type="text" id="mq" autocomplete="off" enterkeyhint="search" placeholder="Yemek ara: menemen, lahmacun…" value="${esc(mArama)}">
-    <div class="m-sonuc" id="m-sonuc"></div></div>`;
-  if(!votingOpen) h += '<div class="card bos">Oylama geçici olarak kapalı.</div>';
-  else if(oySonuc) h += sonucKartHtml();
-  else if(oyDurum) h += oyKartHtml();
-  h += meclisListeHtml();
-  h += meclisSahneHtml();
-  return h;
+  return `<div class="m-bas">Meclis-i Mide</div>
+  <p class="m-alt">Kalori her paketin üstünde yazar. Kaç saat tok tuttuğu yalnızca burada: yiyenlerin bildirdiği saatlerden.</p>
+  ${bildirimKartHtml()}
+  ${halkSaatleriHtml()}
+  ${rozetRehberiHtml()}
+  ${oneriBolumHtml()}`;
 }
-
 function renderComm(){
   if(!meclis.yuklendi) meclisYukle();
   return meclisBolumHtml();
 }
 
-// ---------- Meclis sayfası: Oylananlar + halk kartı ----------
-const MECLIS_ESIK = 5;      // bu kadar oydan azı listede görünmez
+const ARA_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+
+function bildirimKartHtml(){
+  if(!votingOpen) return `<div class="bk" id="bk"><div class="bk-ust">Tokluk bildir</div><p class="bk-p">Bildirimler geçici olarak kapalı. Halkın saatleri aşağıda.</p></div>`;
+  if(!currentUser){
+    const f = bildirim ? mYemek(bildirim.id) : null;
+    return `<div class="bk" id="bk">
+      <div class="bk-ust">Tokluk bildir</div>
+      <div class="bk-b">${f ? esc(f.ad)+' seni kaç saat tuttu?' : 'Bildirim üyelere açık'}</div>
+      <p class="bk-p">Her üye tek ses: aynı yemeği yeniden bildirirsen eskisinin yerine geçer, sayılar şişmez. Şifre yok, e-postana giriş bağlantısı gelir.</p>
+      ${mGirisGonderildi
+        ? '<p class="bk-ok">Bağlantı gönderildi. E-postandaki bağlantıya bu cihazdan dokun, kaldığın yere dönersin.</p>'
+        : '<div class="bk-giris"><input type="email" id="bk-eposta" placeholder="e-posta adresin" autocomplete="email" enterkeyhint="send"><button class="btn" id="bk-gonder">Giriş bağlantısı gönder</button></div>'}
+    </div>`;
+  }
+  if(bildirimSonuc) return bildirimSonucHtml();
+  if(bildirim) return bildirimFormHtml();
+  const n = benimBildirim.size;
+  return `<div class="bk" id="bk">
+    <div class="bk-ust">Tokluk bildir${n?` <span>· ${n} bildirimin var</span>`:''}</div>
+    <div class="bk-b">Son yediğin yemek seni kaç saat tuttu?</div>
+    <div class="m-ara">${ARA_SVG}
+      <input type="text" id="mq" autocomplete="off" enterkeyhint="search" placeholder="Ne yedin? menemen, lahmacun…" value="${esc(mArama)}">
+      <div class="m-sonuc" id="m-sonuc"></div></div>
+  </div>`;
+}
+
+function bildirimFormHtml(){
+  const f = mYemek(bildirim.id);
+  if(!f) return '';
+  const si = bildirim.saat;
+  const eski = benimBildirim.get(f.id);
+  const lig = satietyToTier(f.doyuruculuk);
+  return `<div class="bk" id="bk">
+    <div class="bk-ust">Tokluk bildir</div>
+    <div class="bk-ad">${esc(f.ad)}</div>
+    <div class="bk-meta">${f.kcal} kcal · hesap ${f.doyuruculuk} (${lig} ligi)${eski!=null?' · önceki bildirimin '+saatYaz(eski):''}</div>
+    <div class="bk-soru">Kaç saat tok tuttu?</div>
+    <div class="bk-saat">${SAAT_AD.map((a,i)=>`<button class="${si===i?'on':''}" data-bks="${i}" aria-pressed="${si===i}">${a}</button>`).join('')}</div>
+    <div class="bk-soru">Rozet <span>isteğe bağlı · en fazla 2</span></div>
+    <div class="bk-rz">${ELLE_ROZET.map(k=>{ const on = bildirim.rozet.includes(k);
+      return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}" title="${esc(ROZETLER[k].acik)}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span></button>`; }).join('')}</div>
+    <div class="bk-btns"><button class="btn" id="bk-bildir" ${si==null?'disabled':''}>${eski!=null?'Güncelle':'Bildir'}</button><button class="link-btn" id="bk-vazgec">Vazgeç</button></div>
+  </div>`;
+}
+
+function bildirimSonucHtml(){
+  const f = mYemek(bildirimSonuc.id);
+  if(!f) return '';
+  const o = meclis.ozet.get(f.id);
+  const halk = o && o.medyan_dk!=null ? `<b>${saatYaz(o.medyan_dk)}</b> <small>${o.saatli} kişi</small>` : '<b>?</b>';
+  const t = acikmaSuresi(f);
+  return `<div class="bk" id="bk">
+    <div class="bk-ust">Kaydedildi ✓</div>
+    <div class="bk-ad">${esc(f.ad)}</div>
+    <div class="bk-sat"><span>Sen<b>${saatYaz(bildirimSonuc.saat_dk)}</b></span><span>Halk${halk}</span>${t?`<span>Hesap<b>~${saatStr(t)} sa</b></span>`:''}</div>
+    ${o && o.saatli < RAPOR_ESIK ? `<p class="bk-p">${RAPOR_ESIK} kişi bildirince yemeğin halk saati oturur (${o.saatli}/${RAPOR_ESIK}).</p>` : ''}
+    <div class="bk-btns"><button class="btn" id="bk-baska">Başka yemek bildir</button><button class="link-btn" id="bk-duzelt">Düzelt</button></div>
+  </div>`;
+}
+
+// ---------- halkın saatleri ----------
 let mAcik = new Set();       // açık halk kartları (yemek id); render'ı aşar
-let mListeN = 20;            // Oylananlar'da gösterilen satır sayısı
+let mListeN = 20;
 
 async function meclisYemekleriGetir(){
   const eksik = [...meclis.ozet.keys()].filter(id=>!mYemek(id));
@@ -1872,80 +1854,91 @@ async function meclisYemekleriGetir(){
   }
 }
 
+// Hesabın tahmini ile halkın medyanı arasındaki fark: eskiden ayrı "Çelişki" sekmesiydi.
+function kavgaHtml(f, o){
+  const t = acikmaSuresi(f);
+  if(!t || !o || o.medyan_dk==null || o.saatli < RAPOR_ESIK) return '';
+  const h = o.medyan_dk/60, fark = h - t;
+  if(Math.abs(fark) < 1) return `<div class="hk-kavga uyum">Hesap ~${saatStr(t)} sa diyor, halk ${saatYaz(o.medyan_dk)}. Mide ile hesap aynı fikirde.</div>`;
+  return `<div class="hk-kavga">Hesap ~${saatStr(t)} sa diyor, halk ${saatYaz(o.medyan_dk)}: ${fark<0?'Midede hesaptan kısa kalıyor.':'Midede hesaptan uzun kalıyor.'}</div>`;
+}
+
 function halkKartHtml(f){
-  const o = meclis.ozet.get(f.id) || {oy:0,s:0,a:0,b:0,c:0,d:0,saatli:0,medyan_dk:null};
-  const maxc = Math.max(1, ...TIER_ORDER.map(t=>o[t.toLowerCase()]||0));
-  const dagilim = TIER_ORDER.map(t=>{ const n = o[t.toLowerCase()]||0;
-    return `<div class="dl"><span class="tp-${t}">${t}</span><div class="dbar"><div class="dfill dfill-${t}" style="width:${(n/maxc)*100}%"></div></div><span class="dn">${n}</span></div>`; }).join('');
+  const o = meclis.ozet.get(f.id) || {oy:0,saatli:0,medyan_dk:null};
   const siteLig = satietyToTier(f.doyuruculuk);
   const hp = o.medyan_dk!=null ? halkPuani(o.medyan_dk, f.kcal) : null;
-  const k = mKDegeri();
-  let halkKutu;
-  if(hp!=null) halkKutu = `<b class="lig-${satietyToTier(hp)}">${hp}</b><span>halk puanı · ${satietyToTier(hp)}</span>`;
-  else if(o.medyan_dk!=null) halkKutu = `<b class="hk-bos">?</b><span>halk puanı ${K_ESIK} saatli oyla açılır (${Math.min(meclis.k?meclis.k.toplam_saatli:0,K_ESIK)}/${K_ESIK})</span>`;
-  else halkKutu = `<b class="hk-bos">?</b><span>halk puanı için saatli oy yok</span>`;
-  if(saatsiz(f)) halkKutu = `<b class="hk-bos">?</b><span>${f.tur==='icecek'?'içecekte':'malzemede'} saat sorulmaz</span>`;
+  const halkKutu = hp!=null
+    ? `<b class="lig-${satietyToTier(hp)}">${hp}</b><span>halk puanı · ${satietyToTier(hp)}</span>`
+    : `<b class="hk-bos">?</b><span>halk puanı ${K_ESIK} bildirimle açılır (${Math.min(meclis.k?meclis.k.toplam_saatli:0,K_ESIK)}/${K_ESIK})</span>`;
   const s = rozetSayilari(f.id);
   const rz = ELLE_ROZET.filter(x=>(s[x]||0)>0).sort((a,b)=>s[b]-s[a]);
   const oto = otoRozet(o);
   if(oto) rz.unshift(oto);
-  const rzHtml = rz.length ? `<div class="hk-rz">${rz.map(x=>`<button class="hk-r" data-rzb="${x}" data-rzy="${f.id}">${rozetSvg(x,28)}<span>${ROZETLER[x].ad}${ROZETLER[x].oto?'':' · '+s[x]}</span></button>`).join('')}</div>` : '<div class="hk-yok">Henüz rozet basılmamış.</div>';
+  const rzHtml = rz.length
+    ? `<div class="hk-rz">${rz.map(x=>`<button class="hk-r" data-rzb="${x}" data-rzy="${f.id}">${rozetSvg(x,28)}<span>${ROZETLER[x].ad}${ROZETLER[x].oto?'':' · '+s[x]}</span></button>`).join('')}</div>`
+    : '<div class="hk-yok">Henüz rozet basılmamış.</div>';
+  const benim = benimBildirim.get(f.id);
   return `<div class="halkkart rz-kap">
-    <div class="hk-ust"><span>Halkın ligi</span><span>${o.oy} oy</span></div>
-    <div class="dist">${dagilim}</div>
+    <div class="hk-ust"><span>Halkın kartı</span><span>${o.saatli||0} kişi bildirdi</span></div>
     <div class="hk-kutular">
-      <div><b>${o.medyan_dk!=null?saatYaz(o.medyan_dk):'?'}</b><span>medyan tokluk${o.saatli?' · '+o.saatli+' kişi':''}</span></div>
+      <div><b>${o.medyan_dk!=null?saatYaz(o.medyan_dk):'?'}</b><span>medyan tokluk</span></div>
       <div>${halkKutu}</div>
-      <div><b class="lig-${siteLig}">${f.doyuruculuk}</b><span>site puanı · ${siteLig}</span></div>
+      <div><b class="lig-${siteLig}">${f.doyuruculuk}</b><span>hesap puanı · ${siteLig}</span></div>
     </div>
+    ${kavgaHtml(f, o)}
     ${icindekilerHtml(f)}
     ${rzHtml}
-    <button class="link-btn hk-oyla" data-moyla="${f.id}">${benimOyum(f.id)?'Oyumu değiştir':'Sen de oyla'} →</button>
+    ${saatsiz(f) ? '' : `<button class="link-btn hk-oyla" data-moyla="${f.id}">${benim!=null?'Bildirimimi değiştir ('+saatYaz(benim)+')':'Ben de bildireyim'} →</button>`}
   </div>`;
 }
 
 function mSatirHtml(f, i){
   const o = meclis.ozet.get(f.id);
-  const hl = halkLigi(o);
   const acik = mAcik.has(f.id);
   const ust = enCokRozet(f.id, 2);
   const oto = otoRozet(o);
   const mini = (oto?[oto]:[]).concat(ust).slice(0,2).map(x=>rozetSvg(x,20)).join('');
-  const alt = [o ? o.oy+' oy' : 'oy yok'];
-  if(o && o.medyan_dk!=null) alt.push('medyan '+saatYaz(o.medyan_dk));
-  alt.push(f.kcal+' kcal');
+  const n = o ? o.saatli : 0;
+  const alt = [n ? n+' kişi' : 'bildirim yok', f.kcal+' kcal'];
+  if(n && n < RAPOR_ESIK) alt.push('az veri');
+  const sag = o && o.medyan_dk!=null ? `<span class="mr-saat${n<RAPOR_ESIK?' az':''}">${saatYaz(o.medyan_dk)}</span>` : '<span class="mr-saat az">?</span>';
   return `<div class="mrow${acik?' acik':''}" style="--i:${Math.min(i,12)}" data-mexp="${f.id}">
     <div class="mr-bas">
       <span class="mr-ic">${mutfakIc(f.mutfak)}</span>
       <div class="mr-ad">${esc(f.ad)}<small>${alt.join(' · ')}</small></div>
       <span class="mr-rz">${mini}</span>
-      ${hl?`<span class="mr-lig lig-${hl}">${hl}</span>`:'<span class="mr-lig" style="color:var(--line-strong)">?</span>'}
+      ${sag}
     </div>
     ${acik?halkKartHtml(f):''}
   </div>`;
 }
 
-function meclisListeHtml(){
-  if(!meclis.yuklendi) return '<div class="section-title">Oylananlar</div>'+skeleton(4);
-  let h = '<div class="section-title">Oylananlar</div>';
-  const hepsi = [...meclis.ozet.values()].filter(o=>mYemek(o.yemek_id));
-  const gecen = hepsi.filter(o=>o.oy >= MECLIS_ESIK).sort((a,b)=> (b.son_oy||'').localeCompare(a.son_oy||''));
-  const esikte = hepsi.filter(o=>o.oy < MECLIS_ESIK).sort((a,b)=> b.oy-a.oy || (b.son_oy||'').localeCompare(a.son_oy||''));
-  if(!gecen.length){
-    h += `<div class="card m-bekle"><div class="mb-b">Meclis toplanıyor</div>
-      <p>Bir yemek ${MECLIS_ESIK} oy alınca burada, halk kartıyla görünür. Eşiğe en yakın olanlar:</p>
-      ${esikte.length ? '<div class="mb-cip">'+esikte.slice(0,8).map(o=>{ const f = mYemek(o.yemek_id); return `<button data-moyla="${f.id}">${esc(f.ad)} <b>${o.oy}/${MECLIS_ESIK}</b></button>`; }).join('')+'</div>' : '<p style="margin:0">Henüz hiç oy yok. İlk oyu sen ver.</p>'}
-    </div>`;
-  } else {
-    h += '<p class="note">En son oylananlar üstte. Satıra dokun, halkın kartını gör.</p><div class="card mliste">';
-    gecen.slice(0, mListeN).forEach((o,i)=>{ h += mSatirHtml(mYemek(o.yemek_id), i); });
-    h += '</div>';
-    if(gecen.length > mListeN) h += `<button class="link-btn m-daha" id="m-daha">${gecen.length - mListeN} yemek daha</button>`;
-    if(esikte.length) h += `<p class="note" style="margin-top:10px">Eşikte bekleyen ${esikte.length} yemek var; ${MECLIS_ESIK} oya ulaşınca listeye girerler.</p>`;
-  }
+function halkSaatleriHtml(){
+  let h = '<div class="section-title">Halkın saatleri</div>';
+  if(!meclis.yuklendi) return h + skeleton(4);
+  const l = [...meclis.ozet.values()].filter(o=>o.saatli>0 && mYemek(o.yemek_id))
+    .sort((a,b)=> b.saatli-a.saatli || (b.son_oy||'').localeCompare(a.son_oy||''));
+  if(!l.length) return h + `<div class="card"><p class="m-bosnot">Henüz bildirilmiş saat yok. İlk saati sen yaz; ${RAPOR_ESIK} kişi bildirince yemeğin halk saati oturur.</p></div>`;
+  h += '<p class="note">En çok bildirilen üstte. Satıra dokun: halkın kartı, rozetler, hesapla kavgası.</p><div class="card mliste">';
+  l.slice(0, mListeN).forEach((o,i)=>{ h += mSatirHtml(mYemek(o.yemek_id), i); });
+  h += '</div>';
+  if(l.length > mListeN) h += `<button class="link-btn m-daha" id="m-daha">${l.length - mListeN} yemek daha</button>`;
   return h;
 }
 
+// ---------- rozet rehberi: rozetler burada görünür ----------
+function rozetRehberiHtml(){
+  const top = {};
+  meclis.rozet.forEach(m=>Object.keys(m).forEach(k=>{ top[k] = (top[k]||0) + (m[k]||0); }));
+  [...meclis.ozet.values()].forEach(o=>{ const k = otoRozet(o); if(k) top[k] = (top[k]||0) + 1; });
+  const kutu = k=>{ const r = ROZETLER[k]; const n = top[k]||0;
+    return `<div class="rr">${rozetSvg(k,34)}<div><b>${r.ad}</b><span>${esc(r.acik)}</span><small>${r.oto ? (n?n+' yemekte':'henüz yok') : (n?n+' kez basıldı':'henüz basılmadı')}</small></div></div>`; };
+  return `<div class="section-title">Rozetler</div>
+  <p class="note">Altısını bildirirken sen basarsın (en fazla 2). İkisini meclis kendisi verir: ${OTO_ESIK} kişinin bildirdiği saatlere göre.</p>
+  <div class="card rrehber">${ELLE_ROZET.map(kutu).join('')}${['oto_15dk','oto_aksam'].map(kutu).join('')}</div>`;
+}
+
+// ---------- öneri: listede olmayan yemek ----------
 function kesifRafHtml(){
   const ids = (meclis.kesifler||[]).filter(id=>mYemek(id));
   if(!ids.length) return '';
@@ -1953,7 +1946,32 @@ function kesifRafHtml(){
   ids.forEach((id,i)=>{ h += mSatirHtml(mYemek(id), i); });
   return h + '</div>';
 }
+const ONERI_MUTFAK = CUISINES.filter(c=>['hepsi','temel','zincir','market'].indexOf(c.id)<0);
+function oneriBolumHtml(){
+  const sugs = meclis.sahne.slice().sort((a,b)=>b.oy-a.oy);
+  let ic = kesifRafHtml() + `<p class="note" style="margin-bottom:8px"><b>Sahne.</b> Üyelerin önerdiği yemekler; 5 ateş oyu toplayan yayına girer.</p>`;
+  if(!sugs.length){
+    ic += `<div class="card"><p class="m-bosnot">Sahne boş.</p></div>`;
+  } else {
+    ic += '<div class="card">';
+    sugs.forEach((s,i)=>{
+      const voted = mySugVotes()[s.id];
+      ic += `<div class="crow" style="--i:${Math.min(i,12)}">
+        <div class="name">${mutfakIc(s.mutfak)} ${esc(s.ad)}
+          <small>${s.kcal?s.kcal+' kcal · ':''}${s.protein!=null?'protein '+s.protein+' g · ':''}${s.oy}/5 oy</small>
+          ${s.tarif?`<small class="sh-tarif">${esc(s.tarif)}</small>`:''}
+          <div class="sugbar"><div class="sugfill" style="width:${Math.min(100,(s.oy/5)*100)}%"></div></div>
+        </div>
+        ${currentUser ? `<button class="btn sm ${voted?'secondary':''}" data-msug="${s.id}" ${voted?'disabled':''}>${voted?'Oyladın ✓':'🔥 İsterim'}</button>` : ''}
+      </div>`;
+    });
+    ic += '</div>';
+  }
+  ic += currentUser ? kesifFormHtml() : `<div class="card"><p class="m-bosnot">Öneri yapmak ve oylamak üyelere açık. Yukarıdan giriş yap.</p></div>`;
+  return `<details class="m-oneri" id="m-oneri"${mOneriAcik?' open':''}><summary>Listede olmayan bir yemek mi var? <span>Öner</span></summary><div class="m-oneri-ic">${ic}</div></details>`;
+}
 
+// ---------- bağlama ----------
 function meclisListeBagla(){
   document.querySelectorAll('[data-mexp]').forEach(r=>{
     const bas = r.querySelector('.mr-bas');
@@ -1963,47 +1981,148 @@ function meclisListeBagla(){
       buzz(6);
       if(mAcik.has(id)) mAcik.delete(id); else mAcik.add(id);
       // sadece bu satırı yeniden yaz: listenin geri kalanı ve kullanıcı durumu yerinde kalır
-      const f = mYemek(id);
       const i = +(getComputedStyle(r).getPropertyValue('--i')||0);
-      r.outerHTML = r.dataset.tip==='c' ? celiskiSatirHtml(id, i) : mSatirHtml(f, i);
+      r.outerHTML = mSatirHtml(mYemek(id), i);
       const yeni = document.querySelector(`[data-mexp="${id}"]`);
-      if(yeni){ yeni.style.animation = 'none'; meclisListeBagla(); rozetBagla(); if(mAcik.has(id)) detayiGoster(yeni); }
+      if(yeni){ yeni.style.animation = 'none'; meclisListeBagla(); rozetBagla(); }
     };
   });
-  document.querySelectorAll('[data-moyla]').forEach(b=>{ b.onclick = (e)=>{
-    e.stopPropagation(); buzz(8);
-    if(currentMode!=='comm'){ currentMode = 'comm'; selectedFood = null; }   // Çelişki'den gelince Meclis'e geç
-    oyAc(b.dataset.moyla);
-  }; });
+  document.querySelectorAll('[data-moyla]').forEach(b=>{ b.onclick = (e)=>{ e.stopPropagation(); buzz(8); oyAc(b.dataset.moyla); }; });
   const md = document.getElementById('m-daha');
   if(md) md.onclick = ()=>{ mListeN += 20; render(); };
 }
+function rozetBagla(){
+  document.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); });
+}
 
-// ---------- halkın keşifleri: öneri sahnesi (tüm mutfaklar) ----------
-const ONERI_MUTFAK = CUISINES.filter(c=>['hepsi','temel','zincir','market'].indexOf(c.id)<0);
-function meclisSahneHtml(){
-  let h = `<div class="section-title">Halkın Keşifleri</div>` + kesifRafHtml() +
-  `<p class="note" style="margin-bottom:8px"><b>Sahne.</b> Topluluğun önerdiği yemekler; 5 ateş oyu toplayan otomatik yayına girer.</p>`;
-  const sugs = meclis.sahne.slice().sort((a,b)=>b.oy-a.oy);
-  if(!sugs.length){
-    h += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Sahne boş, ilk öneriyi sen yap.</p></div>`;
-  } else {
-    h += '<div class="card">';
-    sugs.forEach((s,i)=>{
-      const voted = mySugVotes()[s.id];
-      h += `<div class="crow" style="--i:${Math.min(i,12)}">
-        <div class="name">${mutfakIc(s.mutfak)} ${esc(s.ad)}
-          <small>${s.kcal?s.kcal+' kcal · ':''}${s.protein!=null?'protein '+s.protein+' g · ':''}${s.oy}/5 oy</small>
-          ${s.tarif?`<small class="sh-tarif">${esc(s.tarif)}</small>`:''}
-          <div class="sugbar"><div class="sugfill" style="width:${Math.min(100,(s.oy/5)*100)}%"></div></div>
-        </div>
-        <button class="btn sm ${voted?'secondary':''}" data-msug="${s.id}" ${voted?'disabled':''}>${voted?'Oyladın ✓':'🔥 İsterim'}</button>
-      </div>`;
-    });
-    h += '</div>';
+function meclisBagla(){
+  rzBalon = null;
+  rozetBagla();
+  meclisListeBagla();
+  // giriş
+  const bg = document.getElementById('bk-gonder');
+  if(bg){
+    const ep = document.getElementById('bk-eposta');
+    const gonder = async ()=>{
+      const email = (ep.value||'').trim();
+      if(!email || !email.includes('@')){ toast('Geçerli bir e-posta gir'); return; }
+      bg.disabled = true; bg.textContent = 'Gönderiliyor…';
+      try{ localStorage.setItem('pr_donus', JSON.stringify({bildir: bildirim ? bildirim.id : null, t: Date.now()})); }catch(e){}
+      const {error} = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://platerank.dev' } });
+      if(error){ bg.disabled = false; bg.textContent = 'Giriş bağlantısı gönder'; toast('Gönderilemedi: '+error.message); return; }
+      mGirisGonderildi = true; buzz(12); render();
+    };
+    bg.onclick = gonder;
+    ep.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); gonder(); } };
   }
-  h += kesifFormHtml();
-  return h;
+  // yemek arama
+  const q = document.getElementById('mq');
+  if(q){
+    q.oninput = ()=>{
+      mArama = q.value;              // render yok: sadece sonuç kutusu
+      clearTimeout(mAraTimer);
+      mAraTimer = setTimeout(meclisAra, 260);
+    };
+    q.onkeydown = e=>{
+      if(e.key==='Enter'){ e.preventDefault(); if(mSonuclar && mSonuclar[0]) oyAc(mSonuclar[0].id); }
+      else if(e.key==='Escape'){ e.stopPropagation(); q.value=''; mArama=''; mSonuclar=null; meclisSonucCiz(); }
+    };
+    if(mSonuclar) meclisSonucCiz();
+  }
+  // saat ve rozet seçimi: sadece düğmeler güncellenir, kart yeniden çizilmez
+  document.querySelectorAll('[data-bks]').forEach(b=>{ b.onclick = ()=>{
+    if(!bildirim) return;
+    bildirim.saat = +b.dataset.bks; buzz(8);
+    document.querySelectorAll('[data-bks]').forEach(x=>{ const on = x===b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    const g = document.getElementById('bk-bildir'); if(g) g.disabled = false;
+  }; });
+  document.querySelectorAll('[data-bkr]').forEach(b=>{ b.onclick = ()=>{
+    if(!bildirim) return;
+    const k = b.dataset.bkr, on = bildirim.rozet.includes(k);
+    if(!on && bildirim.rozet.length >= 2){ toast('En fazla 2 rozet: önce birini kaldır'); buzz([10,40,10]); return; }
+    bildirim.rozet = on ? bildirim.rozet.filter(x=>x!==k) : bildirim.rozet.concat(k);
+    b.classList.toggle('on', !on); b.setAttribute('aria-pressed', !on);
+    b.classList.remove('carp'); void b.offsetWidth; if(!on) b.classList.add('carp');
+    buzz(on ? 6 : [8,30,14]);
+  }; });
+  const g = document.getElementById('bk-bildir'); if(g) g.onclick = bildirimGonder;
+  const v = document.getElementById('bk-vazgec'); if(v) v.onclick = ()=>{ bildirim = null; render(); };
+  const bb = document.getElementById('bk-baska');
+  if(bb) bb.onclick = ()=>{ bildirimSonuc = null; bildirim = null; render(); requestAnimationFrame(()=>{ const q2 = document.getElementById('mq'); if(q2){ q2.scrollIntoView({block:'center'}); q2.focus(); } }); };
+  const bd = document.getElementById('bk-duzelt'); if(bd) bd.onclick = ()=>oyAc(bildirimSonuc.id);
+  // öneri bölümü
+  const od = document.getElementById('m-oneri'); if(od) od.ontoggle = ()=>{ mOneriAcik = od.open; };
+  document.querySelectorAll('[data-msug]').forEach(b=>{
+    b.onclick = async ()=>{
+      if(!currentUser){ toast('Oylamak için giriş yap'); return; }
+      b.disabled = true;
+      const id = b.dataset.msug;
+      const {error} = await sb.from('oneri_oylar').insert({oneri_id:id});
+      if(error){
+        if((error.code||'')==='23505'){ setMySugVote(id); toast('Bu öneriyi zaten oyladın'); render(); }
+        else { toast('Oy kaydedilemedi'); b.disabled=false; }
+        return;
+      }
+      setMySugVote(id);
+      const s = meclis.sahne.find(x=>x.id===id);
+      if(s){
+        s.oy++;
+        if(s.oy>=5){ buzz([20,60,20,60,40]); toast('"'+s.ad+'" yayına girdi!'); delete foodCache[s.mutfak]; delete foodCache['hepsi']; await meclisYukle(true); return; }
+      }
+      buzz(16); toast('Oyun sahnede');
+      render();
+    };
+  });
+  kesifBagla();
+}
+
+async function bildirimGonder(){
+  if(!bildirim || bildirim.saat==null || !votingOpen) return;
+  if(!currentUser){ toast('Bildirim için giriş yap'); render(); return; }
+  const f = mYemek(bildirim.id);
+  const g = document.getElementById('bk-bildir');
+  if(g){ g.disabled = true; g.textContent = 'Gönderiliyor…'; }
+  const saat_dk = SAAT_ADIM[bildirim.saat];
+  const {error} = await sb.from('oylar').insert({yemek_id:f.id, saat_dk});
+  if(error){
+    console.error(error);
+    const yetki = (error.code||'')==='42501' || /row-level|uye_gerekli/i.test(error.message||'');
+    toast(yetki ? 'Oturum düşmüş: yeniden giriş yap' : 'Kaydedilemedi, birazdan tekrar dene');
+    if(g){ g.disabled = false; g.textContent = 'Bildir'; }
+    return;
+  }
+  // rozetler: önce kaldırılanlar (2 sınırına takılmasın), sonra eklenenler
+  const eski = benimRozet.get(f.id) || [], yeni = bildirim.rozet.slice();
+  const degis = eski.filter(k=>!yeni.includes(k)).map(k=>({rozet:k, aktif:false}))
+    .concat(yeni.filter(k=>!eski.includes(k)).map(k=>({rozet:k, aktif:true})));
+  for(const d of degis){
+    const {error: e2} = await sb.from('rozet_oylar').insert({yemek_id:f.id, rozet:d.rozet, aktif:d.aktif});
+    if(e2) console.error('rozet', e2);
+  }
+  benimBildirim.set(f.id, saat_dk);
+  if(yeni.length) benimRozet.set(f.id, yeni); else benimRozet.delete(f.id);
+  bildirimSonuc = {id:f.id, saat_dk};
+  bildirim = null;
+  buzz([14,40,22]);
+  await meclisYukle(true);   // medyan ve rozet sayıları tazelensin; sonunda render eder
+  if(currentMode==='comm') requestAnimationFrame(()=>{ const k = document.getElementById('bk'); if(k) k.scrollIntoView({behavior: azHareket()?'auto':'smooth', block:'center'}); });
+}
+
+// Giriş bağlantısından dönüşte ya da /yemek sayfasından ?bildir= ile gelişte
+// bildirim kartını o yemekle aç.
+async function bildirSlugAc(slug){
+  await loadCuisine('hepsi');
+  const l = foodCache['hepsi'] || [];
+  const f = l.find(x=>!x.sadece_malzeme && (slugla(x.ad)===slug || slugla(x.ad)+'-'+x.mutfak===slug)) || l.find(x=>x.id===slug);
+  if(!f){ modAc('comm'); return; }
+  mYemekKaydet([f]);
+  oyAc(f.id);
+}
+function donusUygula(){
+  let d = null;
+  try{ d = JSON.parse(localStorage.getItem('pr_donus')||'null'); localStorage.removeItem('pr_donus'); }catch(e){}
+  if(!d || Date.now() - (d.t||0) > 86400000) return;
+  if(d.bildir) bildirSlugAc(d.bildir); else modAc('comm');
 }
 
 // ---------- rozetler ----------
@@ -2063,10 +2182,6 @@ function rozetSahneSvg(slug){
   </svg>`;
 }
 
-// yerel: bu cihazın bastığı rozetler (sunucudaki olay kaydının önbelleği)
-function benimRozetlerim(id){ try{ const m = JSON.parse(localStorage.getItem('pr_rozetlerim')||'{}'); return m[id]||[]; }catch(e){ return []; } }
-function setBenimRozetlerim(id, arr){ try{ const m = JSON.parse(localStorage.getItem('pr_rozetlerim')||'{}'); if(arr.length) m[id]=arr; else delete m[id]; localStorage.setItem('pr_rozetlerim', JSON.stringify(m)); }catch(e){} }
-
 function rozetSayilari(id){ return meclis.rozet.get(id) || {}; }
 function otoRozet(o){
   if(!o || !o.saatli || o.saatli < OTO_ESIK || o.medyan_dk==null) return null;
@@ -2074,21 +2189,9 @@ function otoRozet(o){
   if(o.medyan_dk >= 240) return 'oto_aksam';
   return null;
 }
-// kart üstündeki çıkartmalar: en çok basılan 2 elle rozet
 function enCokRozet(id, n){
   const s = rozetSayilari(id);
   return ELLE_ROZET.filter(k=>(s[k]||0)>0).sort((a,b)=>(s[b]||0)-(s[a]||0) || ELLE_ROZET.indexOf(a)-ELLE_ROZET.indexOf(b)).slice(0,n);
-}
-function cikartmaHtml(id){
-  const ust = enCokRozet(id, 2);
-  const aci = ['-7deg','6deg'];
-  return ust.map((k,i)=>`<button class="rz-st" style="--r:${aci[i]}" data-rzb="${k}" data-rzy="${id}" aria-label="${ROZETLER[k].ad} rozeti">${rozetSvg(k,28)}</button>`).join('');
-}
-function tepsiHtml(id){
-  const benim = benimRozetlerim(id);
-  const s = rozetSayilari(id);
-  return `<div class="rz-alan"><div class="rz-bas">Rozet bas <span>en fazla 2 · tekrar basınca geri alınır</span></div>
-    <div class="rz-tepsi">${ELLE_ROZET.map(k=>`<button class="rz-t ${benim.includes(k)?'on':''}" data-rzt="${k}" data-rzy="${id}" style="--rc:${ROZETLER[k].renk}" aria-pressed="${benim.includes(k)}"><span class="rz-i">${rozetSvg(k,28)}</span><span class="rz-ad">${ROZETLER[k].ad}${s[k]?` <b>${s[k]}</b>`:''}</span></button>`).join('')}</div></div>`;
 }
 function rozetYuzde(id, k){
   const o = meclis.ozet.get(id);
@@ -2125,54 +2228,6 @@ document.addEventListener('pointerdown', e=>{
   if(e.target.closest && (e.target.closest('#rz-balon') || e.target.closest('[data-rzb]'))) return;
   balonKapat();
 }, true);
-
-// basma: iyimser güncelle, animasyon, sunucuya olay satırı
-async function rozetBas(btn){
-  if(!votingOpen) return;
-  const id = btn.dataset.rzy, k = btn.dataset.rzt;
-  const benim = benimRozetlerim(id).slice();
-  const acik = !benim.includes(k);
-  if(acik && benim.length >= 2){ toast('En fazla 2 rozet: önce birini kaldır'); buzz([10,40,10]); return; }
-  const sayi = Object.assign({}, rozetSayilari(id));
-  sayi[k] = Math.max(0, (sayi[k]||0) + (acik?1:-1));
-  meclis.rozet.set(id, sayi);
-  setBenimRozetlerim(id, acik ? benim.concat(k) : benim.filter(x=>x!==k));
-  rozetAnim(btn, acik);
-  const {error} = await sb.from('rozet_oylar').insert({yemek_id:id, cihaz:deviceId(), rozet:k, aktif:acik});
-  if(error){
-    console.error(error);
-    // geri al
-    sayi[k] = Math.max(0, (sayi[k]||0) + (acik?-1:1));
-    meclis.rozet.set(id, sayi);
-    setBenimRozetlerim(id, benim);
-    rozetAnim(btn, !acik, true);
-    toast(/rozet_siniri/.test(error.message||'') ? 'En fazla 2 rozet: önce birini kaldır' : 'Rozet kaydedilemedi');
-  }
-}
-function rozetAnim(btn, acik, sessiz){
-  btn.classList.toggle('on', acik);
-  btn.setAttribute('aria-pressed', acik);
-  btn.classList.remove('carp','kalk','murekkep'); void btn.offsetWidth;
-  if(!sessiz){
-    btn.classList.add(acik ? 'carp' : 'kalk');
-    if(acik){
-      btn.classList.add('murekkep');
-      const kart = btn.closest('.oykart, .sonuckart');
-      if(kart){ kart.classList.remove('sars'); void kart.offsetWidth; kart.classList.add('sars'); }
-      buzz([8,30,14]);
-    } else buzz(6);
-  }
-  // açık balon artık kart üstünde olmayan bir rozeti gösteriyorsa kapat
-  if(rzBalon && rzBalon.id===btn.dataset.rzy && enCokRozet(rzBalon.id,2).indexOf(rzBalon.k)<0 && !ROZETLER[rzBalon.k].oto) balonKapat();
-  // sayı ve kart üstü çıkartmalar: sadece o parçalar yeniden yazılır
-  const id = btn.dataset.rzy, k = btn.dataset.rzt, n = (rozetSayilari(id)[k])||0;
-  const ad = btn.querySelector('.rz-ad'); if(ad) ad.innerHTML = ROZETLER[k].ad + (n?` <b>${n}</b>`:'');
-  document.querySelectorAll(`.rz-cik[data-rzy="${id}"]`).forEach(el=>{ el.innerHTML = cikartmaHtml(id); el.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); }); });
-}
-function rozetBagla(){
-  document.querySelectorAll('[data-rzt]').forEach(b=>{ b.onclick = ()=>rozetBas(b); });
-  document.querySelectorAll('[data-rzb]').forEach(b=>{ b.onclick = ()=>balonAc(b); });
-}
 
 // ---------- keşif formu: içindekiler ----------
 // Malzeme Temel Gıdalar'dan seçilir, gramı yazılır. Kalori ve makrolar temel_100g'den
@@ -2220,8 +2275,7 @@ function kesifKalemlerHtml(){
 }
 function kesifFormHtml(){
   if(!temel100){ temel100Yukle().then(()=>{ const el = document.getElementById('kf-kalemler'); if(el) meclisTazele(); }); }
-  return `<div class="section-title">Bir keşfin mi var? 🔦</div>
-  <div class="card kesif">
+  return `<div class="card kesif" style="margin-top:12px">
     <p class="note" style="margin-top:0">Önerin sahneye düşer; 5 ateş oyu alırsa yayına girer. Kalori yazılmaz: içindekilerden hesaplanır.</p>
     <label for="kf-mutfak">Mutfak</label>
     <select id="kf-mutfak" class="m-sec">${ONERI_MUTFAK.map(c=>`<option value="${c.id}" ${c.id===kesif.mutfak?'selected':''}>${c.ic} ${c.name}</option>`).join('')}</select>
@@ -2309,217 +2363,6 @@ function icindekilerHtml(f){
   if(!f.icindekiler || !Array.isArray(f.icindekiler) || !f.icindekiler.length) return '';
   const liste = f.icindekiler.map(k=>{ const r = temel100 && temel100.get(k.id); return `${esc(r?temelAd(r.ad):'malzeme')} ${k.g} g`; }).join(', ');
   return `<div class="hk-ic"><b>İçindekiler:</b> ${liste}${f.tarif?`<br><b>Tarif:</b> ${esc(f.tarif)}`:''}</div>`;
-}
-
-// ---------- tambur ----------
-function tbCiz(){
-  const serit = document.getElementById('tb-serit');
-  const tb = document.getElementById('tambur');
-  if(!serit || !tb || !oyDurum) return;
-  const pos = oyDurum.pos;
-  serit.style.transform = `translateY(${TB_H - pos*TB_H}px)`;
-  const orta = Math.round(Math.max(0, Math.min(4, pos)));
-  serit.querySelectorAll('.tb-h').forEach(el=>{
-    const i = +el.dataset.i, d = i - pos, a = Math.abs(d);
-    el.style.transform = `perspective(220px) rotateX(${(-d*26).toFixed(1)}deg) scale(${Math.max(.55, 1 - .2*a).toFixed(3)})`;
-    el.style.opacity = Math.max(.14, 1 - .48*a).toFixed(2);
-    el.classList.toggle('orta', i===orta);
-  });
-  // dönerken kart kenarı o anki lige boyanır
-  const sar = document.getElementById('oysar');
-  if(sar && (oyDurum.lig || tbSurukleniyor)) sar.style.setProperty('--kc', `var(--${TIER_ORDER[orta].toLowerCase()})`);
-}
-let tbAnim = null;
-function tbKaydir(hedef, damgala){
-  cancelAnimationFrame(tbAnim);
-  const bas = oyDurum.pos, t0 = performance.now(), sure = azHareket() ? 0 : 170;
-  const adim = (now)=>{
-    const p = sure ? Math.min(1, (now - t0)/sure) : 1;
-    oyDurum.pos = bas + (hedef - bas) * (1 - Math.pow(1-p, 3));
-    tbCiz();
-    if(p < 1) tbAnim = requestAnimationFrame(adim);
-    else { oyDurum.pos = hedef; tbCiz(); if(damgala) tbDamga(); }
-  };
-  tbAnim = requestAnimationFrame(adim);
-}
-function tbDamga(){
-  const i = Math.round(oyDurum.pos);
-  const lig = TIER_ORDER[i];
-  const degisti = oyDurum.lig !== lig;
-  oyDurum.lig = lig;
-  const tb = document.getElementById('tambur');
-  if(tb){ tb.classList.add('secili'); tb.setAttribute('aria-valuetext', lig); }
-  const sar = document.getElementById('oysar');
-  if(sar) sar.style.setProperty('--kc', `var(--${lig.toLowerCase()})`);
-  const el = document.querySelector(`#tb-serit .tb-h[data-i="${i}"]`);
-  if(el){ el.classList.remove('damga'); void el.offsetWidth; el.classList.add('damga'); }
-  const ha = document.getElementById('oy-halka');
-  if(ha){ ha.classList.remove('coz'); void ha.offsetWidth; ha.classList.add('coz'); }
-  const ip = document.getElementById('oy-ipucu');
-  if(ip) ip.innerHTML = `Seçimin: <b>${lig}</b> · ${TIER_INFO[lig].split(' · ')[0]}`;
-  const g = document.getElementById('oy-gonder');
-  if(g) g.disabled = false;
-  if(degisti) buzz(12);
-}
-function tamburBagla(){
-  const tb = document.getElementById('tambur');
-  if(!tb || !oyDurum) return;
-  tbCiz();
-  let y0 = 0, p0 = 0, hareket = 0, pid = null;
-  tb.addEventListener('pointerdown', e=>{
-    pid = e.pointerId; tb.setPointerCapture(pid);
-    y0 = e.clientY; p0 = oyDurum.pos; hareket = 0;
-    tbSurukleniyor = true; cancelAnimationFrame(tbAnim);
-  });
-  tb.addEventListener('pointermove', e=>{
-    if(e.pointerId !== pid) return;
-    const dy = e.clientY - y0;
-    hareket = Math.max(hareket, Math.abs(dy));
-    oyDurum.pos = Math.max(-0.45, Math.min(4.45, p0 - dy/TB_H));
-    tbCiz();
-  });
-  const birak = e=>{
-    if(e.pointerId !== pid) return;
-    pid = null; tbSurukleniyor = false;
-    let hedef;
-    if(hareket < 5){
-      // dokunuş: dokunulan harfe git
-      const r = tb.getBoundingClientRect();
-      hedef = Math.round(oyDurum.pos + (e.clientY - (r.top + r.height/2)) / TB_H);
-    } else hedef = Math.round(oyDurum.pos);
-    tbKaydir(Math.max(0, Math.min(4, hedef)), true);
-  };
-  tb.addEventListener('pointerup', birak);
-  tb.addEventListener('pointercancel', birak);
-  let tekerBirikim = 0, tekerZaman = 0;
-  tb.addEventListener('wheel', e=>{
-    e.preventDefault();
-    tekerBirikim += e.deltaY;
-    const simdi = performance.now();
-    if(Math.abs(tekerBirikim) < 40 || simdi - tekerZaman < 120) return;
-    tekerZaman = simdi;
-    const yon = tekerBirikim > 0 ? 1 : -1; tekerBirikim = 0;
-    tbKaydir(Math.max(0, Math.min(4, Math.round(oyDurum.pos) + yon)), true);
-  }, {passive:false});
-  tb.addEventListener('keydown', e=>{
-    if(e.key==='ArrowDown' || e.key==='ArrowUp'){
-      e.preventDefault(); e.stopPropagation();
-      const yon = e.key==='ArrowDown' ? 1 : -1;
-      tbKaydir(Math.max(0, Math.min(4, Math.round(oyDurum.pos) + yon)), true);
-    }
-  });
-}
-function tbLigeGit(lig){
-  if(!oyDurum) return;
-  const i = TIER_ORDER.indexOf(lig);
-  if(i < 0) return;
-  tbKaydir(i, true);
-}
-
-// ---------- bağlama ----------
-function meclisBagla(){
-  rzBalon = null;
-  rozetBagla();
-  meclisListeBagla();
-  const q = document.getElementById('mq');
-  if(q){
-    q.oninput = ()=>{
-      mArama = q.value;              // render yok: sadece sonuç kutusu
-      clearTimeout(mAraTimer);
-      mAraTimer = setTimeout(meclisAra, 260);
-    };
-    q.onkeydown = e=>{
-      if(e.key==='Enter'){ e.preventDefault(); if(mSonuclar && mSonuclar[0]) oyAc(mSonuclar[0].id); }
-      else if(e.key==='Escape'){ e.stopPropagation(); q.value=''; mArama=''; mSonuclar=null; meclisSonucCiz(); }
-    };
-    if(mSonuclar) meclisSonucCiz();
-  }
-  tamburBagla();
-  const sr = document.getElementById('m-saat');
-  if(sr && oyDurum){
-    sr.oninput = ()=>{
-      const i = +sr.value;
-      oyDurum.saat = i;
-      const w = document.getElementById('saatli'); if(w) w.classList.remove('bos');
-      const d = document.getElementById('saat-deger'); if(d) d.textContent = SAAT_AD[i];
-      const f = mYemek(oyDurum.id);
-      const hp = f ? halkPuani(SAAT_ADIM[i], f.kcal) : null;
-      if(hp!=null){
-        const lig = satietyToTier(hp);
-        if(lig !== oyDurum.lig || Math.round(oyDurum.pos) !== TIER_ORDER.indexOf(lig)) tbLigeGit(lig);
-      }
-    };
-    // "sil" düğmesi sürgü ilk kez oynayınca çıkar; render etmeden ekle
-    sr.onchange = ()=>{
-      const d = document.getElementById('saat-deger');
-      if(d && !document.getElementById('saat-sil')){
-        const b = document.createElement('button'); b.className='link-btn'; b.id='saat-sil'; b.textContent='sil';
-        b.onclick = saatSil; d.after(' ', b);
-      }
-    };
-  }
-  const ss = document.getElementById('saat-sil'); if(ss) ss.onclick = saatSil;
-  const g = document.getElementById('oy-gonder'); if(g) g.onclick = oyGonder;
-  const v = document.getElementById('oy-vazgec'); if(v) v.onclick = ()=>{ oyDurum = null; render(); };
-  const sb1 = document.getElementById('sk-baska');
-  if(sb1) sb1.onclick = ()=>{ oySonuc = null; oyDurum = null; render(); requestAnimationFrame(()=>{ const q2=document.getElementById('mq'); if(q2){ q2.scrollIntoView({block:'center'}); q2.focus(); } }); };
-  const st = document.getElementById('sk-tekrar');
-  if(st) st.onclick = ()=>{ const id = oySonuc.id; oyAc(id); };
-  document.querySelectorAll('[data-msug]').forEach(b=>{
-    b.onclick = async ()=>{
-      b.disabled = true;
-      const id = b.dataset.msug;
-      const {error} = await sb.from('oneri_oylar').insert({oneri_id:id, cihaz:deviceId()});
-      if(error){
-        if((error.code||'')==='23505'){ setMySugVote(id); toast('Bu öneriyi zaten oyladın'); render(); }
-        else { toast('Oy kaydedilemedi'); b.disabled=false; }
-        return;
-      }
-      setMySugVote(id);
-      const s = meclis.sahne.find(x=>x.id===id);
-      if(s){
-        s.oy++;
-        if(s.oy>=5){ buzz([20,60,20,60,40]); toast('"'+s.ad+'" yayına girdi!'); delete foodCache[s.mutfak]; delete foodCache['hepsi']; await meclisYukle(true); return; }
-      }
-      buzz(16); toast('Oyun sahnede');
-      render();
-    };
-  });
-  kesifBagla();
-}
-function saatSil(){
-  if(!oyDurum) return;
-  oyDurum.saat = null;
-  const w = document.getElementById('saatli'); if(w) w.classList.add('bos');
-  const d = document.getElementById('saat-deger'); if(d) d.textContent = 'isteğe bağlı';
-  const b = document.getElementById('saat-sil'); if(b) b.remove();
-}
-
-
-async function oyGonder(){
-  if(!oyDurum || !oyDurum.lig || !votingOpen) return;
-  const f = mYemek(oyDurum.id);
-  const g = document.getElementById('oy-gonder');
-  if(g){ g.disabled = true; g.textContent = 'Gönderiliyor…'; }
-  const saat_dk = (oyDurum.saat!=null && !saatsiz(f)) ? SAAT_ADIM[oyDurum.saat] : null;
-  const satir = {yemek_id:oyDurum.id, lig:oyDurum.lig, cihaz:deviceId()};
-  if(saat_dk!=null) satir.saat_dk = saat_dk;
-  const {error} = await sb.from('oylar').insert(satir);
-  if(error){
-    console.error(error);
-    toast('Oy kaydedilemedi, oylama kapalı olabilir');
-    if(g){ g.disabled = false; g.textContent = 'Meclise sun'; }
-    return;
-  }
-  setMyVote(oyDurum.id, oyDurum.lig);
-  setBenimSaatim(oyDurum.id, saat_dk);
-  const {data} = await sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').eq('yemek_id', oyDurum.id).maybeSingle();
-  if(data) meclis.ozet.set(data.yemek_id, data);
-  oySonuc = {id:oyDurum.id, lig:oyDurum.lig, saat_dk, oyAdet: data ? data.oy : 1};
-  oyDurum = null;
-  buzz([14,40,22]);
-  render();
-  meclisYukle(true);   // k ve sayılar arkadan tazelensin
 }
 
 // --- protein hesaplayici ---
@@ -2761,107 +2604,6 @@ function renderProtein(){
   return html;
 }
 const TIER_NUM_X = null;
-// Çelişki: k hesaplandıysa ölçüt saat bazlı puan farkı (halk puanı - site puanı),
-// hesaplanmadıysa eski lig farkı. Satıra basınca Meclis'teki halk kartı açılır.
-let celiskiVeri = new Map();   // yemek id -> satır verisi (tek satırı yeniden çizmek için)
-function celiskiSatirHtml(id, i){
-  const r = celiskiVeri.get(id);
-  if(!r) return '';
-  const acik = mAcik.has(id);
-  let ic;
-  if(r.tip==='bekleyen'){
-    const ut = acikmaSuresi(r.f);
-    ic = `<div class="name">${esc(r.f.ad)}
-        <small>${r.votes===0?'hiç oylanmamış':r.votes+' oy · halk: '+r.comm} · ${r.f.kcal} kcal${ut?' · ⏱ ~'+saatStr(ut)+' sa':''}</small>
-      </div>
-      <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span></div>`;
-  } else {
-    let verdict, vclass, story;
-    if(r.puanli){
-      if(r.yon > 0){ verdict='Hesap Küçümsüyor'; vclass='v-under'; story='Meclis daha uzun tok diyor'; }
-      else if(r.yon < 0){ verdict='Hesap Abartıyor'; vclass='v-trap'; story='Midede çabuk bitiyor'; }
-      else { verdict='Uzlaşma'; vclass='v-agree'; story='Hesap ve mide aynı ligde'; }
-    }
-    else if(r.yon > 0){ verdict='Tatlı Tuzak'; vclass='v-trap'; story='Halk seviyor, miden doymuyor'; }
-    else if(r.yon < 0){ verdict='Hafife Alınan'; vclass='v-under'; story='Doyurucu ama hak ettiği sevgiyi görmüyor'; }
-    else { verdict='Uzlaşma'; vclass='v-agree'; story='Kafa ve mide aynı fikirde'; }
-    const g = r.puanli ? null : sekerSoku(r.f);
-    let ekstra = '';
-    if(g && r.yon > 0 && g.seviye===3){ ekstra = `<span class="verdict v-trap">🚨 şeker şoku: roket · "tok tutuyor" hissi ${saatStr(acikmaSuresi(r.f))} saatte çöker</span>`; }
-    else if(g && r.yon < 0 && g.seviye===1){ ekstra = `<span class="verdict v-under">⏱ ~${saatStr(acikmaSuresi(r.f))} sa tok tutar · halk daha farkında değil</span>`; }
-    const alt = r.puanli ? `${r.votes} oy · medyan ${saatYaz(r.dk)} · halk ${r.hp} / site ${r.f.doyuruculuk}` : `${r.votes} oy · ${r.f.kcal} kcal`;
-    ic = `<div class="name">${esc(r.f.ad)}
-        <small>${alt}</small>
-        <span class="verdict ${vclass}">${verdict} · ${story}</span>
-        ${ekstra}
-      </div>
-      <div class="tierpair"><span class="tp-${r.sci}">${r.sci}</span><span class="arrow">→</span><span class="tp-${r.comm}">${r.comm}</span></div>
-      <div class="gap ${r.gapClass}">${r.diff>0?'+':''}${r.diff}</div>`;
-  }
-  return `<div class="mrow crow-m${acik?' acik':''}" style="--i:${Math.min(i||0,12)}" data-mexp="${id}" data-tip="c"><div class="mr-bas crow">${ic}</div>${acik?halkKartHtml(r.f):''}</div>`;
-}
-function renderConflict(){
-  if(!meclis.yuklendi){ meclisYukle(); return '<p class="note">Meclis kayıtları geliyor…</p>'+skeleton(5); }
-  const cid = currentCuisine;
-  const foods = foodCache[cid]||[];
-  const k = mKDegeri();
-  const rows = [], undiscovered = [];
-  celiskiVeri = new Map();
-  foods.forEach(f=>{
-    mYemekKaydet([f]);
-    const sci = satietyToTier(f.doyuruculuk);
-    const o = meclis.ozet.get(f.id);
-    const hl = halkLigi(o);
-    if(k!=null){
-      // saat bazlı: sadece medyan saati olan (ve saat sorulan) yemekler
-      if(o && o.medyan_dk!=null && !saatsiz(f)){
-        const hp = halkPuani(o.medyan_dk, f.kcal);
-        const comm = satietyToTier(hp);
-        const diff = hp - f.doyuruculuk;
-        const yon = comm===sci ? 0 : Math.sign(diff);
-        const mag = Math.abs(diff);
-        rows.push({tip:'celiski', puanli:true, f, sci, comm, votes:o.oy, dk:o.medyan_dk, hp, diff, yon, mag, gapClass: mag>=100?'gap-hi':(mag>=50?'gap-mid':'gap-lo')});
-        if((sci==='S'||sci==='A') && TIER_NUM[comm]-TIER_NUM[sci] <= -2) undiscovered.push({tip:'bekleyen', f, sci, comm, votes:o.oy});
-        return;
-      }
-    } else if(hl){
-      const diff = TIER_NUM[hl] - TIER_NUM[sci];
-      const mag = Math.abs(diff);
-      rows.push({tip:'celiski', puanli:false, f, sci, comm:hl, votes:o.oy, diff, yon:Math.sign(diff), mag, gapClass: mag>=3?'gap-hi':(mag>=2?'gap-mid':'gap-lo')});
-      if((sci==='S'||sci==='A') && diff<=-2) undiscovered.push({tip:'bekleyen', f, sci, comm:hl, votes:o.oy});
-      return;
-    }
-    if(sci==='S'||sci==='A') undiscovered.push({tip:'bekleyen', f, sci, comm:hl, votes:o?o.oy:0});
-  });
-  rows.sort((a,b)=> b.mag - a.mag);
-  const n = meclis.k ? meclis.k.toplam_saatli : 0;
-  let html = `<p class="note">Kafan ne diyor, miden ne diyor? Hesaplanan doyuruculuğu Meclis-i Mide'nin oylarıyla karşılaştırır. ${k!=null
-    ? 'Ölçüt saat: meclisin medyan tok tutma süresi puana çevrilir, fark ne kadar büyükse çelişki o kadar sert.'
-    : `Şimdilik ölçüt lig farkı; sitede ${K_ESIK} saatli oy birikince (şu an ${Math.min(n,K_ESIK)}/${K_ESIK}) saat bazlı puan farkına geçer.`} Satıra dokun, halkın kartını gör.</p>`;
-  if(rows.length===0){
-    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Bu mutfakta henüz çelişki yok. Meclis-i Mide'den birkaç yemeği oyla, sonra buraya dön.</p></div>`;
-  } else {
-    html += '<div class="card mliste">';
-    rows.forEach((r,i)=>{ celiskiVeri.set(r.f.id, r); html += celiskiSatirHtml(r.f.id, i); });
-    html += '</div>';
-  }
-  html += `<div class="section-title">Keşfedilmeyi Bekleyenler</div>
-  <p class="note">Hesabın S/A ligi verdiği hâlde meclisin henüz keşfetmediği (hiç oylanmamış ya da düşük oylanmış) yemekler.</p>`;
-  // yukarıda çelişki satırı olarak zaten görünenler burada tekrar etmez
-  for(let j=undiscovered.length-1; j>=0; j--) if(celiskiVeri.has(undiscovered[j].f.id)) undiscovered.splice(j,1);
-  if(undiscovered.length===0){
-    html += `<div class="card"><p style="margin:0;color:var(--ink-muted);font-style:italic;font-size:13px;">Bu mutfakta bekleyen yok, halk ödevini yapmış.</p></div>`;
-  } else {
-    undiscovered.sort((a,b)=> TIER_NUM[b.sci]-TIER_NUM[a.sci] || a.votes-b.votes);
-    html += '<div class="card mliste">';
-    undiscovered.forEach((u,i)=>{ celiskiVeri.set(u.f.id, u); html += celiskiSatirHtml(u.f.id, i); });
-    html += '</div>';
-  }
-  html += k!=null
-    ? `<p class="note" style="margin-top:12px;">Sol harf = hesap, sağ harf = meclisin medyan saatinden çıkan lig. Sağdaki sayı puan farkı.</p>`
-    : `<p class="note" style="margin-top:12px;">Sol harf = hesap, sağ harf = meclis. <b>Tatlı Tuzak</b>'lar diyetini sessizce bozan, <b>Hafife Alınan</b>'lar keşfetmen gereken yemekler.</p>`;
-  return html;
-}
 
 // ---------- etkilesim ----------
 let toastTimer;
@@ -3026,9 +2768,7 @@ document.addEventListener('keydown', e=>{
   else if(k==='1'){ modAc('auto'); }
   else if(k==='2'){ modAc(beslenAlt); }
   else if(k==='3'){ modAc('comm'); }
-  else if(k==='4'){ modAc('conflict'); }
-  else if(k==='5'){ modAc(profilAlt); }
-  else if(['s','a','b','c','d'].includes(k) && currentMode==='comm' && oyDurum){ tbLigeGit(k.toUpperCase()); }
+  else if(k==='4'){ modAc(profilAlt); }
 });
 
 document.addEventListener('pointerdown', e=>{
@@ -3095,8 +2835,6 @@ document.getElementById("q-clear").onclick = ()=>{
   window.addEventListener('scroll', ()=>requestAnimationFrame(guncelle), {passive:true});
   guncelle();
 })();
-
-
 
 // ---------- ilk ziyaret tanıtımı ----------
 // Ayrı bir katman: sayfanın durumuna dokunmaz, sadece üstüne cam kabarcık koyar.
@@ -3197,6 +2935,13 @@ function sbKontrol(){
   sbBuOturum = true;   // render sık çağrılıyor; aynı oturumda ikinci kez tetiklenmesin
   setTimeout(()=>{ if(beslenBolumu()) sbGoster(); }, 380);
 }
+// Yemek detayındaki "kaç saat tuttu?" düğmesi: satırın aç/kapa tıklamasına ulaşmadan yakala.
+document.addEventListener('click', e=>{
+  const b = e.target.closest && e.target.closest('[data-bildir]');
+  if(!b) return;
+  e.stopPropagation(); e.preventDefault(); buzz(8);
+  oyAc(b.dataset.bildir);
+}, true);
 document.addEventListener('click', e=>{
   const b = e.target.closest && e.target.closest('[data-sb]');
   if(b){ buzz(8); sbGoster(); }
@@ -3231,6 +2976,8 @@ function tnIlkZiyaret(){
   await refresh();
   ayarlarHazir;
   updateFade(); renderAuthBar();
+  const ilkBildir = new URLSearchParams(location.search).get('bildir');
+  if(ilkBildir){ history.replaceState(null, '', location.pathname); bildirSlugAc(ilkBildir.toLowerCase().replace(/[^a-z0-9-]/g,'')); return; }
   setTimeout(tnIlkZiyaret, 900);
 })();
 </script>
