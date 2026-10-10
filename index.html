@@ -819,6 +819,14 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .arow .athumb{flex:none;width:48px;height:36px;border-radius:8px;object-fit:cover;background:var(--paper);display:block;}
 .arow .detay .adfoto{display:block;width:100%;max-width:420px;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:12px;margin:2px 0 8px;background:var(--paper);}
 .arow .detay .asayfa{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);}
+.lseridi{margin:22px 0 8px;}
+.lseridi .ls-bas{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+.lseridi .ls-tumu{font-weight:600;font-size:14px;color:var(--teal);text-decoration:none;}
+.lseridi .ls-kaydir{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.lseridi .ls-kaydir::-webkit-scrollbar{display:none;}
+.lseridi .ls-kart{flex:0 0 220px;scroll-snap-align:start;background:var(--card);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);}
+.lseridi .ls-kart img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;background:var(--line);}
+.lseridi .ls-kart span{display:block;padding:8px 10px 10px;font-weight:600;font-size:14px;line-height:1.3;}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1386,7 +1394,7 @@ function render(){
     beslenAlt = currentMode;
     content.innerHTML = '<div class="seg-sat">' + segHtml([['yesem','Ne yesem?'],['protein','Protein ihtiyacım']], currentMode) +
       '<button class="sb-soru" data-sb="beslen" aria-label="Bu bölüm ne işe yarar?">?</button></div>' +
-      (currentMode==='protein' ? renderProtein() : renderYesem());
+      (currentMode==='protein' ? renderProtein() : renderYesem()) + listeSeridi(currentMode);
   }
   else if(currentMode==='bilgi' || currentMode==='fav' || currentMode==='menu'){
     profilAlt = currentMode;
@@ -2597,6 +2605,17 @@ const P_VERIM = [
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
 function pKilo(){ return pg("kilo",""); }
+// Hazır listeler şeridi (Ne yesem? ve Protein sekmelerinin altında): /liste sayfalarına geçit
+const HAZIR_LISTELER = {
+  yesem: [['tok-tutan-kahvaltiliklar','Tok tutan kahvaltılıklar'],['100-kalori-alti-doyurucu','100 kalori altı doyurucular'],['diyet-icin-doyurucu-yemekler','Diyette tok tutan yemekler'],['200-kalori-alti-doyurucu','200 kalori altı doyurucular'],['en-doyurucu-corbalar','En doyurucu çorbalar'],['en-doyurucu-salatalar','En doyurucu salatalar'],['en-doyurucu-turk-yemekleri','En doyurucu Türk yemekleri'],['tok-tutan-icecekler','Tok tutan içecekler'],['en-doyurucu-tatlilar','En tok tutan tatlılar'],['en-az-doyurucu-yiyecekler','Boş kalori listesi']],
+  protein: [['yuksek-proteinli-kahvalti','Yüksek proteinli kahvaltı'],['yuksek-proteinli-yemekler','Yüksek proteinli yemekler'],['proteinli-atistirmaliklar','Proteinli atıştırmalıklar'],['kalori-basina-en-cok-protein','Kalori başına en çok protein'],['vejetaryen-protein-kaynaklari','Vejetaryen protein kaynakları'],['lifli-yiyecekler','Lifi yüksek yiyecekler']]
+};
+function listeSeridi(mod){
+  const l = HAZIR_LISTELER[mod==='protein' ? 'protein' : 'yesem'];
+  return '<div class="lseridi"><div class="ls-bas"><span class="section-title">Hazır listeler</span><a class="ls-tumu" href="/liste">Tümü →</a></div><div class="ls-kaydir">' +
+    l.map(([s,ad])=>`<a class="ls-kart" href="/liste/${s}"><img src="/img/liste/k/${s}.jpg" alt="" width="600" height="315" loading="lazy" decoding="async"><span>${ad}</span></a>`).join('') +
+    '</div></div>';
+}
 function renderYesem(){
   const gk = gunlukKalori();
   let h = '<p class="note">Ne yiyeceğine karar veremiyor musun? Üç soruya cevap ver, sana uygun seçenekleri sıralayayım. Üstteki mutfak şeridinden \"Tümü\" seçersen bütün mutfaklara bakar.</p>';
