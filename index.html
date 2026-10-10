@@ -608,6 +608,7 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 /* sekme bilgisi: bölüm seçicinin sağındaki "?" */
 .seg-sat{display:flex;align-items:center;gap:8px;margin:0 0 16px;}
 .seg-sat .seg{flex:1;margin:0;}
+.m-bas-sat{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .sb-soru{flex:none;width:42px;height:42px;border-radius:50%;border:none;background:var(--card);box-shadow:var(--shadow);
   font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--forest);cursor:pointer;}
 .sb-soru:active{transform:scale(.95);}
@@ -1765,7 +1766,7 @@ function oyAc(id){
 function azHareket(){ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
 function meclisBolumHtml(){
-  return `<div class="m-bas">Meclis-i Mide</div>
+  return `<div class="m-bas-sat"><div class="m-bas">Meclis-i Mide</div><button class="sb-soru" data-sb="meclis" aria-label="Bu bölüm ne işe yarar?">?</button></div>
   <p class="m-alt">Kalori her paketin üstünde yazar. Kaç saat tok tuttuğu yalnızca burada: yiyenlerin bildirdiği saatlerden.</p>
   ${bildirimKartHtml()}
   ${halkSaatleriHtml()}
@@ -1785,10 +1786,10 @@ function bildirimKartHtml(){
     const f = bildirim ? mYemek(bildirim.id) : null;
     return `<div class="bk" id="bk">
       <div class="bk-ust">Tokluk bildir</div>
-      <div class="bk-b">${f ? esc(f.ad)+' seni kaç saat tuttu?' : 'Bildirim üyelere açık'}</div>
-      <p class="bk-p">Her üye tek ses: aynı yemeği yeniden bildirirsen eskisinin yerine geçer, sayılar şişmez. Şifre yok, e-postana giriş bağlantısı gelir.</p>
+      <div class="bk-b">${f ? esc(f.ad)+' seni kaç saat tuttu?' : 'Bildirmek için giriş yap'}</div>
+      <p class="bk-p">Şifre yok, e-postana giriş bağlantısı gelir.</p>
       ${mGirisGonderildi
-        ? '<p class="bk-ok">Bağlantı gönderildi. E-postandaki bağlantıya bu cihazdan dokun, kaldığın yere dönersin.</p>'
+        ? '<p class="bk-ok">Bağlantı gönderildi, e-postana bak.</p>'
         : '<div class="bk-giris"><input type="email" id="bk-eposta" placeholder="e-posta adresin" autocomplete="email" enterkeyhint="send"><button class="btn" id="bk-gonder">Giriş bağlantısı gönder</button></div>'}
     </div>`;
   }
@@ -1833,7 +1834,7 @@ function bildirimSonucHtml(){
     <div class="bk-ust">Kaydedildi ✓</div>
     <div class="bk-ad">${esc(f.ad)}</div>
     <div class="bk-sat"><span>Sen<b>${saatYaz(bildirimSonuc.saat_dk)}</b></span><span>Halk${halk}</span>${t?`<span>Hesap<b>~${saatStr(t)} sa</b></span>`:''}</div>
-    ${o && o.saatli < RAPOR_ESIK ? `<p class="bk-p">${RAPOR_ESIK} kişi bildirince yemeğin halk saati oturur (${o.saatli}/${RAPOR_ESIK}).</p>` : ''}
+
     <div class="bk-btns"><button class="btn" id="bk-baska">Başka yemek bildir</button><button class="link-btn" id="bk-duzelt">Düzelt</button></div>
   </div>`;
 }
@@ -1869,7 +1870,7 @@ function halkKartHtml(f){
   const hp = o.medyan_dk!=null ? halkPuani(o.medyan_dk, f.kcal) : null;
   const halkKutu = hp!=null
     ? `<b class="lig-${satietyToTier(hp)}">${hp}</b><span>halk puanı · ${satietyToTier(hp)}</span>`
-    : `<b class="hk-bos">?</b><span>halk puanı ${K_ESIK} bildirimle açılır (${Math.min(meclis.k?meclis.k.toplam_saatli:0,K_ESIK)}/${K_ESIK})</span>`;
+    : `<b>${f.kcal}</b><span>kcal</span>`;
   const s = rozetSayilari(f.id);
   const rz = ELLE_ROZET.filter(x=>(s[x]||0)>0).sort((a,b)=>s[b]-s[a]);
   const oto = otoRozet(o);
@@ -1914,7 +1915,7 @@ function mSatirHtml(f, i){
 }
 
 function halkSaatleriHtml(){
-  let h = '<div class="section-title">Halkın saatleri</div>';
+  let h = '<div class="section-title" id="m-saatler">Halkın saatleri</div>';
   if(!meclis.yuklendi) return h + skeleton(4);
   const l = [...meclis.ozet.values()].filter(o=>o.saatli>0 && mYemek(o.yemek_id))
     .sort((a,b)=> b.saatli-a.saatli || (b.son_oy||'').localeCompare(a.son_oy||''));
@@ -1933,7 +1934,7 @@ function rozetRehberiHtml(){
   [...meclis.ozet.values()].forEach(o=>{ const k = otoRozet(o); if(k) top[k] = (top[k]||0) + 1; });
   const kutu = k=>{ const r = ROZETLER[k]; const n = top[k]||0;
     return `<div class="rr">${rozetSvg(k,34)}<div><b>${r.ad}</b><span>${esc(r.acik)}</span><small>${r.oto ? (n?n+' yemekte':'henüz yok') : (n?n+' kez basıldı':'henüz basılmadı')}</small></div></div>`; };
-  return `<div class="section-title">Rozetler</div>
+  return `<div class="section-title" id="m-rozetler">Rozetler</div>
   <p class="note">Altısını bildirirken sen basarsın (en fazla 2). İkisini meclis kendisi verir: ${OTO_ESIK} kişinin bildirdiği saatlere göre.</p>
   <div class="card rrehber">${ELLE_ROZET.map(kutu).join('')}${['oto_15dk','oto_aksam'].map(kutu).join('')}</div>`;
 }
@@ -2692,7 +2693,7 @@ function wireUp(){
     r.onclick = ()=>{
       const id = r.dataset.exp;
       if(acikSatirlar.has(id)){ acikSatirlar.delete(id); r.classList.remove('acik'); }
-      else { acikSatirlar.add(id); r.classList.add('acik'); detayiGoster(r); }
+      else { acikSatirlar.add(id); r.classList.add('acik'); detayiGoster(r); if(r.querySelector('.abildir')) bildirBilgiKontrol(); }
     };
   });
   document.querySelectorAll('.favbtn').forEach(b=>{
@@ -2843,6 +2844,7 @@ const TANITIM = [
   {sec:'#ara-hap', lab:'Ara', b:'Aradığın yemeği bul', m:'Simit, mercimek, cips… Yaz, kalorisini ve kaç saat tok tuttuğunu gör.'},
   {sec:'.nbtn[data-nav="auto"]', lab:'Besin değerleri', b:'Besin değerleri', m:'Yemekler liglere ayrılmış: S en uzun tok tutan, D boş kalori. Satıra dokun, protein, lif ve şekeri gör.'},
   {sec:'.nbtn[data-nav="yesem"]', lab:'Ne yesem?', b:'Ne yesem? · Protein', m:'Ne kadar aç olduğunu söyle, sana en uzun tok tutacak seçenekleri sıralayalım; günlük protein ihtiyacını da burada hesapla.'},
+  {sec:'.nbtn[data-nav="comm"]', lab:'Meclis-i Mide', b:'Meclis-i Mide', m:'Yediğin yemek seni kaç saat tuttu? Burada bildirirsin; herkesin bildirdiği saatler ve rozetler de burada.'},
   {sec:'.nbtn[data-nav="bilgi"]', lab:'Profil', b:'Profil', m:'Bilgilerin, menün ve favorilerin. Giriş yaparsan cihazların arasında seninle gelir.'}
 ];
 // Ne yesem? ve Protein ihtiyacım tek bölüm: iki sekmesi için tek bilgi kutusu.
@@ -2852,7 +2854,23 @@ var BESLEN_BILGI = [
   {sec:'.seg-sat .seg', lab:'Ne yesem? · Protein', b:'Ne yesem? · Protein ihtiyacım',
    m:'Kilo, boy ve yaşını bir kez gir, bu cihazda kalır; iki sekme de aynı bilgileri kullanır. Ne yesem? açlığına ve canının çektiğine göre en uzun tok tutanları sıralar. Protein ihtiyacım günlük hedefini çıkarır ve onu en az kaloriyle tamamlayan örnek tabakları gösterir.'},
   {sec:()=>mutfakCipi(), lab:null, b:'Mutfağı değiştir',
-   m:'Öneriler ve örnek tabaklar seçili mutfaktan gelir. Buradan başka bir mutfağa geçersen liste de tabak da değişir. "Tümü" hepsine birden bakar.'}
+   m:'Öneriler ve örnek tabaklar seçili mutfaktan gelir. Buradan başka bir mutfağa geçersen liste de tabak da değişir. "Tümü" hepsine birden bakar.'},
+  {sec:'.lseridi', lab:'Hazır listeler', b:'Hazır listeler',
+   m:'En proteinli kahvaltılar, 100 kalori altı doyurucular, en tok tutan çorbalar… Hazır sıralanmış listeler, dokun ve aç.'}
+];
+// Meclis-i Mide: ilk girişte bir kez, sonra başlıktaki "?" ile.
+var MECLIS_BILGI = [
+  {sec:'#bk', lab:'Tokluk bildir', b:'Saatini bildir',
+   m:'Yediğin yemeği ara, seni kaç saat tok tuttuğunu seç. İstersen en fazla 2 rozet bas.'},
+  {sec:'#m-saatler', lab:'Halkın saatleri', b:'Halkın saatleri',
+   m:'Yiyenlerin bildirdiği süre. Satıra dokun: hesap kaç saat diyor, halk kaç saat diyor, hangi rozetler basılmış.'},
+  {sec:'#m-rozetler', lab:'Rozetler', b:'Rozetler',
+   m:'Altısını bildirirken sen basarsın. İkisini meclis kendisi verir: çabuk acıktıranlara ve akşama kadar götürenlere.'}
+];
+// Yemek detayındaki "Bildir" düğmesi: ilk kez görünce tek kabarcık.
+var BILDIR_BILGI = [
+  {sec:'.arow.acik .abildir', lab:'Bildir', b:'Seni kaç saat tuttu?',
+   m:'Bu yemeği yediysen buradan bildir. Hesabın tahmini ile yiyenlerin saati yan yana durur.'}
 ];
 // Kabarcığın göstereceği mutfak: ekranda tam görünen, seçili olmayan bir ülke
 // mutfağı (Market, Zincir gibi özel sekmeler değil); yoksa görünen herhangi biri.
@@ -2910,6 +2928,11 @@ function tnGoster(i){
   kart.setAttribute('aria-label', tek ? a.b : 'Kısa tanıtım');
   kart.classList.remove('gir'); void kart.offsetWidth; kart.classList.add('gir');
   if(i===0){ lens.classList.remove('pop'); void lens.offsetWidth; }
+  const hedef = typeof a.sec === 'function' ? a.sec() : document.querySelector(a.sec);
+  if(hedef && !hedef.closest('#altmenu')){
+    const r = hedef.getBoundingClientRect();
+    if(r.top < 70 || r.bottom > innerHeight - 260) hedef.scrollIntoView({block:'center', behavior:'auto'});
+  }
   tnYerlestir();
   if(i===0) lens.classList.add('pop');
 }
@@ -2917,23 +2940,35 @@ function tnIleri(){ buzz(8); if(tnIdx+1 >= tnAdimlar.length) tnKapat(); else tnG
 function tnBaslat(adimlar, anahtar){
   tnAdimlar = Array.isArray(adimlar) ? adimlar : TANITIM;
   tnAnahtar = anahtar || 'pr_tanitim_v2';
-  window.scrollTo({top:0});
+  if(tnAnahtar === 'pr_tanitim_v2' || tnAnahtar === 'pr_sb_beslen') window.scrollTo({top:0});
   document.getElementById('tanitim').classList.add('acik');
   tnGoster(0);
 }
 function beslenBolumu(){ return currentMode==='yesem' || currentMode==='protein'; }
-function sbGoster(){
-  if(!BESLEN_BILGI || tnAcikMi()) return;
-  tnBaslat(BESLEN_BILGI, 'pr_sb_beslen');
+function sbGoster(tip){
+  if(tnAcikMi()) return;
+  if(tip==='meclis'){ if(MECLIS_BILGI) tnBaslat(MECLIS_BILGI, 'pr_sb_meclis'); return; }
+  if(BESLEN_BILGI) tnBaslat(BESLEN_BILGI, 'pr_sb_beslen');
 }
-var sbBuOturum = false;   // var: render bu blok çalışmadan önce çağrılırsa hata vermesin
+function sbGordu(k){ try{ return !!localStorage.getItem(k); }catch(e){ return true; } }
+var sbBuOturum = {};   // var: render bu blok çalışmadan önce çağrılırsa hata vermesin
 function sbKontrol(){
-  if(!BESLEN_BILGI || sbBuOturum || !beslenBolumu() || tnAcikMi()) return;
-  let gordu = false;
-  try{ gordu = !!localStorage.getItem('pr_sb_beslen'); }catch(e){ gordu = true; }
-  if(gordu) return;
-  sbBuOturum = true;   // render sık çağrılıyor; aynı oturumda ikinci kez tetiklenmesin
-  setTimeout(()=>{ if(beslenBolumu()) sbGoster(); }, 380);
+  if(tnAcikMi()) return;
+  if(BESLEN_BILGI && beslenBolumu() && !sbBuOturum.beslen && !sbGordu('pr_sb_beslen')){
+    sbBuOturum.beslen = true;   // render sık çağrılıyor; aynı oturumda ikinci kez tetiklenmesin
+    setTimeout(()=>{ if(beslenBolumu()) sbGoster('beslen'); }, 380);
+  }
+  // Meclis verisi gelip bölümler çizildikten sonra
+  if(MECLIS_BILGI && currentMode==='comm' && meclis.yuklendi && !sbBuOturum.meclis && !sbGordu('pr_sb_meclis')){
+    sbBuOturum.meclis = true;
+    setTimeout(()=>{ if(currentMode==='comm' && document.getElementById('bk')) sbGoster('meclis'); }, 450);
+  }
+}
+function bildirBilgiKontrol(){
+  if(tnAcikMi() || sbBuOturum.bildir || sbGordu('pr_sb_bildir')) return;
+  sbBuOturum.bildir = true;
+  // detay açılırken sayfa kayıyor: kayma bitince göster
+  setTimeout(()=>{ if(document.querySelector('.arow.acik .abildir') && !tnAcikMi()) tnBaslat(BILDIR_BILGI, 'pr_sb_bildir'); else sbBuOturum.bildir = false; }, 750);
 }
 // Yemek detayındaki "kaç saat tuttu?" düğmesi: satırın aç/kapa tıklamasına ulaşmadan yakala.
 document.addEventListener('click', e=>{
@@ -2944,7 +2979,7 @@ document.addEventListener('click', e=>{
 }, true);
 document.addEventListener('click', e=>{
   const b = e.target.closest && e.target.closest('[data-sb]');
-  if(b){ buzz(8); sbGoster(); }
+  if(b){ buzz(8); sbGoster(b.dataset.sb); }
 });
 document.getElementById('tn-ileri').onclick = tnIleri;
 document.getElementById('tn-gec').onclick = tnKapat;
