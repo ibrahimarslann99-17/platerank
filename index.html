@@ -727,6 +727,13 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .m-oneri:not([open]) summary span::after{content:' ▾';}
 .m-oneri-ic{padding-top:12px;}
 .abildir{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);padding:0;}
+.hb{display:block;margin-top:10px;padding:12px;border-radius:14px;background:var(--forest);color:#FFFFFF;max-width:520px;cursor:default;}
+.hb-s{font-size:13px;line-height:1.45;font-weight:500;color:rgba(255,255,255,.85);margin-bottom:9px;}
+.hb-s b{color:#FFFFFF;}
+.hb-saat button{padding:9px 0;font-size:14px;}
+.hb.gonder .hb-saat{opacity:.5;pointer-events:none;}
+.hb .hb-m{display:inline-block;margin-top:9px;color:var(--lime);font-weight:600;font-size:13px;padding:0;}
+.bk-rznot{margin:4px 0 12px;}
 @media (max-width:370px){ .rrehber{grid-template-columns:1fr;} .bk-rz{grid-template-columns:repeat(2,minmax(0,1fr));} }
 @media (prefers-reduced-motion: reduce){ .bk,.bk-rz button.carp svg{animation:mSolma .2s ease both;} .bk-rz button.on svg{transform:none;} }
 /* ---------- Meclis listesi + halk kartı ---------- */
@@ -1086,9 +1093,11 @@ function metrHtml(f){
 function satietyToTier(s){ if(s>=200)return 'S'; if(s>=150)return 'A'; if(s>=100)return 'B'; if(s>=70)return 'C'; return 'D'; }
 
 // ---------- cihaz kimligi + kisisel oylar (yerel) ----------
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 function deviceId(){
-  let d = localStorage.getItem('pr_cihaz');
-  if(!d){ d = crypto.randomUUID(); localStorage.setItem('pr_cihaz', d); }
+  let d = null;
+  try{ d = localStorage.getItem('pr_cihaz'); }catch(e){}
+  if(!d || !UUID_RE.test(d)){ d = crypto.randomUUID(); try{ localStorage.setItem('pr_cihaz', d); }catch(e){} }
   return d;
 }
 function myVotes(){ try{ return JSON.parse(localStorage.getItem('pr_oylarim')||'{}'); }catch(e){ return {}; } }
@@ -1515,7 +1524,7 @@ function arowHtml(f,i,max,favs,menuSet){
     const gs = slug && GORSEL.has(slug) ? slug : null;
     const kucukGorsel = gs ? `<img class="athumb" src="/img/yemek/k/${gs}.webp" alt="" width="48" height="36" loading="lazy" decoding="async">` : `<span class="athumb bos"></span>`;
     const ust = gs ? `<img class="adfoto" src="/img/yemek/${gs}.webp" alt="${esc(f.ad)}" width="1200" height="900" loading="lazy" decoding="async">` : '';
-    const bildirLink = saatsiz(f) ? '' : `<button class="link-btn abildir" data-bildir="${f.id}">⏱ Seni kaç saat tuttu? Bildir</button>`;
+    const bildirLink = saatsiz(f) || !votingOpen ? '' : hizliBildirHtml(f.id);
     const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
       ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
@@ -1527,6 +1536,45 @@ function arowHtml(f,i,max,favs,menuSet){
       </div>
       <div class="detay">${ust}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
     </div>`;
+}
+
+// Satır içi bildirim: Meclis'e gitmeden, girişsiz, tek dokunuş.
+// Durum (benimBildirim, meclis.ozet) JS'te; render bu bloğu aynen yeniden kurar.
+function hizliBildirHtml(id){
+  const dk = benimBildirim.get(id);
+  let ust;
+  if(dk!=null){
+    const o = meclis.ozet.get(id), f = mYemek(id), t = f ? acikmaSuresi(f) : null;
+    const halk = o && o.medyan_dk!=null ? `Halk <b>${saatYaz(o.medyan_dk)}</b> (${o.saatli} kişi)` : 'Halkın saati henüz oturmadı';
+    ust = `✓ Sen <b>${saatYaz(dk)}</b> dedin · ${halk}${t?` · hesap ~${saatStr(t)} sa`:''}`;
+  } else ust = '⏱ Seni kaç saat tok tuttu? Dokun, kaydolsun.';
+  return `<div class="abildir hb" data-hb="${id}">
+    <div class="hb-s">${ust}</div>
+    <div class="bk-saat hb-saat">${SAAT_AD.map((a,i)=>`<button type="button" class="${SAAT_ADIM[i]===dk?'on':''}" data-hbs="${i}" data-hby="${id}" aria-pressed="${SAAT_ADIM[i]===dk}">${a}</button>`).join('')}</div>
+    <button type="button" class="link-btn hb-m" data-bildir="${id}">${currentUser?'Rozet bas, Meclis\'te aç':'Meclis\'te aç'} →</button>
+  </div>`;
+}
+let hbMesgul = false;
+async function hizliBildir(id, i, btn){
+  if(hbMesgul || !votingOpen) return;
+  const saat_dk = SAAT_ADIM[i];
+  if(benimBildirim.get(id)===saat_dk){ toast('Bu saati zaten bildirdin'); return; }
+  hbMesgul = true; buzz(8);
+  const kutu = btn.closest('.hb');
+  if(kutu) kutu.classList.add('gonder');
+  const ok = await saatKaydet(id, saat_dk);
+  if(ok){
+    // yalnız bu yemeğin halk özetini tazele; Meclis bir sonraki açılışta baştan yüklenir
+    try{
+      const {data} = await sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').eq('yemek_id', id).maybeSingle();
+      if(data) meclis.ozet.set(id, data);
+    }catch(e){}
+    meclis.yuklendi = false;
+  }
+  hbMesgul = false;
+  const guncel = document.querySelector(`.hb[data-hb="${id}"]`);
+  if(ok && guncel){ guncel.outerHTML = hizliBildirHtml(id); buzz([14,40,22]); toast('Kaydedildi: '+saatYaz(saat_dk)); }
+  else if(guncel) guncel.classList.remove('gonder');
 }
 
 function renderFav(){
@@ -1718,8 +1766,9 @@ function meclisSonucCiz(){
 
 // ---------- Meclis-i Mide: tokluk bildirimi ----------
 // Tek soru: bu yemek seni kaç saat tok tuttu? İsteğe bağlı en fazla 2 rozet.
-// Yazma üyelere açık: sunucuda RLS + uye_damgala tetiği kimliği hesaptan alır
-// (istemcinin gönderdiği cihaz yok sayılır), her üye bir yemekte tek ses.
+// Saat bildirimi herkese açık (db/meclis-8-acik-bildirim.sql): üyede kimlik hesaptan
+// gelir, üye olmayanda cihazdaki gizli kimlik 'd:<uuid>' gönderilir, sunucu özetler.
+// Kişi başı bir yemekte tek ses; üye olmayana günlük kota. Rozet, öneri ve öneri oyu üyelerde.
 // Okuma herkese açık.
 const RAPOR_ESIK = 3;          // bu kadar kişiden az bildirimde "az veri" etiketi
 let bildirim = null;           // {id, saat:null|0..7, rozet:[...]}
@@ -1734,18 +1783,26 @@ async function kimlikHash(uid){
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('u:'+uid));
   return 'h:' + [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 }
+async function cihazHash(){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('d:'+deviceId()));
+  return 'h:' + [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+// Üye: hesabın bildirimleri + rozetleri. Misafir: bu cihazın bildirimleri.
+// Giriş/çıkış sırasında üst üste binen çağrılarda yalnızca sonuncusu yazar.
+let kayitSira = 0;
 async function benimKayitlarimYukle(){
-  benimBildirim = new Map(); benimRozet = new Map(); benimKimlik = null;
-  if(!currentUser) return;
+  const sira = ++kayitSira;
+  const uye = currentUser;
   try{
-    benimKimlik = await kimlikHash(currentUser.id);
-    const [o, r] = await Promise.all([
-      sb.from('oylar').select('yemek_id,saat_dk,created_at').eq('cihaz', benimKimlik).order('created_at',{ascending:true}),
-      sb.from('rozet_oylar').select('yemek_id,rozet,aktif,created_at').eq('cihaz', benimKimlik).order('created_at',{ascending:true})
-    ]);
+    const kimlik = uye ? await kimlikHash(uye.id) : await cihazHash();
+    const isler = [sb.from('oylar').select('yemek_id,saat_dk,created_at').eq('cihaz', kimlik).order('created_at',{ascending:true})];
+    if(uye) isler.push(sb.from('rozet_oylar').select('yemek_id,rozet,aktif,created_at').eq('cihaz', kimlik).order('created_at',{ascending:true}));
+    const [o, r] = await Promise.all(isler);
+    if(sira !== kayitSira) return;
+    benimKimlik = kimlik; benimBildirim = new Map(); benimRozet = new Map();
     (o.data||[]).forEach(x=>{ if(x.saat_dk!=null) benimBildirim.set(x.yemek_id, x.saat_dk); });
     const rr = new Map();
-    (r.data||[]).forEach(x=>{ const m = rr.get(x.yemek_id) || {}; m[x.rozet] = x.aktif; rr.set(x.yemek_id, m); });
+    ((r && r.data)||[]).forEach(x=>{ const m = rr.get(x.yemek_id) || {}; m[x.rozet] = x.aktif; rr.set(x.yemek_id, m); });
     rr.forEach((m,id)=>{ const a = Object.keys(m).filter(k=>m[k]); if(a.length) benimRozet.set(id, a); });
   }catch(e){ console.error('kendi bildirimlerim alınamadı', e); }
 }
@@ -1782,17 +1839,6 @@ const ARA_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" str
 
 function bildirimKartHtml(){
   if(!votingOpen) return `<div class="bk" id="bk"><div class="bk-ust">Tokluk bildir</div><p class="bk-p">Bildirimler geçici olarak kapalı. Halkın saatleri aşağıda.</p></div>`;
-  if(!currentUser){
-    const f = bildirim ? mYemek(bildirim.id) : null;
-    return `<div class="bk" id="bk">
-      <div class="bk-ust">Tokluk bildir</div>
-      <div class="bk-b">${f ? esc(f.ad)+' seni kaç saat tuttu?' : 'Bildirmek için giriş yap'}</div>
-      <p class="bk-p">Şifre yok, e-postana giriş bağlantısı gelir.</p>
-      ${mGirisGonderildi
-        ? '<p class="bk-ok">Bağlantı gönderildi, e-postana bak.</p>'
-        : '<div class="bk-giris"><input type="email" id="bk-eposta" placeholder="e-posta adresin" autocomplete="email" enterkeyhint="send"><button class="btn" id="bk-gonder">Giriş bağlantısı gönder</button></div>'}
-    </div>`;
-  }
   if(bildirimSonuc) return bildirimSonucHtml();
   if(bildirim) return bildirimFormHtml();
   const n = benimBildirim.size;
@@ -1817,9 +1863,10 @@ function bildirimFormHtml(){
     <div class="bk-meta">${f.kcal} kcal · hesap ${f.doyuruculuk} (${lig} ligi)${eski!=null?' · önceki bildirimin '+saatYaz(eski):''}</div>
     <div class="bk-soru">Kaç saat tok tuttu?</div>
     <div class="bk-saat">${SAAT_AD.map((a,i)=>`<button class="${si===i?'on':''}" data-bks="${i}" aria-pressed="${si===i}">${a}</button>`).join('')}</div>
-    <div class="bk-soru">Rozet <span>isteğe bağlı · en fazla 2</span></div>
+    ${currentUser ? `<div class="bk-soru">Rozet <span>isteğe bağlı · en fazla 2</span></div>
     <div class="bk-rz">${ELLE_ROZET.map(k=>{ const on = bildirim.rozet.includes(k);
-      return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}" title="${esc(ROZETLER[k].acik)}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span></button>`; }).join('')}</div>
+      return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}" title="${esc(ROZETLER[k].acik)}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span></button>`; }).join('')}</div>`
+    : `<p class="bk-p bk-rznot">Rozet basmak üyelere açık. Profil'den e-postanla giriş yapabilirsin.</p>`}
     <div class="bk-btns"><button class="btn" id="bk-bildir" ${si==null?'disabled':''}>${eski!=null?'Güncelle':'Bildir'}</button><button class="link-btn" id="bk-vazgec">Vazgeç</button></div>
   </div>`;
 }
@@ -2077,30 +2124,41 @@ function meclisBagla(){
   kesifBagla();
 }
 
+// Tek kayıt yolu: Meclis kartı da ana listedeki hızlı bildirim de buradan geçer.
+async function saatKaydet(id, saat_dk){
+  const kayit = {yemek_id:id, saat_dk};
+  if(!currentUser) kayit.cihaz = 'd:'+deviceId();   // sunucu özetler; üyede yok sayılır
+  const {error} = await sb.from('oylar').insert(kayit);
+  if(error){
+    console.error(error);
+    const m = error.message||'';
+    if(/gunluk_sinir/.test(m)) toast('Bugünlük bildirim sınırına geldin, yarın devam');
+    else if(currentUser && ((error.code||'')==='42501' || /row-level/i.test(m))) toast('Oturum düşmüş: yeniden giriş yap');
+    else toast('Kaydedilemedi, birazdan tekrar dene');
+    return false;
+  }
+  benimBildirim.set(id, saat_dk);
+  return true;
+}
+
 async function bildirimGonder(){
   if(!bildirim || bildirim.saat==null || !votingOpen) return;
-  if(!currentUser){ toast('Bildirim için giriş yap'); render(); return; }
   const f = mYemek(bildirim.id);
   const g = document.getElementById('bk-bildir');
   if(g){ g.disabled = true; g.textContent = 'Gönderiliyor…'; }
   const saat_dk = SAAT_ADIM[bildirim.saat];
-  const {error} = await sb.from('oylar').insert({yemek_id:f.id, saat_dk});
-  if(error){
-    console.error(error);
-    const yetki = (error.code||'')==='42501' || /row-level|uye_gerekli/i.test(error.message||'');
-    toast(yetki ? 'Oturum düşmüş: yeniden giriş yap' : 'Kaydedilemedi, birazdan tekrar dene');
+  if(!(await saatKaydet(f.id, saat_dk))){
     if(g){ g.disabled = false; g.textContent = 'Bildir'; }
     return;
   }
-  // rozetler: önce kaldırılanlar (2 sınırına takılmasın), sonra eklenenler
-  const eski = benimRozet.get(f.id) || [], yeni = bildirim.rozet.slice();
+  // rozetler (yalnız üye): önce kaldırılanlar (2 sınırına takılmasın), sonra eklenenler
+  const eski = benimRozet.get(f.id) || [], yeni = currentUser ? bildirim.rozet.slice() : eski.slice();
   const degis = eski.filter(k=>!yeni.includes(k)).map(k=>({rozet:k, aktif:false}))
     .concat(yeni.filter(k=>!eski.includes(k)).map(k=>({rozet:k, aktif:true})));
   for(const d of degis){
     const {error: e2} = await sb.from('rozet_oylar').insert({yemek_id:f.id, rozet:d.rozet, aktif:d.aktif});
     if(e2) console.error('rozet', e2);
   }
-  benimBildirim.set(f.id, saat_dk);
   if(yeni.length) benimRozet.set(f.id, yeni); else benimRozet.delete(f.id);
   bildirimSonuc = {id:f.id, saat_dk};
   bildirim = null;
@@ -2978,6 +3036,12 @@ document.addEventListener('click', e=>{
   oyAc(b.dataset.bildir);
 }, true);
 document.addEventListener('click', e=>{
+  if(!e.target.closest) return;
+  const b = e.target.closest('[data-hbs]');
+  if(b){ e.stopPropagation(); e.preventDefault(); hizliBildir(b.dataset.hby, +b.dataset.hbs, b); return; }
+  if(e.target.closest('.hb') && !e.target.closest('[data-bildir]')) e.stopPropagation();  // boşluğa dokunmak satırı kapatmasın
+}, true);
+document.addEventListener('click', e=>{
   const b = e.target.closest && e.target.closest('[data-sb]');
   if(b){ buzz(8); sbGoster(b.dataset.sb); }
 });
@@ -3007,7 +3071,8 @@ function tnIlkZiyaret(){
       document.querySelectorAll('.toplam-sayi').forEach(el=>{ el.textContent = count; });
     }
   });
-  const ayarlarHazir = loadSettings().catch(()=>{});   // banner icin; listeyi bekletmez
+  const ayarlarHazir = loadSettings().catch(()=>{});
+  benimKayitlarimYukle();   // banner icin; listeyi bekletmez
   await refresh();
   ayarlarHazir;
   updateFade(); renderAuthBar();
