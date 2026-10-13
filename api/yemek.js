@@ -3,6 +3,7 @@
 // HTML sunucuda üretilir ki Google içeriği JavaScript çalıştırmadan okusun.
 
 const { veri, esc, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
+const ICERIK = require('./_icerik.js');
 
 const { satir, sayfa, yanit } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
@@ -63,6 +64,7 @@ function yemekSayfasi(y, d) {
   const aciklama = `${y.ad}: ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif. Doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi, ${L.kisa.toLowerCase()}). ${d.toplam} yemek arasında ${y.sira}. sırada. Daha tok tutan alternatifleri gör.`;
 
   const sb = sebepler(y);
+  const ic = ICERIK[y.slug] || null;   // elle yazılmış içerik (varsa)
   const alternatif = dahaTok(y, d);
   const komsu = komsular(y, d);
 
@@ -96,8 +98,14 @@ ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" wid
 
 <h2>${esc(kok)} tok tutar mı?</h2>
 <p class="cevap"><b>${hukum(y)}</b></p>
+${ic ? `<p>${esc(ic.giris)}</p>` : ''}
 ${sb.length ? `<ul class="sebep">${sb.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
 ${y.tur === 'icecek' || y.sadece_malzeme ? '' : `<div class="halk"><b>Seni kaç saat tok tuttu?</b><p>Puan bir hesap. Yiyenlerin bildirdiği saatler Meclis-i Mide'de toplanıyor; 3 kişi bildirince ${esc(kok)} için halkın saati oturur.</p><a class="btn" href="/?bildir=${y.slug}" rel="nofollow">Saatini bildir</a></div>`}
+
+${ic ? `<h2>${esc(kok)} nasıl daha tok tutar?</h2>
+<ul class="sebep">${ic.dahaTok.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+<h2>Porsiyon ve hazırlanış farkı</h2>
+<p>${esc(ic.porsiyon)}</p>` : ''}
 
 <h2>Benzer kaloride daha tok tutanlar</h2>
 ${alternatif.length
@@ -107,6 +115,8 @@ ${alternatif.length
 ${komsu.length ? `<h2>${esc(m.ad)} mutfağında yakın sıralar</h2><ul class="liste">${komsu.map(satir).join('')}</ul>` : ''}
 
 ${(() => { const gl = gectigiListeler(y, d); return gl.length ? `<h2>${esc(kok)} bu listelerde</h2><ul class="liste">${gl.map((t) => `<li><a href="/liste/${t.slug}"><img class="kc" src="/img/liste/k/${t.slug}.jpg" alt="" width="48" height="36" loading="lazy" decoding="async"><span class="ad">${esc(t.kisa)}</span><span class="dg">${listeKalemleri(t, d).indexOf(y) + 1}. sırada</span></a></li>`).join('')}</ul>` : ''; })()}
+
+${ic && ic.sss.length ? `<h2>Sık sorulanlar</h2>${ic.sss.map((q) => `<h3>${esc(q.s)}</h3><p>${esc(q.c)}</p>`).join('')}` : ''}
 
 <p class="not">Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır: porsiyon başına protein, lif ve hacim puanı yükseltir; kalori yoğunluğu ve şeker düşürür. 200 ve üzeri S ligi, 70 altı D ligidir. ${y.kaynak ? `Besin değerleri kaynağı: ${esc(y.kaynak)}.` : 'Besin değerleri tipik bir porsiyon için yaklaşık değerlerdir.'}</p>
 
@@ -130,7 +140,8 @@ ${(() => { const gl = gectigiListeler(y, d); return gl.length ? `<h2>${esc(kok)}
           { '@type': 'Question', name: `${kok} kaç kalori?`,
             acceptedAnswer: { '@type': 'Answer', text: `${y.ad} ${y.kcal} kalori; ${y.protein} g protein, ${y.lif} g lif, ${y.yag} g yağ ve ${y.seker} g şeker içerir.` } },
           { '@type': 'Question', name: `${kok} tok tutar mı?`,
-            acceptedAnswer: { '@type': 'Answer', text: `${hukum(y)} PlateRank doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi).` } },
+            acceptedAnswer: { '@type': 'Answer', text: `${hukum(y)} PlateRank doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi).${ic ? ' ' + ic.giris : ''}` } },
+          ...(ic ? ic.sss.map((q) => ({ '@type': 'Question', name: q.s, acceptedAnswer: { '@type': 'Answer', text: q.c } })) : []),
         ],
       },
     ],

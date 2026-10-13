@@ -24,6 +24,8 @@ nav.yol{font-size:14px;color:var(--muted);margin:4px 0 12px}
 nav.yol a{color:var(--muted)}
 h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
 h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;margin:32px 0 10px}
+h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;margin:20px 0 4px}
+h3+p{margin-top:0}
 .alt{color:var(--muted);margin:0 0 18px}
 .kart{background:var(--card);border-radius:22px;padding:20px;box-shadow:0 1px 2px rgba(14,34,23,.05),0 10px 24px -14px rgba(14,34,23,.2)}
 .skor{display:flex;align-items:center;gap:18px}
