@@ -86,6 +86,7 @@ function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss }) {
 <style>${CSS}${ekCss || ''}</style>
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};window.va('beforeSend',function(e){try{if(localStorage.getItem('pr_ben')==='1')return null;}catch(x){}return e;});</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>

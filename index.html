@@ -25,6 +25,16 @@
 <script>
 window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
+<script>
+// Kendi ziyaretlerimizi saymasın: bir kez platerank.dev/?ben=1 aç, o tarayıcının ziyaretleri Analytics'e gitmez.
+// ?ben=0 ile geri açılır. Vercel'in belgelenmiş beforeSend kancası kullanılıyor.
+try{ const b=new URLSearchParams(location.search).get('ben');
+  if(b==='1') localStorage.setItem('pr_ben','1'); else if(b==='0') localStorage.removeItem('pr_ben');
+  if(b!==null) history.replaceState(null,'',location.pathname+location.hash);
+}catch(e){}
+window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};
+window.va('beforeSend',function(ev){ try{ if(localStorage.getItem('pr_ben')==='1') return null; }catch(e){} return ev; });
+</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
