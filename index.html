@@ -703,6 +703,8 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .bk-rz button.on{background:rgba(255,255,255,.18);border-color:#FFFFFF;box-shadow:inset 0 0 0 1px #FFFFFF;}
 .bk-rz button.on svg{transform:rotate(-8deg);}
 .bk-rz button.carp svg{animation:rzCarp .35s cubic-bezier(.3,1.3,.5,1) both;}
+.bk-rz button small{display:block;font-size:10px;font-weight:500;line-height:1.25;color:rgba(255,255,255,.68);text-align:center;margin-top:1px;}
+.bk-rz button.on small{color:rgba(255,255,255,.9);}
 .bk-btns{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;}
 .bk-btns .btn{padding:12px 22px;}
 .bk-sat{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
@@ -1866,7 +1868,7 @@ function bildirimFormHtml(){
     <div class="bk-saat">${SAAT_AD.map((a,i)=>`<button class="${si===i?'on':''}" data-bks="${i}" aria-pressed="${si===i}">${a}</button>`).join('')}</div>
     ${currentUser ? `<div class="bk-soru">Rozet <span>isteğe bağlı · en fazla 2</span></div>
     <div class="bk-rz">${ELLE_ROZET.map(k=>{ const on = bildirim.rozet.includes(k);
-      return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}" title="${esc(ROZETLER[k].acik)}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span></button>`; }).join('')}</div>`
+      return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span><small>${esc(ROZETLER[k].acik)}</small></button>`; }).join('')}</div>`
     : `<p class="bk-p bk-rznot">Rozet basmak üyelere açık. Profil'den e-postanla giriş yapabilirsin.</p>`}
     <div class="bk-btns"><button class="btn" id="bk-bildir" ${si==null?'disabled':''}>${eski!=null?'Güncelle':'Bildir'}</button><button class="link-btn" id="bk-vazgec">Vazgeç</button></div>
   </div>`;
