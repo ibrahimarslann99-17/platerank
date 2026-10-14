@@ -88,7 +88,7 @@ def kapak(L):
         for i, s in enumerate(sar(d, alt.strip(), F('Medium', 30), 520)[:2]):
             d.text((50, y1 + i * 38), s, font=F('Medium', 30), fill=TEAL, anchor='lt')
         y1 += 38 * min(2, len(sar(d, alt.strip(), F('Medium', 30), 520))) + 6
-    etiket = f"{L['adet']} yemek · doyuruculuk sırası"
+    etiket = f"{L['adet']} yemek · {L.get('sira_etiket', 'doyuruculuk sırası')}"
     ew = d.textlength(etiket, font=F('Bold', 26)) + 40
     d.rounded_rectangle((50, y1 + 14, 50 + ew, y1 + 64), radius=25, fill=LIME)
     d.text((50 + ew / 2, y1 + 39), etiket, font=F('Bold', 26), fill=FOREST, anchor='mm')

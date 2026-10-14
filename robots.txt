@@ -2,5 +2,20 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
+# Yapay zekâ aramaları ve tarayıcıları: açıkça izinli
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+
 Sitemap: https://platerank.dev/sitemap.xml
 Sitemap: https://platerank.dev/sitemap-yemekler.xml

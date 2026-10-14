@@ -610,5 +610,190 @@
     "gorsel": true
    }
   ]
+ },
+ {
+  "slug": "hangi-yemek-kac-saat-tok-tutar",
+  "baslik": "Hangi yemek kaç saat tok tutar? Türk mutfağından 40 yemek",
+  "kisa": "Hangi yemek kaç saat tok tutar?",
+  "adet": 40,
+  "sira_etiket": "tokluk süresine göre",
+  "ilk": [
+   {
+    "slug": "haslanmis-patates",
+    "ad": "Haşlanmış patates",
+    "puan": 280,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "ton-baligi-pismis-100-g",
+    "ad": "Ton balığı",
+    "puan": 244,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "barbunya-pismis-1-su-bardagi",
+    "ad": "Barbunya",
+    "puan": 242,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "en-uzun-tok-tutan-yiyecekler",
+  "baslik": "En uzun tok tutan yiyecekler: 4 saat ve üzeri",
+  "kisa": "En uzun tok tutanlar",
+  "adet": 25,
+  "sira_etiket": "tokluk süresine göre",
+  "ilk": [
+   {
+    "slug": "lupin-tabule-salatasi",
+    "ad": "Lupin tabule salatası",
+    "puan": 299,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sote",
+    "ad": "Tempeh sote",
+    "puan": 294,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "seitan-sote",
+    "ad": "Seitan sote",
+    "puan": 267,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tempeh-sis-sebzeli",
+    "ad": "Tempeh şiş",
+    "puan": 257,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "cabuk-acikitan-yiyecekler",
+  "baslik": "Çabuk acıktıran yiyecekler: 2 saati bulmadan bitenler",
+  "kisa": "Çabuk acıktıranlar",
+  "adet": 25,
+  "sira_etiket": "tokluk süresine göre",
+  "ilk": [
+   {
+    "slug": "cool-cake",
+    "ad": "Cool Cake",
+    "puan": 26,
+    "lig": "D",
+    "gorsel": false
+   },
+   {
+    "slug": "ceviz-1-avuc",
+    "ad": "Ceviz",
+    "puan": 36,
+    "lig": "D",
+    "gorsel": true
+   },
+   {
+    "slug": "gulab-jamun-2-adet",
+    "ad": "Gulab jamun",
+    "puan": 37,
+    "lig": "D",
+    "gorsel": true
+   },
+   {
+    "slug": "biskuvi-kremali-4-adet",
+    "ad": "Bisküvi",
+    "puan": 40,
+    "lig": "D",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "gece-acikmamak-icin",
+  "baslik": "Gece acıkmamak için akşam ne yemeli? Tok tutan akşam yemekleri",
+  "kisa": "Gece acıkmamak için",
+  "adet": 20,
+  "sira_etiket": "tokluk süresine göre",
+  "ilk": [
+   {
+    "slug": "izgara-tavuk-gogsu",
+    "ad": "Izgara tavuk göğsü",
+    "puan": 235,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "kuru-fasulye",
+    "ad": "Kuru fasulye",
+    "puan": 228,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "haslanmis-patates",
+    "ad": "Haşlanmış patates",
+    "puan": 280,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
+ },
+ {
+  "slug": "sahurda-tok-tutan-yiyecekler",
+  "baslik": "Sahurda ne yenir? En uzun tok tutan seçenekler",
+  "kisa": "Sahurda tok tutanlar",
+  "adet": 20,
+  "sira_etiket": "tokluk süresine göre",
+  "ilk": [
+   {
+    "slug": "mercimek-corbasi",
+    "ad": "Mercimek çorbası",
+    "puan": 250,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "yayla-corbasi",
+    "ad": "Yayla çorbası",
+    "puan": 245,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "ezogelin-corbasi",
+    "ad": "Ezogelin çorbası",
+    "puan": 245,
+    "lig": "S",
+    "gorsel": true
+   },
+   {
+    "slug": "tarhana-corbasi",
+    "ad": "Tarhana çorbası",
+    "puan": 240,
+    "lig": "S",
+    "gorsel": true
+   }
+  ]
  }
 ]

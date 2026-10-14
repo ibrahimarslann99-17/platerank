@@ -698,6 +698,13 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .bk .btn{background:var(--lime);color:var(--forest);border-color:var(--lime);}
 .bk .btn:disabled{opacity:.45;}
 .bk .link-btn{color:rgba(255,255,255,.8);}
+.bk-teklif{border-top:1px solid rgba(255,255,255,.16);margin:14px 0 2px;padding-top:12px;}
+.bk-teklif .bk-p{margin:0 0 10px;}
+.bk-teklif .authform input{background:#FFFFFF;color:var(--forest);border:none;}
+.bk-teklif .authnot{color:rgba(255,255,255,.72);margin:8px 0 0;}
+.bk-teklif .authnot b{color:#FFFFFF;}
+.bk-teklif .bk-tk{margin-top:8px;font-size:12px;}
+.hb-g{margin-left:12px;}
 .bk .m-ara{margin:0;}
 .bk #mq{box-shadow:none;}
 .bk .m-sonuc{color:var(--ink);}
@@ -951,9 +958,26 @@ async function acctYukle(user){
   if(ilkGiris){ await ilkGirisSenkronu(); try{ localStorage.setItem(birlestirmeAnahtari,'1'); }catch(e){} }
   renderAuthBar();
   await loadMenu();
+  const tasinan = await oylariHesabaTasi();
   await benimKayitlarimYukle();
   render();
+  if(tasinan > 0 && currentMode==='comm') meclisYukle(true);
   donusUygula();
+}
+
+// Girişten önce bu cihazdan verilen girişsiz oylar hesaba geçer ve tam sayılır
+// (db/meclis-9-ikili-agirlik.sql). Her girişte çalışır; taşınacak oy yoksa 0 döner.
+async function oylariHesabaTasi(){
+  let d = null;
+  try{ d = localStorage.getItem('pr_cihaz'); }catch(e){}
+  if(!d) return 0;
+  try{
+    const {data, error} = await sb.rpc('oylari_hesaba_tasi', {p_cihaz: d});
+    if(error) throw error;
+    const n = data || 0;
+    if(n > 0){ meclis.yuklendi = false; toast(n+' oyun hesabına geçti, artık tam sayılıyor ✓'); }
+    return n;
+  }catch(e){ console.error('oy taşıma', e); return 0; }
 }
 
 async function ilkGirisSenkronu(){
@@ -1006,22 +1030,63 @@ function renderAuthBar(){
     const b = document.getElementById('auth-out');
     if(b) b.onclick = async ()=>{ await sb.auth.signOut(); };
   } else {
-    el.innerHTML = '<div class="authform" id="authform"><input type="email" id="auth-email" placeholder="e-posta adresin" autocomplete="email"><button class="btn" id="auth-send">Bağlantı gönder</button></div>'+
-      '<p class="authnot">Şifre yok: e-postana tek kullanımlık giriş bağlantısı gelir. E-postan sadece giriş için kullanılır; favorilerin ve menün cihazlar arasında eşitlenir, kilo, boy, yaş gibi beden bilgilerin cihazından çıkmaz.</p>';
-    const s = document.getElementById('auth-send');
-    if(s) s.onclick = async ()=>{
-      const email = (document.getElementById('auth-email').value||'').trim();
-      if(!email || !email.includes('@')){ toast('Geçerli bir e-posta gir'); return; }
-      s.disabled = true; s.textContent = 'Gönderiliyor…';
-      const {error} = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://platerank.dev' } });
-      s.disabled = false; s.textContent = 'Bağlantı gönder';
-      if(error){ toast('Gönderilemedi: '+error.message); return; }
-      toast('Giriş bağlantısı gönderildi, e-postana bak ✓');
-    };
+    el.innerHTML = girisFormHtml('p') + (girisEposta ? '' :
+      '<p class="authnot">Şifre yok: e-postana 6 haneli giriş kodu gelir, aynı sayfada yazarsın. E-postan sadece giriş için kullanılır; favorilerin, menün ve Meclis oyların hesabına bağlanır, kilo, boy, yaş gibi beden bilgilerin cihazından çıkmaz.</p>');
+    girisBagla(el);
   }
 }
+
+// ---------- giriş: e-postaya tek kullanımlık kod ----------
+// TikTok/Instagram'ın uygulama içi tarayıcısında e-posta bağlantısı başka tarayıcıda açılıyor,
+// oturum kopuyor. Kod aynı sayfada yazılır; tarayıcı değişmez. Mailde bağlantı da durur (yedek).
+// Supabase e-posta şablonunda {{ .Token }} olmalı (Magic Link ve Confirm signup).
+let girisEposta = '';      // kod gönderilen adres; render'ı aşar
+function girisFormHtml(k){
+  if(girisEposta) return `<div class="authform" data-giris="${k}">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="8" placeholder="e-postadaki kod" data-gkod>
+      <button class="btn" data-gdogrula>Giriş yap</button></div>
+    <p class="authnot"><b>${esc(girisEposta)}</b> adresine kod gönderildi. Gelmediyse spam klasörüne bak. <button type="button" class="link-btn" data-gdegis>Adresi değiştir</button></p>`;
+  return `<div class="authform" data-giris="${k}"><input type="email" ${k==='p'?'id="auth-email" ':''}placeholder="e-posta adresin" autocomplete="email" data-geposta><button class="btn" data-ggonder>Kod gönder</button></div>`;
+}
+function girisBagla(kok){
+  (kok||document).querySelectorAll('[data-giris]').forEach(f=>{
+    const k = f.dataset.giris;
+    const ep = f.querySelector('[data-geposta]'), gb = f.querySelector('[data-ggonder]');
+    if(ep && gb){
+      const gonder = async ()=>{
+        const email = (ep.value||'').trim();
+        if(!email || !email.includes('@')){ toast('Geçerli bir e-posta gir'); return; }
+        gb.disabled = true; gb.textContent = 'Gönderiliyor…';
+        // bağlantıyla dönülürse Meclis'e geri gelsin
+        if(k==='m'){ try{ localStorage.setItem('pr_donus', JSON.stringify({bildir:null, t:Date.now()})); }catch(e){} }
+        const {error} = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://platerank.dev' } });
+        if(error){ gb.disabled = false; gb.textContent = 'Kod gönder'; toast('Gönderilemedi: '+error.message); return; }
+        girisEposta = email; buzz(12); render();
+        requestAnimationFrame(()=>{ const kk = document.querySelector('[data-giris="'+k+'"] [data-gkod]'); if(kk) kk.focus(); });
+      };
+      gb.onclick = gonder;
+      ep.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); gonder(); } };
+    }
+    const kod = f.querySelector('[data-gkod]'), db = f.querySelector('[data-gdogrula]');
+    if(kod && db){
+      const dogrula = async ()=>{
+        const token = (kod.value||'').replace(/\D/g,'');
+        if(token.length < 6){ toast('Koddaki rakamların hepsini yaz'); return; }
+        db.disabled = true; db.textContent = 'Bakılıyor…';
+        const {error} = await sb.auth.verifyOtp({ email: girisEposta, token, type: 'email' });
+        if(error){ db.disabled = false; db.textContent = 'Giriş yap'; toast(/expired|invalid/i.test(error.message||'') ? 'Kod hatalı ya da süresi dolmuş' : 'Giriş olmadı: '+error.message); return; }
+        girisEposta = ''; buzz([14,40,22]); toast('Giriş yapıldı ✓');
+        // gerisini onAuthStateChange -> acctYukle yapar (oy taşıma dahil)
+      };
+      db.onclick = dogrula;
+      kod.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); dogrula(); } };
+    }
+  });
+  (kok||document).querySelectorAll('[data-gdegis]').forEach(b=>{ b.onclick = ()=>{ girisEposta = ''; render(); }; });
+}
+
 // 20.09 yeniden tasarımında bu kayıt düşmüştü: giriş yapan kimse hesaba bağlanmıyordu.
-// INITIAL_SESSION: sayfa açılırken kayıtlı oturum; SIGNED_IN: magic link dönüşü.
+// INITIAL_SESSION: sayfa açılırken kayıtlı oturum; SIGNED_IN: kodla giriş ya da e-posta bağlantısı dönüşü.
 // Supabase çağrıları geri çağırmanın içinde beklenmez (kilitlenme riski), bir sonraki tura ertelenir.
 sb.auth.onAuthStateChange((event, session)=>{
   if((event==='SIGNED_IN' || event==='INITIAL_SESSION') && session && session.user){
@@ -1566,6 +1631,7 @@ function hizliBildirHtml(id){
     <div class="hb-s">${ust}</div>
     <div class="bk-saat hb-saat">${SAAT_AD.map((a,i)=>`<button type="button" class="${SAAT_ADIM[i]===dk?'on':''}" data-hbs="${i}" data-hby="${id}" aria-pressed="${SAAT_ADIM[i]===dk}">${a}</button>`).join('')}</div>
     <button type="button" class="link-btn hb-m" data-bildir="${id}">${currentUser?'Rozet bas, Meclis\'te aç':'Meclis\'te aç'} →</button>
+    ${dk!=null && !currentUser && !teklifKapali() ? '<button type="button" class="link-btn hb-m hb-g" data-hbgiris>Tam sayılsın, giriş yap →</button>' : ''}
   </div>`;
 }
 let hbMesgul = false;
@@ -1782,7 +1848,8 @@ function meclisSonucCiz(){
 // Tek soru: bu yemek seni kaç saat tok tuttu? İsteğe bağlı en fazla 2 rozet.
 // Saat bildirimi herkese açık (db/meclis-8-acik-bildirim.sql): üyede kimlik hesaptan
 // gelir, üye olmayanda cihazdaki gizli kimlik 'd:<uuid>' gönderilir, sunucu özetler.
-// Kişi başı bir yemekte tek ses; üye olmayana günlük kota. Rozet, öneri ve öneri oyu üyelerde.
+// Kişi başı bir yemekte tek ses; üye olmayana günlük kota. Halk medyanında girişsiz oy yarım,
+// girişli oy tam sayılır; girişte cihazın girişsiz oyları hesaba taşınır (db/meclis-9-ikili-agirlik.sql). Rozet, öneri ve öneri oyu üyelerde.
 // Okuma herkese açık.
 const RAPOR_ESIK = 3;          // bu kadar kişiden az bildirimde "az veri" etiketi
 let bildirim = null;           // {id, saat:null|0..7, rozet:[...]}
@@ -1885,6 +1952,18 @@ function bildirimFormHtml(){
   </div>`;
 }
 
+// İkili oy: girişsiz oy halk medyanında yarım sayılır, girişli tam.
+// Teklif ısrarsız: "Şimdi değil" 3 gün susturur.
+const TEKLIF_SUS = 3*86400000;
+function teklifKapali(){ try{ return Date.now() - (+localStorage.getItem('pr_teklif_kapali')||0) < TEKLIF_SUS; }catch(e){ return false; } }
+function girisTeklifHtml(){
+  if(teklifKapali() && !girisEposta) return '';
+  return `<div class="bk-teklif">
+    <p class="bk-p">Tam sayılsın istiyorsan giriş yap. Şifre yok, e-postana kod gelir; bu cihazdan verdiğin oylar da hesabına geçer.</p>
+    ${girisFormHtml('m')}
+    ${girisEposta ? '' : '<button type="button" class="link-btn bk-tk" id="bk-teklif-kapat">Şimdi değil</button>'}
+  </div>`;
+}
 function bildirimSonucHtml(){
   const f = mYemek(bildirimSonuc.id);
   if(!f) return '';
@@ -1892,9 +1971,10 @@ function bildirimSonucHtml(){
   const halk = o && o.medyan_dk!=null ? `<b>${saatYaz(o.medyan_dk)}</b> <small>${o.saatli} kişi</small>` : '<b>?</b>';
   const t = acikmaSuresi(f);
   return `<div class="bk" id="bk">
-    <div class="bk-ust">Kaydedildi ✓</div>
+    <div class="bk-ust">${currentUser?'Kaydedildi ✓':'Oyun alındı ✓'}</div>
     <div class="bk-ad">${esc(f.ad)}</div>
     <div class="bk-sat"><span>Sen<b>${saatYaz(bildirimSonuc.saat_dk)}</b></span><span>Halk${halk}</span>${t?`<span>Hesap<b>~${saatStr(t)} sa</b></span>`:''}</div>
+    ${currentUser ? '' : girisTeklifHtml()}
 
     <div class="bk-btns"><button class="btn" id="bk-baska">Başka yemek bildir</button><button class="link-btn" id="bk-duzelt">Düzelt</button></div>
   </div>`;
@@ -2059,6 +2139,9 @@ function rozetBagla(){
 
 function meclisBagla(){
   rzBalon = null;
+  girisBagla(document.getElementById('bk'));
+  const tk = document.getElementById('bk-teklif-kapat');
+  if(tk) tk.onclick = ()=>{ try{ localStorage.setItem('pr_teklif_kapali', String(Date.now())); }catch(e){} render(); };
   rozetBagla();
   meclisListeBagla();
   // giriş
@@ -3051,6 +3134,7 @@ document.addEventListener('click', e=>{
 }, true);
 document.addEventListener('click', e=>{
   if(!e.target.closest) return;
+  if(e.target.closest('[data-hbgiris]')){ e.stopPropagation(); e.preventDefault(); document.getElementById('giris-link').click(); return; }
   const b = e.target.closest('[data-hbs]');
   if(b){ e.stopPropagation(); e.preventDefault(); hizliBildir(b.dataset.hby, +b.dataset.hbs, b); return; }
   if(e.target.closest('.hb') && !e.target.closest('[data-bildir]')) e.stopPropagation();  // boşluğa dokunmak satırı kapatmasın

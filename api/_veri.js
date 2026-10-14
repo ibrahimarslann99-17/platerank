@@ -50,6 +50,22 @@ function slugla(s) {
     .replace(/^-+|-+$/g, '');
 }
 
+// Tahmini tokluk süresi (saat). index.html'deki acikmaSuresi ile aynı formül; 1-5 saat, yarım saat adım.
+function tokSaat(y) {
+  if (y.tur === 'icecek' || y.sadece_malzeme) return null;
+  let s = 1 + (y.doyuruculuk / 280) * 3.2 + (y.protein || 0) * 0.02 + (y.lif || 0) * 0.05;
+  s = Math.max(1, Math.min(5, s));
+  return Math.round(s * 2) / 2;
+}
+function saatYaz(s) { return String(s).replace('.', ','); }
+// Meclis medyanı (dk) → "3,5 saat" / "45 dk"
+function dkYaz(dk) {
+  if (dk == null) return '';
+  if (dk < 60) return `${Math.round(dk / 5) * 5} dk`;
+  return `${saatYaz(Math.round((dk / 60) * 2) / 2)} saat`;
+}
+const HALK_ESIK = 3; // bu kadar kişi bildirmeden halkın saati gösterilmez (sitedeki RAPOR_ESIK ile aynı)
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -70,8 +86,20 @@ async function supabaseCek() {
   return sonuc;
 }
 
+// Meclis-i Mide: yiyenlerin bildirdiği saatlerin medyanı (girişli oy tam, girişsiz yarım ağırlık).
+// Hata verirse sayfalar hesapla devam eder.
+async function meclisCek() {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/meclis_ozet?select=yemek_id,saatli,medyan_dk&saatli=gte.${HALK_ESIK}`,
+      { headers: { apikey: SUPABASE_KEY, Range: '0-4999' } });
+    if (!r.ok) return [];
+    return await r.json();
+  } catch (e) { return []; }
+}
+
 // Ham satırları sayfa modeline çevirir: slug, sıra, lig.
-function hazirla(satirlar) {
+function hazirla(satirlar, meclis = []) {
+  const halk = new Map(meclis.map((m) => [m.yemek_id, m]));
   const yemekler = satirlar
     .filter((y) => !y.sadece_malzeme && y.kcal != null && y.doyuruculuk != null)
     .map((y) => ({ ...y, protein: y.protein || 0, lif: y.lif || 0, yag: y.yag || 0, seker: y.seker || 0 }));
@@ -90,6 +118,16 @@ function hazirla(satirlar) {
     const anahtar = y.ad.trim().toLocaleLowerCase('tr');
     if (adIlk.has(anahtar)) y.kanonikSlug = adIlk.get(anahtar); else adIlk.set(anahtar, s);
     y.lig = lig(y.doyuruculuk);
+    y.saat = tokSaat(y);
+    const h = halk.get(y.id);
+    y.halkDk = h && h.medyan_dk != null ? Math.round(h.medyan_dk) : null;
+    y.halkN = h ? h.saatli : 0;
+  }
+  // saat yüzdeliği: bu yemekten kısa tok tutanların oranı (içecekler hariç)
+  const saatli = yemekler.filter((y) => y.saat != null).map((y) => y.saat);
+  for (const y of yemekler) {
+    if (y.saat == null) continue;
+    y.saatYuzde = Math.round((saatli.filter((s) => s < y.saat).length / saatli.length) * 100);
   }
 
   const sirali = [...yemekler].sort((a, b) => b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal);
@@ -103,9 +141,10 @@ let onbellek = null;
 let onbellekZaman = 0;
 async function veri() {
   if (onbellek && Date.now() - onbellekZaman < 10 * 60 * 1000) return onbellek;
-  onbellek = hazirla(await supabaseCek());
+  const [satirlar, meclis] = await Promise.all([supabaseCek(), meclisCek()]);
+  onbellek = hazirla(satirlar, meclis);
   onbellekZaman = Date.now();
   return onbellek;
 }
 
-module.exports = { veri, hazirla, slugla, esc, lig, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
+module.exports = { veri, hazirla, slugla, esc, lig, tokSaat, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };

@@ -51,6 +51,14 @@
     {
       "source": "/liste/:slug",
       "destination": "/api/liste?s=:slug"
+    },
+    {
+      "source": "/yontem",
+      "destination": "/api/yontem"
+    },
+    {
+      "source": "/llms.txt",
+      "destination": "/api/llms"
     }
   ]
 }

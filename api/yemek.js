@@ -2,11 +2,21 @@
 // /yemek/:slug    → tek yemek sayfası: kalori, doyuruculuk puanı, tok tutar mı, daha tok alternatifler
 // HTML sunucuda üretilir ki Google içeriği JavaScript çalıştırmadan okusun.
 
-const { veri, esc, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
+const { veri, esc, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
 const ICERIK = require('./_icerik.js');
 
 const { satir, sayfa, yanit } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
+
+const TOK_CSS = `
+.tokcevap{display:flex;gap:16px;align-items:center;background:var(--forest);color:#fff;border-radius:22px;padding:16px 18px;margin:0 0 16px}
+.tokcevap .ts{flex:0 0 92px;height:92px;border-radius:50%;background:var(--lime);color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;line-height:1}
+.tokcevap .ts small{font-size:11px;font-weight:600}
+.tokcevap .ts b{font-size:34px;font-weight:800;margin:2px 0}
+.tokcevap .ts span{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tokcevap p{margin:0;font-size:16px;line-height:1.45;color:#e3eee6}
+@media (max-width:480px){.tokcevap{gap:12px;padding:14px}.tokcevap .ts{flex-basis:78px;height:78px}.tokcevap .ts b{font-size:28px}}
+`;
 
 function gectigiListeler(y, d) {
   return LISTELER.filter((t) => listeKalemleri(t, d).includes(y)).slice(0, 4);
@@ -55,13 +65,43 @@ function komsular(y, d) {
   return ayni.slice(bas, bas + 7).filter((x) => x !== y);
 }
 
+// Sayıya iyelik eki: 76 → "76'sı", ablatif "76'sından". Son okunan kelimeye göre.
+const IYELIK_BIRLER = ['', 'i', 'si', 'ü', 'ü', 'i', 'sı', 'si', 'i', 'u'];
+const IYELIK_ONLAR = ['ı', 'u', 'si', 'u', 'ı', 'si', 'ı', 'i', 'i', 'ı'];
+function iyelik(n) {
+  if (n === 100) return "100'ü";
+  const e = n % 10 ? IYELIK_BIRLER[n % 10] : IYELIK_ONLAR[Math.floor(n / 10)];
+  return `${n}'${e}`;
+}
+function iyelikDen(n) { const k = iyelik(n); return k + (/[iü]$/.test(k) ? 'nden' : 'ndan'); }
+
+// "Kaç saat tok tutar?" sorusunun tek cümlelik cevabı. Hesap tahmini; halkın saati varsa yanına eklenir.
+function saatCevabi(y, kok) {
+  if (y.saat == null) return null;
+  const S = saatYaz(y.saat);
+  let c = `${kok} hesaba göre yaklaşık ${S} saat tok tutar.`;
+  const uzun = 100 - y.saatYuzde;
+  if (y.saatYuzde >= 60) c += ` Bu, puanlanan yemeklerin %${iyelikDen(y.saatYuzde)} uzun.`;
+  else if (uzun >= 95) c += ' Puanlanan yemeklerin neredeyse hepsi bundan uzun tok tutuyor.';
+  else if (y.saatYuzde <= 30) c += ` Bu, puanlanan yemeklerin çoğundan kısa; %${iyelik(uzun)} daha uzun tok tutuyor.`;
+  if (y.halkDk != null) c += ` Yiyenlerden ${y.halkN} kişinin bildirdiği orta değer ${dkYaz(y.halkDk)}.`;
+  return c;
+}
+
 function yemekSayfasi(y, d) {
   const { kok, porsiyon } = adParcala(y.ad);
   const m = MUTFAK[y.mutfak] || { ad: 'Diğer', ic: '🍽️', id: y.mutfak };
   const L = LIG_BILGI[y.lig];
   const kanonik = `${SITE}/yemek/${y.kanonikSlug || y.slug}`;
-  const baslik = `${y.ad} kaç kalori, tok tutar mı? · PlateRank`;
-  const aciklama = `${y.ad}: ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif. Doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi, ${L.kisa.toLowerCase()}). ${d.toplam} yemek arasında ${y.sira}. sırada. Daha tok tutan alternatifleri gör.`;
+  const saatli = y.saat != null;
+  const S = saatli ? saatYaz(y.saat) : null;
+  const baslik = saatli
+    ? `${kok} kaç saat tok tutar, kaç kalori? · PlateRank`
+    : `${y.ad} kaç kalori, tok tutar mı? · PlateRank`;
+  const aciklama = saatli
+    ? `${kok} yaklaşık ${S} saat tok tutar${y.halkDk != null ? ` (yiyenlere göre ${dkYaz(y.halkDk)})` : ''}. ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif; ${y.lig} ligi, ${d.toplam} yemek arasında ${y.sira}. sırada. Daha uzun tok tutan alternatifleri gör.`
+    : `${y.ad}: ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif. Doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi, ${L.kisa.toLowerCase()}). ${d.toplam} yemek arasında ${y.sira}. sırada. Daha tok tutan alternatifleri gör.`;
+  const sc = saatCevabi(y, kok);
 
   const sb = sebepler(y);
   const ic = ICERIK[y.slug] || null;   // elle yazılmış içerik (varsa)
@@ -73,8 +113,9 @@ function yemekSayfasi(y, d) {
   const govde = `
 <nav class="yol"><a href="/">PlateRank</a> › <a href="/yemek">Yemekler</a> › <a href="/yemek#${m.id}">${esc(m.ad)}</a></nav>
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Temsilî görsel</figcaption></figure>` : ''}
-<h1>${esc(y.ad)}</h1>
+<h1>${saatli ? `${esc(kok)} kaç saat tok tutar?` : esc(y.ad)}</h1>
 <p class="alt">${m.ic} ${esc(m.ad)} mutfağı${porsiyon ? ` · porsiyon: ${esc(porsiyon)}` : ''}</p>
+${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>` : ''}
 
 <div class="kart">
   <div class="skor">
@@ -96,11 +137,13 @@ ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" wid
 <h2>${esc(kok)} kaç kalori?</h2>
 <p class="cevap">${kisaCevap}</p>
 
-<h2>${esc(kok)} tok tutar mı?</h2>
+<h2>${esc(kok)} ${saatli ? 'ne kadar tok tutar' : 'tok tutar mı'}?</h2>
 <p class="cevap"><b>${hukum(y)}</b></p>
 ${ic ? `<p>${esc(ic.giris)}</p>` : ''}
 ${sb.length ? `<ul class="sebep">${sb.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
-${y.tur === 'icecek' || y.sadece_malzeme ? '' : `<div class="halk"><b>Seni kaç saat tok tuttu?</b><p>Puan bir hesap. Yiyenlerin bildirdiği saatler Meclis-i Mide'de toplanıyor; 3 kişi bildirince ${esc(kok)} için halkın saati oturur.</p><a class="btn" href="/?bildir=${y.slug}" rel="nofollow">Saatini bildir</a></div>`}
+${y.tur === 'icecek' || y.sadece_malzeme ? '' : `<div class="halk"><b>Seni kaç saat tok tuttu?</b><p>${y.halkDk != null
+      ? `Hesap ${S} saat diyor, ${y.halkN} kişi ${dkYaz(y.halkDk)} dedi. Sen ne diyorsun? Tek dokunuş, giriş şart değil.`
+      : `Hesap ${S} saat diyor. Yiyenlerin bildirdiği saatler Meclis-i Mide'de toplanıyor; 3 kişi bildirince ${esc(kok)} için halkın saati oturur.`}</p><a class="btn" href="/?bildir=${y.slug}" rel="nofollow">Saatini bildir</a></div>`}
 
 ${ic ? `<h2>${esc(kok)} nasıl daha tok tutar?</h2>
 <ul class="sebep">${ic.dahaTok.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
@@ -137,6 +180,8 @@ ${ic && ic.sss.length ? `<h2>Sık sorulanlar</h2>${ic.sss.map((q) => `<h3>${esc(
       {
         '@type': 'FAQPage',
         mainEntity: [
+          ...(saatli ? [{ '@type': 'Question', name: `${kok} kaç saat tok tutar?`,
+            acceptedAnswer: { '@type': 'Answer', text: `${sc} Tokluğu en çok protein, lif ve hacim uzatır; şeker kısaltır.` } }] : []),
           { '@type': 'Question', name: `${kok} kaç kalori?`,
             acceptedAnswer: { '@type': 'Answer', text: `${y.ad} ${y.kcal} kalori; ${y.protein} g protein, ${y.lif} g lif, ${y.yag} g yağ ve ${y.seker} g şeker içerir.` } },
           { '@type': 'Question', name: `${kok} tok tutar mı?`,
@@ -147,7 +192,7 @@ ${ic && ic.sss.length ? `<h2>Sık sorulanlar</h2>${ic.sss.map((q) => `<h3>${esc(
     ],
   };
 
-  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel });
+  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel, ekCss: TOK_CSS });
 }
 
 function dizinSayfasi(d) {

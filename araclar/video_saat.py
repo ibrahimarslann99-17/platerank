@@ -44,6 +44,13 @@ VIDEOLAR = {
     soru=('Aynı patates.', 'Hangisi tok tutar?'),
     sonuc=('Haşlanmışı {k} saat daha uzun,', '4 kat az kaloriyle.'),
     ek=[('Suçlu patates değil.', None), ('Mayonez, kaşar,', 'tereyağı.')]),
+  'pilav-fasulye': dict(
+    a=dict(slug='beyaz-pilav', ad='BEYAZ PİLAV', kisa='Pilav', kcal=260, d=120, p=4, l=1, s=0),
+    b=dict(slug='kuru-fasulye', ad='KURU FASULYE', kisa='Fasulye', kcal=230, d=228, p=14, l=10, s=3),
+    soru=('Aynı tabağın iki yarısı.', 'Seni hangisi tutuyor?'),
+    sonuc=('Fasulye {k} saat daha uzun,', 'daha az kaloriyle.'),
+    ek=[('Pilav sadece eşlik ediyor.', None), ('Fasulyede 14 g protein,', '10 g lif.'), ('Kepçeyi fasulyeye bas,', 'pilavı yarıya indir.')],
+    hook=('Pilavsız kuru fasulye', 'olmaz mı?')),
 }
 
 def kalin_metin(d, xy, metin, font, dolgu, golge=None, anchor='la'):
@@ -206,7 +213,7 @@ def uret(anahtar):
                 if t >= T_SONUC_BIT:
                     etiket = f"{Y.y['p']} g protein · {Y.y['s']} g şeker"
                 yari_ciz(c, Y, durum, deger, olc, 1 if t >= T_HOOK else 0, etiket, damga_t)
-            if t < T_HOOK: bant_ciz(c, 'Hangisi daha', 'uzun tok tutar?')
+            if t < T_HOOK: bant_ciz(c, *V.get('hook', ('Hangisi daha', 'uzun tok tutar?')))
             elif t < T_SAAT0 - 0.4: bant_ciz(c, *V['soru'])
             elif t < T_KAY: bant_ciz(c, 'Tok tutma saati', 'başladı.')
             elif t < T_KAZ: bant_ciz(c, f"{kay.y['kisa']}", f"{sy(kay.saat)} saatte acıktırdı.")
