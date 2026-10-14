@@ -60,5 +60,12 @@
       "source": "/llms.txt",
       "destination": "/api/llms"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/yemek/baklava",
+      "destination": "/yemek/baklava-2-dilim",
+      "permanent": true
+    }
   ]
 }

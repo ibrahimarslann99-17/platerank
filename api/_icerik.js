@@ -42,8 +42,8 @@ module.exports = {
       { s: "Menemen mi haşlanmış yumurta mı daha tok tutar?", c: "Kalori başına ikisi de A liginde ve birbirine yakın. Menemen sebzenin hacmiyle tabakta daha büyük duruyor; haşlanmış yumurta daha az kaloriyle saf protein veriyor." }
     ]
   },
-  "baklava": {
-    giris: "Baklava kalori başına en az tok tutan tatlılardan. Şerbet hızlı emilen şeker, tereyağı ve fıstık yoğun yağ demek. Küçük bir tabak 330 kalori civarında ama hacmi az, proteini düşük. Kan şekeri hızlı yükselip hızlı düştüğü için baklavadan sonra çabuk acıkmak sürpriz değil.",
+  "baklava-2-dilim": {
+    giris: "Baklava kalori başına en az tok tutan tatlılardan. Şerbet hızlı emilen şeker, tereyağı ve fıstık yoğun yağ demek. İki dilim 330 kalori civarında, üç dilim 450 kaloriye yaklaşıyor; buna karşılık hacmi az, proteini düşük. Kan şekeri hızlı yükselip hızlı düştüğü için baklavadan sonra çabuk acıkmak sürpriz değil.",
     porsiyon: "Fıstıklı, cevizli ya da kaymaklı baklava arasında fark var ama hepsi aynı ligde kalıyor; belirleyici olan şerbet ve yağ. Az şerbetli kuru baklava biraz daha hafif.",
     dahaTok: [
       "Aç karnına değil, yemekten sonra ye: şeker iniş çıkışı daha küçük olur.",
