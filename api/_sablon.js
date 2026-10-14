@@ -60,7 +60,7 @@ footer{margin-top:40px;font-size:14px;color:var(--muted);text-align:center}
 `;
 
 function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss }) {
-  const og = ogGorsel ? SITE + ogGorsel : `${SITE}/og.png`;
+  const og = ogGorsel ? SITE + ogGorsel : `${SITE}/og-v2.png`;
   return `<!doctype html>
 <html lang="tr">
 <head>
