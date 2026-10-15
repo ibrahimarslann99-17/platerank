@@ -59,6 +59,10 @@
     {
       "source": "/llms.txt",
       "destination": "/api/llms"
+    },
+    {
+      "source": "/lisans",
+      "destination": "/lisans.html"
     }
   ],
   "redirects": [

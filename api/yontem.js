@@ -38,7 +38,7 @@ ${ornek.length ? `<p>Örnekler: ${ornek.map((y) => `<a href="/yemek/${y.slug}">$
 <p>Ziyaretçiler bir yemeğin onları kaç saat tok tuttuğunu 30 dakika ile 6 saat arasında bildirebilir. Bir yemek için en az ${HALK_ESIK} kişi bildirdiğinde orta değer (medyan) sayfada gösterilir. Giriş yapan kullanıcının bildirimi tam, giriş yapmayanınki yarım ağırlıkla sayılır; aynı kişinin aynı yemeğe verdiği yalnızca son bildirim geçerlidir. Şu an ${halkli} yemekte bu eşik aşılmış durumda.</p>
 
 <h2>Besin değerlerinin kaynağı</h2>
-<p>${kaynakli} kalemin değerleri kaynaklıdır: USDA FoodData Central, Open Food Facts (ODbL lisansı, ambalaj etiketi) ve McDonald's Türkiye'nin resmi besin değerleri tablosu. Kaynağı olan kalemlerde değer tahmin edilmez; karşılığı bulunmayan kalem yayından kaldırılır. Diğer yemeklerin değerleri tipik bir porsiyon için yaklaşıktır. Her yemek sayfasında kaynak ayrıca yazılır.</p>
+<p>${kaynakli} kalemin değerleri kaynaklıdır: USDA FoodData Central, Open Food Facts (ODbL lisansı, ambalaj etiketi) ve McDonald's Türkiye'nin resmi besin değerleri tablosu. Kaynağı olan kalemlerde değer tahmin edilmez; karşılığı bulunmayan kalem yayından kaldırılır. Diğer yemeklerin değerleri tipik bir porsiyon için yaklaşıktır. Her yemek sayfasında kaynak ayrıca yazılır. Kullanım koşulları: <a href="/lisans">veri lisansı</a>.</p>
 
 <h2>Sınırlar</h2>
 <ul class="sebep">
@@ -70,6 +70,8 @@ ${ornek.length ? `<p>Örnekler: ${ornek.map((y) => `<a href="/yemek/${y.slug}">$
         url: `${SITE}/yontem`,
         inLanguage: 'tr-TR',
         isAccessibleForFree: true,
+        license: `${SITE}/lisans`,
+        creditText: 'PlateRank (platerank.dev)',
         creator: { '@type': 'Organization', name: 'PlateRank', url: `${SITE}/`, email: 'iletisim@platerank.dev' },
         keywords: ['doyuruculuk', 'tokluk süresi', 'kalori', 'protein', 'lif', 'Türk yemekleri'],
         variableMeasured: ['kalori', 'protein', 'lif', 'yağ', 'şeker', 'doyuruculuk puanı', 'tahmini tokluk süresi (saat)', 'bildirilen tokluk süresi (dakika, medyan)'],
