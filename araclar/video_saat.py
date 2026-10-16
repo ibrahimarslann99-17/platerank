@@ -51,6 +51,20 @@ VIDEOLAR = {
     sonuc=('Fasulye {k} saat daha uzun,', 'daha az kaloriyle.'),
     ek=[('Pilav sadece eşlik ediyor.', None), ('Fasulyede 14 g protein,', '10 g lif.'), ('Kepçeyi fasulyeye bas,', 'pilavı yarıya indir.')],
     hook=('Pilavsız kuru fasulye', 'olmaz mı?')),
+  'menemen-pogaca': dict(
+    a=dict(slug='pogaca-peynirli', ad='PEYNİRLİ POĞAÇA', kisa='Poğaça', kcal=330, d=80, p=8, l=2, s=3),
+    b=dict(slug='menemen', ad='MENEMEN', kisa='Menemen', kcal=220, d=190, p=11, l=3, s=7),
+    soru=('Poğaça mı,', 'menemen mi?'),
+    sonuc=('Menemen {k} saat daha uzun,', 'üstelik daha az kaloriyle.'),
+    ek=[('Hamur çabuk biter.', None), ('Yumurta ve domates,', '11 g protein.'), ('Yarın poğaçayı', 'menemene çevir.')],
+    hook=('Ofiste sabah poğaçası.', 'Öğlene kadar götürür mü?')),
+  'durum-tavuk': dict(
+    a=dict(slug='tavuk-doner-durum', ad='TAVUK DÖNER DÜRÜM', kisa='Dürüm', kcal=450, d=80, p=25, l=2, s=4),
+    b=dict(slug='izgara-tavuk-gogsu', ad='IZGARA TAVUK GÖĞSÜ', kisa='Izgara tavuk', kcal=165, d=235, p=31, l=0, s=0),
+    soru=('Aynı tavuk.', 'Hangisi tok tutar?'),
+    sonuc=('Izgara tavuk {k} saat daha uzun,', 'neredeyse 3 kat az kaloriyle.'),
+    ek=[('Suçlu tavuk değil.', None), ('Lavaş ve sos', 'kaloriyi şişiriyor.'), ('Protein neredeyse aynı:', '25 g ve 31 g.')],
+    hook=('Öğle arası dürüm.', 'Kaçta acıktırır?')),
 }
 
 def kalin_metin(d, xy, metin, font, dolgu, golge=None, anchor='la'):
