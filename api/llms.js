@@ -35,6 +35,16 @@ ${enKisa.map(satir).join('\n')}
 
 - [Tüm yemekler](${SITE}/yemek): ${d.toplam} yemeğin mutfak mutfak dizini; her yemeğin kendi sayfası var (/yemek/<ad>)
 - [Site haritası](${SITE}/sitemap-yemekler.xml)
+
+## English
+
+PlateRank also has an English edition with the same scores and estimated hours for international dishes.
+
+- [PlateRank in English](${SITE}/en): how long food keeps you full, searchable
+- [All foods](${SITE}/en/food): every food ranked, cuisine by cuisine (/en/food/<name>)
+- [Food vs food](${SITE}/en/vs/boiled-potatoes-vs-kumpir): head-to-head pages, which keeps you full longer (/en/vs/<a>-vs-<b>)
+- [Method](${SITE}/en/method): the satiety score and hours formula
+- [English sitemap](${SITE}/sitemap-en.xml)
 `;
 }
 

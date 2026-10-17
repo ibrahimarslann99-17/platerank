@@ -59,7 +59,8 @@ footer{margin-top:40px;font-size:14px;color:var(--muted);text-align:center}
 @media (max-width:480px){h1{font-size:28px}.makro b{font-size:16px}.makro div{padding:9px 2px}.harf{flex-basis:72px;height:72px}.puan{font-size:38px}}
 `;
 
-function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss }) {
+// alternatlar: [{ dil: 'en', href }] → hreflang bağlantıları (İngilizce karşılığı olan sayfalarda)
+function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss, alternatlar }) {
   const og = ogGorsel ? SITE + ogGorsel : `${SITE}/og-v2.png`;
   return `<!doctype html>
 <html lang="tr">
@@ -69,6 +70,7 @@ function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss }) {
 <title>${esc(baslik)}</title>
 <meta name="description" content="${esc(aciklama)}">
 <link rel="canonical" href="${kanonik}">
+${(alternatlar || []).map((a) => `<link rel="alternate" hreflang="${a.dil}" href="${a.href}">`).join('\n')}
 <meta name="theme-color" content="#E6EFE8">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PlateRank">
@@ -93,7 +95,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
 <div class="wrap">
 <header class="top"><a class="logo" href="/">Plate<i>Rank</i></a><a class="btn" href="/">Tüm liste</a></header>
 ${govde}
-<footer><a href="/liste">Listeler</a> · <a href="/yemek">Tüm yemekler</a> · <a href="/yontem">Yöntem</a> · <a href="/">PlateRank ana sayfa</a> · iletisim@platerank.dev</footer>
+<footer><a href="/liste">Listeler</a> · <a href="/yemek">Tüm yemekler</a> · <a href="/yontem">Yöntem</a> · <a href="/">PlateRank ana sayfa</a> · <a href="/en" hreflang="en" lang="en">English</a> · iletisim@platerank.dev</footer>
 </div>
 </body>
 </html>`;

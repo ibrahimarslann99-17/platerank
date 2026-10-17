@@ -84,6 +84,7 @@ ${ornek.length ? `<p>Örnekler: ${ornek.map((y) => `<a href="/yemek/${y.slug}">$
     baslik: 'PlateRank nasıl hesaplıyor? Doyuruculuk puanı ve tokluk süresi · PlateRank',
     aciklama: `Doyuruculuk puanının ve tahmini tokluk süresinin formülü, yiyenlerin bildirdiği saatlerin nasıl sayıldığı ve besin değerlerinin kaynakları. ${d.toplam} yemek.`,
     kanonik: `${SITE}/yontem`, govde, jsonld,
+    alternatlar: [{ dil: 'tr', href: `${SITE}/yontem` }, { dil: 'en', href: `${SITE}/en/method` }, { dil: 'x-default', href: `${SITE}/en/method` }],
   });
 }
 

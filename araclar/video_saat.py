@@ -65,6 +65,13 @@ VIDEOLAR = {
     sonuc=('Izgara tavuk {k} saat daha uzun,', 'neredeyse 3 kat az kaloriyle.'),
     ek=[('Suçlu tavuk değil.', None), ('Lavaş ve sos', 'kaloriyi şişiriyor.'), ('Protein neredeyse aynı:', '25 g ve 31 g.')],
     hook=('Öğle arası dürüm.', 'Kaçta acıktırır?')),
+  'bamya-karniyarik': dict(
+    a=dict(slug='karniyarik', ad='KARNIYARIK', kisa='Karnıyarık', kcal=320, d=110, p=10, l=5, s=8),
+    b=dict(slug='bamya-yemegi-etli', ad='ETLİ BAMYA', kisa='Bamya', kcal=220, d=198, p=14, l=6, s=5),
+    soru=('Bamya mı,', 'karnıyarık mı?'),
+    sonuc=('Bamya {k} saat daha uzun,', 'üstelik daha az kaloriyle.'),
+    ek=[('Suçlu patlıcan değil.', None), ('Kızartma yağı', 'patlıcana doluyor.'), ('Bamyaya bir', 'şans ver.')],
+    hook=('Herkes bamyadan kaçar.', 'Haksızlık mı?')),
 }
 
 def kalin_metin(d, xy, metin, font, dolgu, golge=None, anchor='la'):

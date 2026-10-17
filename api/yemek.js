@@ -7,6 +7,12 @@ const ICERIK = require('./_icerik.js');
 
 const { satir, sayfa, yanit } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
+const { enAdres } = require('./_en_veri.js');
+
+// Türkçe sayfanın İngilizce karşılığı varsa hreflang üçlüsü (x-default İngilizce)
+function dilAlternatif(tr, en) {
+  return en ? [{ dil: 'tr', href: tr }, { dil: 'en', href: en }, { dil: 'x-default', href: en }] : undefined;
+}
 
 const TOK_CSS = `
 .tokcevap{display:flex;gap:16px;align-items:center;background:var(--forest);color:#fff;border-radius:22px;padding:16px 18px;margin:0 0 16px}
@@ -192,7 +198,8 @@ ${ic && ic.sss.length ? `<h2>Sık sorulanlar</h2>${ic.sss.map((q) => `<h3>${esc(
     ],
   };
 
-  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel, ekCss: TOK_CSS });
+  const alternatlar = y.kanonikSlug ? undefined : dilAlternatif(kanonik, enAdres(d, y.slug));
+  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel, ekCss: TOK_CSS, alternatlar });
 }
 
 function dizinSayfasi(d) {
@@ -212,6 +219,7 @@ ${gruplar.map((g) => `<h2 id="${g.m.id}">${g.m.ic} ${esc(g.m.ad)}</h2><ul class=
     aciklama: `${d.toplam} yemeğin kalorisi, proteini ve doyuruculuk puanı. Hangi yemek tok tutar, hangisi çabuk acıktırır? Mutfak mutfak tam liste.`,
     kanonik: `${SITE}/yemek`,
     govde,
+    alternatlar: dilAlternatif(`${SITE}/yemek`, `${SITE}/en/food`),
     jsonld: {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [

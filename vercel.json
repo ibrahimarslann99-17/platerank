@@ -63,6 +63,30 @@
     {
       "source": "/lisans",
       "destination": "/lisans.html"
+    },
+    {
+      "source": "/en",
+      "destination": "/api/en?p=home"
+    },
+    {
+      "source": "/en/food",
+      "destination": "/api/en?p=food"
+    },
+    {
+      "source": "/en/food/:slug",
+      "destination": "/api/en?p=food&s=:slug"
+    },
+    {
+      "source": "/en/vs/:slug",
+      "destination": "/api/en?p=vs&s=:slug"
+    },
+    {
+      "source": "/en/method",
+      "destination": "/api/en?p=method"
+    },
+    {
+      "source": "/sitemap-en.xml",
+      "destination": "/api/en?p=sitemap"
     }
   ],
   "redirects": [
