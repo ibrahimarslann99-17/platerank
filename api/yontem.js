@@ -4,6 +4,7 @@
 
 const { veri, esc, saatYaz, SITE, HALK_ESIK } = require('./_veri.js');
 const { sayfa, yanit } = require('./_sablon.js');
+const { endeksSayfasi, endeksCsv } = require('./_endeks_sayfa.js');
 
 function yontemSayfasi(d) {
   const saatli = d.yemekler.filter((y) => y.saat != null);
@@ -90,12 +91,17 @@ ${ornek.length ? `<p>Örnekler: ${ornek.map((y) => `<a href="/yemek/${y.slug}">$
 }
 
 module.exports = {
-  fetch: async function () {
+  fetch: async function (request) {
+    const p = request ? new URL(request.url).searchParams.get('p') : null;
     let d;
     try { d = await veri(); } catch (e) {
       return yanit('<!doctype html><meta charset="utf-8"><title>PlateRank</title><p>Şu an yüklenemedi, birazdan tekrar dene. <a href="/">Ana sayfa</a></p>', 503, 'no-store');
     }
+    if (p === 'endeks') return yanit(endeksSayfasi(d));
+    if (p === 'csv') {
+      return new Response(endeksCsv(d), { headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="platerank-tokluk-endeksi.csv"', 'cache-control': 'public, max-age=0, s-maxage=21600' } });
+    }
     return yanit(yontemSayfasi(d));
   },
-  _ic: { yontemSayfasi },
+  _ic: { yontemSayfasi, endeksSayfasi, endeksCsv },
 };

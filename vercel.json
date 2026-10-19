@@ -57,6 +57,14 @@
       "destination": "/api/yontem"
     },
     {
+      "source": "/tokluk-endeksi",
+      "destination": "/api/yontem?p=endeks"
+    },
+    {
+      "source": "/tokluk-endeksi.csv",
+      "destination": "/api/yontem?p=csv"
+    },
+    {
       "source": "/llms.txt",
       "destination": "/api/llms"
     },

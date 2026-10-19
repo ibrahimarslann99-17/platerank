@@ -66,6 +66,11 @@ function tokSaat(y) {
   if (!sureVar(y)) return null;
   return yarimSaat(Math.max(0.5, Math.min(6, tabanSaat(y.kcal) * verimKatsayi(y.doyuruculuk))));
 }
+// Yuvarlanmamış porsiyon süresi: Tokluk Endeksi gibi bölme yapan hesaplarda yarım saat yuvarlaması sıralamayı bozmasın.
+function hamSaat(y) {
+  if (!sureVar(y)) return null;
+  return Math.max(0.5, Math.min(6, tabanSaat(y.kcal) * verimKatsayi(y.doyuruculuk)));
+}
 function ayniSaat(y) {
   if (!sureVar(y)) return null;
   return yarimSaat(tabanSaat(AYNI_KCAL) * verimKatsayi(y.doyuruculuk));
@@ -179,4 +184,4 @@ function kaloriKarsiligi(liste, kcal) {
   return en;
 }
 
-module.exports = { kaloriKarsiligi, siviTur, SICAK_KCAL, veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
+module.exports = { hamSaat, kaloriKarsiligi, siviTur, SICAK_KCAL, veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
