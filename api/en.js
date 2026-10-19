@@ -8,7 +8,7 @@
 // HTML sunucuda üretilir; tasarım ve CSS Türkçe sayfalarla aynı.
 
 const { veri, esc, LIG_RENK, SITE, HALK_ESIK } = require('./_veri.js');
-const { CSS, ONBELLEK, yanit } = require('./_sablon.js');
+const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 
 const EK_CSS = `
@@ -199,7 +199,7 @@ function yemekSayfasi(y, e) {
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Illustrative image</figcaption></figure>` : ''}
 <h1>${saatli ? `How long does ${esc(y.ad)} keep you full?` : esc(y.tam)}</h1>
 <p class="alt">${altBaslik}</p>
-${saatli ? `<div class="tokcevap"><div class="ts"><small>about</small><b>${saatYaz(y.saat)}</b><span>hour${y.saat === 1 ? '' : 's'}</span></div><p>${esc(sc)}</p></div>` : ''}
+${saatli ? `<div class="tokcevap"><div class="ts"><small>about</small><b>${saatYaz(y.saat)}</b><span>hour${y.saat === 1 ? '' : 's'}</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig], ['1 H', '5 H', '.'])}` : ''}
 
 <div class="kart">
   <div class="skor">

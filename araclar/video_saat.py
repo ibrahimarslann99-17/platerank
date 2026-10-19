@@ -72,6 +72,15 @@ VIDEOLAR = {
     sonuc=('Bamya {k} saat daha uzun,', 'üstelik daha az kaloriyle.'),
     ek=[('Suçlu patlıcan değil.', None), ('Kızartma yağı', 'patlıcana doluyor.'), ('Bamyaya bir', 'şans ver.')],
     hook=('Herkes bamyadan kaçar.', 'Haksızlık mı?')),
+  'cigkofte-lahmacun': dict(
+    a=dict(slug='lahmacun', ad='LAHMACUN · 1 ADET', kisa='Lahmacun', kcal=280, d=115, p=12, l=2, s=4),
+    b=dict(slug='cig-kofte-etsiz', ad='ÇİĞ KÖFTE · 1 PORSİYON', kisa='Çiğ köfte', kcal=280, d=150, p=8, l=8, s=4),
+    soru=('İkisi de 280 kalori.', 'Hangisi tok tutar?'),
+    sonuc=('Çiğ köfte {k} saat daha uzun,', 'aynı kaloriyle.'),
+    ek=[('Bulguru hafife alma.', None), ('Protein lahmacunda fazla,', 'ama lif 4 kat çiğ köftede.'),
+        ('Lahmacuncu arkadaşına', 'gönder.')],
+    hook=('Çiğ köfteci mi,', 'lahmacuncu mu?'),
+    etiket='{p} g protein · {l} g lif'),
 }
 
 def kalin_metin(d, xy, metin, font, dolgu, golge=None, anchor='la'):
@@ -232,7 +241,7 @@ def uret(anahtar):
                 damga_t = (t - bitis) / 0.5 if t >= bitis else 0
                 etiket = None
                 if t >= T_SONUC_BIT:
-                    etiket = f"{Y.y['p']} g protein · {Y.y['s']} g şeker"
+                    etiket = V.get('etiket', '{p} g protein · {s} g şeker').format(**Y.y)
                 yari_ciz(c, Y, durum, deger, olc, 1 if t >= T_HOOK else 0, etiket, damga_t)
             if t < T_HOOK: bant_ciz(c, *V.get('hook', ('Hangisi daha', 'uzun tok tutar?')))
             elif t < T_SAAT0 - 0.4: bant_ciz(c, *V['soru'])

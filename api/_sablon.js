@@ -56,10 +56,28 @@ ul.liste img.kc{flex:0 0 48px;height:36px;border-radius:8px;object-fit:cover}
 footer{margin-top:40px;font-size:14px;color:var(--muted);text-align:center}
 .mutfak-nav{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 8px}
 .mutfak-nav a{background:var(--card);border-radius:999px;padding:6px 12px;text-decoration:none;font-size:14px;color:var(--ink)}
+/* Tokluk sürgüsü: yemek sayfasının tepesindeki büyük gösterge (1-5 saat) */
+.surgu{background:var(--card);border-radius:22px;padding:16px 20px 22px;margin:0 0 16px;box-shadow:0 1px 2px rgba(14,34,23,.05),0 10px 24px -14px rgba(14,34,23,.2)}
+.surgu .lab{display:flex;align-items:flex-end;gap:10px;font-size:11px;font-weight:700;color:#9AA59D;letter-spacing:.06em}
+.surgu .bars{flex:1;display:flex;align-items:flex-end;gap:4px;height:36px}
+.surgu .bars i{flex:1;border-radius:2px;background:#E2E7E3;display:block}
+.surgu .sl{position:relative;height:22px;border-radius:12px;background:#EEF1EE;box-shadow:inset 0 1px 3px rgba(0,0,0,.18),0 1px 0 #fff;margin-top:10px}
+.surgu .fl{position:absolute;left:0;top:0;bottom:0;border-radius:12px}
+.surgu .kb{position:absolute;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:linear-gradient(180deg,#fff,#E9ECE9);box-shadow:0 3px 8px rgba(0,0,0,.25),inset 0 0 0 1px #fff;display:grid;place-items:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px}
 @media (max-width:480px){h1{font-size:28px}.makro b{font-size:16px}.makro div{padding:9px 2px}.harf{flex-basis:72px;height:72px}.puan{font-size:38px}}
 `;
 
 // alternatlar: [{ dil: 'en', href }] → hreflang bağlantıları (İngilizce karşılığı olan sayfalarda)
+// Tokluk sürgüsü HTML'i. saat: 1-5, renk: lig rengi, etiket: [sol, sağ, ondalık ayırıcı]
+function surgu(saat, renk, etiket = ['1 SA', '5 SA', ',']) {
+  if (saat == null) return '';
+  const p = ((saat - 1) / 4) * 100, n = 16;
+  const bars = Array.from({ length: n }, (_, k) => `<i style="height:${(6 + k * 1.9).toFixed(1)}px${(k + 0.5) / n * 100 <= p ? `;background:${renk}` : ''}"></i>`).join('');
+  const yaz = String(saat).replace('.', etiket[2]);
+  return `<div class="surgu" aria-hidden="true"><div class="lab"><span>${etiket[0]}</span><div class="bars">${bars}</div><span>${etiket[1]}</span></div>`
+    + `<div class="sl"><span class="fl" style="width:${Math.max(4, p)}%;background:${renk}"></span><span class="kb" style="left:${Math.min(96, Math.max(4, p))}%;color:${renk}">${yaz}</span></div></div>`;
+}
+
 function sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel, ekCss, alternatlar }) {
   const og = ogGorsel ? SITE + ogGorsel : `${SITE}/og-v2.png`;
   return `<!doctype html>
@@ -108,4 +126,4 @@ function yanit(html, durum = 200, onbellek = ONBELLEK) {
   });
 }
 
-module.exports = { ONBELLEK, satir, sayfa, yanit, CSS };
+module.exports = { ONBELLEK, satir, sayfa, yanit, surgu, CSS };

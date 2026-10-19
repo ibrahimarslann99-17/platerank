@@ -5,7 +5,7 @@
 const { veri, esc, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
 const ICERIK = require('./_icerik.js');
 
-const { satir, sayfa, yanit } = require('./_sablon.js');
+const { satir, sayfa, yanit, surgu } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
 const { enAdres } = require('./_en_veri.js');
 
@@ -121,7 +121,7 @@ function yemekSayfasi(y, d) {
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Temsilî görsel</figcaption></figure>` : ''}
 <h1>${saatli ? `${esc(kok)} kaç saat tok tutar?` : esc(y.ad)}</h1>
 <p class="alt">${m.ic} ${esc(m.ad)} mutfağı${porsiyon ? ` · porsiyon: ${esc(porsiyon)}` : ''}</p>
-${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>` : ''}
+${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig])}` : ''}
 
 <div class="kart">
   <div class="skor">

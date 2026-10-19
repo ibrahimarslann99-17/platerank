@@ -557,6 +557,26 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 .arow{flex-wrap:wrap;}
 .arow .detay{flex-basis:100%;margin-top:2px;}
 .arow .detay .nut{max-width:none;}
+/* Tokluk adımları: her daire 1 saat, yarım saat çizgiyi yarıya kadar doldurur. Renk lig rengi (--tc). */
+.arow .tsure{flex-basis:100%;display:flex;align-items:center;margin:1px 0 0 56px;max-width:330px;}
+.tsure .td{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--tc,var(--teal));background:var(--card);opacity:.45;position:relative;}
+.tsure .td.on{background:var(--tc,var(--teal));opacity:1;animation:tdPop .32s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--k)*80ms + var(--i,0)*35ms);}
+.tsure .td.on::after{content:'';position:absolute;left:4px;top:3.5px;width:5px;height:3px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);}
+.tsure .tl{flex:1;height:3px;margin:0 2px;border-radius:2px;background:var(--line);position:relative;overflow:hidden;}
+.tsure .tl i{position:absolute;left:0;top:0;bottom:0;background:var(--tc,var(--teal));transform-origin:left;animation:tlDol .3s ease-out both;animation-delay:calc(var(--k)*80ms + var(--i,0)*35ms);}
+.tsure b{margin-left:9px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;white-space:nowrap;}
+.tsure b small{font-family:'Figtree',system-ui,sans-serif;font-weight:600;font-size:10px;color:var(--ink-muted);}
+.hero-tok{margin:-4px auto 24px;max-width:300px;}
+.hero-tok .tsure{--tc:var(--lime);display:flex;align-items:center;}
+.hero-tok .td{width:24px;height:24px;border-width:2.5px;background:transparent;opacity:.5;}
+.hero-tok .td.on::after{left:6.5px;top:6px;width:7px;height:4px;border-color:var(--forest);border-width:0 0 2.5px 2.5px;}
+.hero-tok .tl{height:4px;background:rgba(255,255,255,.18);}
+.hero-tok b{font-size:22px;color:#fff;margin-left:12px;}
+.hero-tok b small{color:rgba(255,255,255,.7);font-size:12px;}
+.hero-tok .ht-alt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:8px;}
+@keyframes tdPop{from{transform:scale(.3);opacity:0;}}
+@keyframes tlDol{from{transform:scaleX(0);}}
+@media (prefers-reduced-motion: reduce){.tsure .td.on,.tsure .tl i{animation:none;}}
 .nl-k{display:none;}
 .altmenu{padding:7px;}
 .nbtn{min-width:46px;padding:0 12px;}
@@ -1162,6 +1182,16 @@ function acikmaSuresi(f){
   return Math.round(s*2)/2;
 }
 function saatStr(t){ return String(t).replace('.',','); }
+// Liste satırının altındaki tokluk adımları (5 daire = 5 saat)
+function tsureHtml(t){
+  if(t==null) return '';
+  let h = '<div class="tsure" aria-label="Tahmini '+saatStr(t)+' saat tok tutar">';
+  for(let k=1;k<=5;k++){
+    if(k>1){ const v = t>=k ? 100 : (t>=k-0.5 ? 50 : 0); h += '<span class="tl">'+(v?'<i style="width:'+v+'%;--k:'+(k-1)+'"></i>':'')+'</span>'; }
+    h += '<span class="td'+(t>=k?' on':'')+'" style="--k:'+k+'"></span>';
+  }
+  return h + '<b>'+saatStr(t)+'<small> / 5 sa</small></b></div>';
+}
 function metrHtml(f){
   const g = sekerSoku(f);
   if(!g) return '';
@@ -1517,8 +1547,8 @@ function heroHtml(){
     <div class="hero-stat">
       <span>${ic('<path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.5-4.5 2.5-6 .5 2 1.5 3 2.5 3 0-3-1-5 0-8z"/>')}${f.kcal} kcal</span>
       ${f.protein!=null?`<span>${ic('<path d="M6.5 6.5 17.5 17.5"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/>')}${f.protein} g protein</span>`:''}
-      ${t?`<span>${ic('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M10 2h4"/>')}${saatStr(t)} sa tok</span>`:''}
     </div>
+    ${t?`<div class="hero-tok">${tsureHtml(t)}<div class="ht-alt">tahmini tok tutma süresi</div></div>`:''}
     <button class="hero-btn" id="hero-btn" data-id="${f.id}" data-m="${f.mutfak}">Listede gör</button>
   </div>
   <p class="hero-ipucu">Alttaki menüden bir bölüm seç ↓</p>`;
@@ -1609,13 +1639,14 @@ function arowHtml(f,i,max,favs,menuSet){
     const bildirLink = saatsiz(f) || !votingOpen ? '' : hizliBildirHtml(f.id);
     const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
-      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div><div class="barwrap"><div class="bar" data-w="${pct}"></div></div>
+      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${t==null?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
       </div>
-      <div class="kcal">${f.kcal} kcal${t?`<span class="mini-t">⏱ ${saatStr(t)} sa</span>`:''}</div>
+      <div class="kcal">${f.kcal} kcal</div>
       <div class="acts">
         <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
         <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       </div>
+      ${tsureHtml(t)}
       <div class="detay">${ust}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk} · porsiyon ${f.kcal} kcal${nut}${metrHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
     </div>`;
 }
