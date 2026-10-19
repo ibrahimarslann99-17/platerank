@@ -190,7 +190,7 @@ function yemekSayfasi(y, e) {
   const komsu = komsular(y, e);
   const ciftler = (e.yemegin.get(y.slug) || []).slice().sort((a, b) => b.secme - a.secme).slice(0, 8);
   const kaynak = kaynakYaz(y.kaynak);
-  const altBaslik = [`${m.ic} ${m.ad}`, y.tanim, y.porsiyon ? `serving: ${y.porsiyon}` : ''].filter(Boolean).map(esc).join(' · ');
+  const altBaslik = [`${m.ic} ${m.ad}`, y.tanim, `${y.porsiyon ? `serving: ${y.porsiyon}` : 'one typical serving'}, ${y.kcal} kcal. Calories and hours are per serving, not per 100 g.`].filter(Boolean).map(esc).join(' · ');
 
   const kisaCevap = `${y.tam}${y.porsiyon ? '' : ' (1 serving)'} has <b>${y.kcal} calories</b>. Its PlateRank satiety score is <b>${y.doyuruculuk}</b>, which puts it in <b>tier ${y.lig}</b>: ${L.uzun}. It ranks <b>#${y.sira}</b> of the ${e.toplam} foods we score.`;
 

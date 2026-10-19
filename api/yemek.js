@@ -120,7 +120,7 @@ function yemekSayfasi(y, d) {
 <nav class="yol"><a href="/">PlateRank</a> › <a href="/yemek">Yemekler</a> › <a href="/yemek#${m.id}">${esc(m.ad)}</a></nav>
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Temsilî görsel</figcaption></figure>` : ''}
 <h1>${saatli ? `${esc(kok)} kaç saat tok tutar?` : esc(y.ad)}</h1>
-<p class="alt">${m.ic} ${esc(m.ad)} mutfağı${porsiyon ? ` · porsiyon: ${esc(porsiyon)}` : ''}</p>
+<p class="alt">${m.ic} ${esc(m.ad)} mutfağı · ${porsiyon ? `porsiyon: ${esc(porsiyon)}` : 'tipik 1 porsiyon'}, ${y.kcal} kcal. Kalori ve tok tutma süresi bu porsiyon içindir, 100 gram değil.</p>
 ${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig])}` : ''}
 
 <div class="kart">
