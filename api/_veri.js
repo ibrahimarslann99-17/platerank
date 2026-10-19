@@ -161,4 +161,22 @@ async function veri() {
   return onbellek;
 }
 
-module.exports = { veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
+// İçecek sayfaları için: aynı kaloriye denk gelen, porsiyonu en uzun tok tutan yiyecek (tatlı, market ve vejetaryen-protein sekmesi hariç: tanıdık yemek önerilsin).
+const SICAK_KCAL = 100;   // bu kalorinin üstündeki içecek "tok tutmadan giden kalori" diye vurgulanır
+// İçecek sınıfı: 'sicak' = kalorili ve proteini düşük (kola, meyve suyu, frappe), 'protein' = kalorili ama proteinli
+// (süt, shake: biraz tutar ama ne kadar, güvenilir veri yok), 'hafif' = kalorisi düşük.
+function siviTur(y) {
+  if (y.kcal < SICAK_KCAL) return 'hafif';
+  return ((y.protein || 0) * 4) / y.kcal >= 0.15 ? 'protein' : 'sicak';
+}
+function kaloriKarsiligi(liste, kcal) {
+  let en = null;
+  for (const g of liste) {
+    if (g.saat == null || g.tur === 'tatli' || g.mutfak === 'market' || g.mutfak === 'veg' || g.kanonik || g.kanonikSlug) continue;
+    if (g.kcal < kcal * 0.85 || g.kcal > kcal * 1.1) continue;
+    if (!en || g.saat > en.saat || (g.saat === en.saat && g.kcal < en.kcal)) en = g;
+  }
+  return en;
+}
+
+module.exports = { kaloriKarsiligi, siviTur, SICAK_KCAL, veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };

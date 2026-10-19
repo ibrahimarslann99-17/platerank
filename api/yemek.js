@@ -2,7 +2,7 @@
 // /yemek/:slug    → tek yemek sayfası: kalori, doyuruculuk puanı, tok tutar mı, daha tok alternatifler
 // HTML sunucuda üretilir ki Google içeriği JavaScript çalıştırmadan okusun.
 
-const { veri, esc, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
+const { veri, esc, kaloriKarsiligi, siviTur, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
 const ICERIK = require('./_icerik.js');
 
 const { satir, sayfa, yanit, surgu } = require('./_sablon.js');
@@ -15,6 +15,7 @@ function dilAlternatif(tr, en) {
 }
 
 const TOK_CSS = `
+.sivi{background:#E1EEE4;border-left:4px solid #1F5C3B;border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
 .tokcevap{display:flex;gap:16px;align-items:center;background:var(--forest);color:#fff;border-radius:22px;padding:16px 18px;margin:0 0 16px}
 .tokcevap .ts{flex:0 0 92px;height:92px;border-radius:50%;background:var(--lime);color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;line-height:1}
 .tokcevap .ts small{font-size:11px;font-weight:600}
@@ -95,6 +96,17 @@ function saatCevabi(y, kok) {
   return c;
 }
 
+// İçecekte saat yerine çıkan açıklama: boşluk hata gibi görünmesin.
+function siviKutu(y, d) {
+  if (y.tur !== 'icecek') return '';
+  const tur = siviTur(y), sicak = tur === 'sicak';
+  const k = sicak ? kaloriKarsiligi(d.yemekler, y.kcal) : null;
+  const metin = tur === 'protein'
+    ? 'Proteinli içecek biraz tok tutar ama aynı kalorideki katı yemekten kısa. Ne kadar kısa olduğuna dair güvenilir veri yok, bu yüzden süre vermiyoruz. Kalorisi yine günlük toplamına sayılır.'
+    : 'İçecek mideden hızlı geçer, içtiğin kaloriyi vücut bir sonraki öğünde telafi etmez. Bu yüzden içeceklere tok tutma süresi vermiyoruz. Kalorisi yine günlük toplamına sayılır.';
+  return `<div class="sivi${sicak ? ' sicak' : ''}"><b>${sicak ? `${y.kcal} kcal, sıfır tokluk.` : 'Neden tok tutma süresi yok?'}</b><p>${metin}${k ? ` Aynı kaloriyle <a href="/yemek/${k.slug}">${esc(k.ad)}</a> seni yaklaşık ${saatYaz(k.saat)} saat tutar.` : ''}</p></div>`;
+}
+
 function yemekSayfasi(y, d) {
   const { kok, porsiyon } = adParcala(y.ad);
   const m = MUTFAK[y.mutfak] || { ad: 'Diğer', ic: '🍽️', id: y.mutfak };
@@ -121,8 +133,8 @@ function yemekSayfasi(y, d) {
 <nav class="yol"><a href="/">PlateRank</a> › <a href="/yemek">Yemekler</a> › <a href="/yemek#${m.id}">${esc(m.ad)}</a></nav>
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Temsilî görsel</figcaption></figure>` : ''}
 <h1>${saatli ? `${esc(kok)} kaç saat tok tutar?` : esc(y.ad)}</h1>
-<p class="alt">${m.ic} ${esc(m.ad)} mutfağı · ${porsiyon ? `porsiyon: ${esc(porsiyon)}` : 'tipik 1 porsiyon'}, ${y.kcal} kcal. Kalori ve tok tutma süresi bu porsiyon içindir, 100 gram değil.</p>
-${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig])}` : ''}
+<p class="alt">${m.ic} ${esc(m.ad)} mutfağı · ${porsiyon ? `porsiyon: ${esc(porsiyon)}` : 'tipik 1 porsiyon'}, ${y.kcal} kcal. ${saatli ? 'Kalori ve tok tutma süresi bu porsiyon içindir' : 'Kalori bu porsiyon içindir'}, 100 gram değil.</p>
+${saatli ? `<div class="tokcevap"><div class="ts"><small>yaklaşık</small><b>${S}</b><span>saat</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig])}` : siviKutu(y, d)}
 
 <div class="kart">
   <div class="skor">

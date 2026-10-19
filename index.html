@@ -566,6 +566,17 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 .tsure .tl i{position:absolute;left:0;top:0;bottom:0;background:var(--tc,var(--teal));transform-origin:left;animation:tlDol .3s ease-out both;animation-delay:calc(var(--k)*80ms + var(--i,0)*35ms);}
 .tsure b{margin-left:9px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;white-space:nowrap;}
 .tsure b small{font-family:'Figtree',system-ui,sans-serif;font-weight:600;font-size:10px;color:var(--ink-muted);}
+.arow .roz-w{flex-basis:100%;margin:2px 0 0 56px;}
+.roz{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:var(--teal-wash);color:var(--teal);font-size:11.5px;font-weight:600;white-space:nowrap;}
+.roz .ri{width:18px;height:18px;border-radius:50%;background:var(--card);display:grid;place-items:center;}
+.roz svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.roz b{font-weight:800;}
+.roz.sicak{background:#FBE6E4;color:#8F2A26;}
+.roz.sicak svg{stroke:var(--d);}
+.sivi{background:var(--teal-wash);border-left:4px solid var(--teal);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:12.5px;line-height:1.5;color:var(--ink);}
+.sivi.sicak{background:#FBE6E4;border-color:var(--d);}
+.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;margin-bottom:2px;}
+.sivi u{text-decoration:none;font-weight:700;color:var(--s);}
 .hero-tok{margin:-4px auto 24px;max-width:300px;}
 .hero-tok .tsure{--tc:var(--lime);display:flex;align-items:center;}
 .hero-tok .td{width:24px;height:24px;border-width:2.5px;background:transparent;opacity:.5;}
@@ -1261,6 +1272,43 @@ function tsureHtml(t, etiket){
   }
   return h + '<b>'+saatStr(t)+'<small> sa · '+(etiket||'300 kcal')+'</small></b></div>';
 }
+// ---------- Saatsiz satırlar (içecek, malzeme): boşluk hata gibi görünmesin diye rozet + açıklama ----------
+const SICAK_KCAL = 100;   // bu kalorinin üstündeki içecek "tok tutmadan giden kalori" olarak vurgulanır
+const IK_DAMLA = '<svg viewBox="0 0 24 24"><path d="M12 3c3 4.5 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.5 6-11z"/></svg>';
+const IK_CATAL = '<svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 4 0V3M9 13v8M17 3c-2 0-3 2.5-3 5.5S15 13 17 13v8"/></svg>';
+function siviTur(f){ if(f.kcal<SICAK_KCAL) return 'hafif'; return ((f.protein||0)*4)/f.kcal>=0.15 ? 'protein' : 'sicak'; }   // _veri.js ile aynı
+function saatsizRozet(f){
+  if(!saatsiz(f)) return '';
+  if(f.tur==='icecek'){
+    const tur = siviTur(f);
+    if(tur==='protein') return '<div class="roz-w"><span class="roz"><span class="ri">'+IK_DAMLA+'</span>Sıvı · proteinli, süre verilmez</span></div>';
+    if(tur==='sicak') return '<div class="roz-w"><span class="roz sicak"><span class="ri">'+IK_DAMLA+'</span><b>'+f.kcal+' kcal</b>&nbsp;tok tutmadan gider</span></div>';
+    return '<div class="roz-w"><span class="roz"><span class="ri">'+IK_DAMLA+'</span>Sıvı · tok tutmaz, hafif içecek</span></div>';
+  }
+  return '<div class="roz-w"><span class="roz"><span class="ri">'+IK_CATAL+'</span>Malzeme · süre yemekte hesaplanır</span></div>';
+}
+// Aynı kaloriye denk gelen, porsiyonu en uzun tok tutan yiyecek (tatlı, market ürünü ve malzeme hariç).
+function kaloriKarsiligi(kcal){
+  if(!TUM){ tumYemekYukle(); return null; }
+  let en = null, et = -1;
+  for(const g of TUM){
+    if(g.tur==='tatli' || g.mutfak==='market' || g.mutfak==='veg' || g.kcal<kcal*0.85 || g.kcal>kcal*1.1) continue;
+    const t = acikmaSuresi(g); if(t==null) continue;
+    if(t>et || (t===et && g.kcal<en.kcal)){ en = g; et = t; }
+  }
+  return en ? {g:en, t:et} : null;
+}
+function saatsizDetay(f){
+  if(!saatsiz(f)) return '';
+  if(f.sadece_malzeme) return '<div class="sivi"><b>Neden saat yok?</b>Malzeme tek başına öğün değil. Tok tutma süresi, içinde kullanıldığı yemekte hesaplanır. Kalorisi yine günlük toplamına sayılır.</div>';
+  const tur = siviTur(f), sicak = tur==='sicak';
+  const k = sicak ? kaloriKarsiligi(f.kcal) : null;
+  const metin = tur==='protein'
+    ? 'Proteinli içecek biraz tok tutar ama aynı kalorideki katı yemekten kısa. Ne kadar kısa olduğuna dair güvenilir veri yok, bu yüzden süre vermiyoruz. Kalorisi yine günlük toplamına sayılır.'
+    : 'İçecek mideden hızlı geçer, içtiğin kaloriyi vücut bir sonraki öğünde telafi etmez. Bu yüzden içeceklere tok tutma süresi vermiyoruz. Kalorisi yine günlük toplamına sayılır.';
+  return '<div class="sivi'+(sicak?' sicak':'')+'"><b>'+(sicak ? f.kcal+' kcal, sıfır tokluk.' : 'Neden saat yok?')+'</b>'+metin
+    + (k ? ' Aynı kaloriyle <u>'+esc(k.g.ad)+'</u> seni ~'+saatStr(k.t)+' saat tutar.' : '') + '</div>';
+}
 function metrHtml(f){
   const g = sekerSoku(f);
   if(!g) return '';
@@ -1268,7 +1316,7 @@ function metrHtml(f){
   const bars = `<span class="gbars ${g.cls}">`+[1,2,3].map(i=>`<i class="${i<=g.seviye?'on':''}"></i>`).join('')+`</span>`;
   return `<div class="metr">
     <span class="mchip ${g.seviye===3?'warn':(g.seviye===1?'cool':'')}">${bars} Şeker şoku: ${g.ad}</span>
-    <span class="mchip">⏱ bu porsiyon ~${saatStr(t)} sa tok tutar</span>
+    ${t!=null?`<span class="mchip">⏱ bu porsiyon ~${saatStr(t)} sa tok tutar</span>`:''}
     ${ayniKaloriSuresi(f)!=null?`<span class="mchip">⚖ aynı 300 kaloride ~${saatStr(ayniKaloriSuresi(f))} sa</span>`:''}
   </div>`;
 }
@@ -1683,7 +1731,9 @@ function renderAuto(){
   let html = "";
   if(aramaAktif) html += '<div class="sonucbilgi">"'+esc(arama)+'" için '+foods.length+' sonuç · tüm mutfaklarda arandı</div>';
   else if(currentCuisine==='hm') html += hmBanner();
-  html += `<p class="note">Daireler: aynı <b>300 kalori</b> kaç saat tok tutar. Kaloriler 1 porsiyon içindir, 100 g değil. Porsiyonun kendi süresi için satıra dokun.</p>`;
+  html += foods.some(f=>ayniKaloriSuresi(f)!=null)
+    ? `<p class="note">Daireler: aynı <b>300 kalori</b> kaç saat tok tutar. Kaloriler 1 porsiyon içindir, 100 g değil. Porsiyonun kendi süresi için satıra dokun.</p>`
+    : `<p class="note">Bu bölümde tok tutma süresi yok: ${foods.every(f=>f.tur==='icecek') ? 'içecekler mideden hızlı geçer, içilen kalori tok tutmaz' : (foods.every(f=>f.sadece_malzeme) ? 'malzeme tek başına öğün değil, süre içinde olduğu yemekte hesaplanır' : 'içecekler mideden hızlı geçer, malzemeler tek başına öğün değil')}. Kaloriler 1 porsiyon içindir. Satıra dokununca nedenini görürsün.</p>`;
   if(currentCuisine==='market' && !aramaAktif) html += `<p class="note">Bu sekmedeki ürünlerin besin değerleri <a href="https://tr.openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> veri tabanından alınmıştır, <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL 1.0</a> lisansıyla.</p>`;
   html += tierListHtml(foods, max, myFavs(), new Set(myMenu()));
   return html;
@@ -1709,15 +1759,15 @@ function arowHtml(f,i,max,favs,menuSet){
     const bildirLink = saatsiz(f) || !votingOpen ? '' : hizliBildirHtml(f.id);
     const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
-      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${ayniKaloriSuresi(f)==null?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
+      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${ayniKaloriSuresi(f)==null && !saatsiz(f)?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
       </div>
       <div class="kcal">${f.kcal} kcal</div>
       <div class="acts">
         <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
         <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       </div>
-      ${tsureHtml(ayniKaloriSuresi(f))}
-      <div class="detay">${ust}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk}<br><b>Hesap 1 porsiyon üzerinden (${f.kcal} kcal)</b>, 100 gram değil${/\(([^)]*)\)\s*$/.test(f.ad) ? ' · porsiyon: '+esc(f.ad.match(/\(([^)]*)\)\s*$/)[1]) : ' · tipik bir porsiyon'}.${nut}${metrHtml(f)}${takasHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
+      ${tsureHtml(ayniKaloriSuresi(f))}${saatsizRozet(f)}
+      <div class="detay">${ust}${saatsizDetay(f)}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk}<br><b>Hesap 1 porsiyon üzerinden (${f.kcal} kcal)</b>, 100 gram değil${/\(([^)]*)\)\s*$/.test(f.ad) ? ' · porsiyon: '+esc(f.ad.match(/\(([^)]*)\)\s*$/)[1]) : ' · tipik bir porsiyon'}.${nut}${metrHtml(f)}${takasHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
     </div>`;
 }
 

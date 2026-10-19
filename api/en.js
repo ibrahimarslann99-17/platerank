@@ -7,11 +7,12 @@
 //   /sitemap-en.xml     → p=sitemap
 // HTML sunucuda üretilir; tasarım ve CSS Türkçe sayfalarla aynı.
 
-const { veri, esc, LIG_RENK, SITE, HALK_ESIK } = require('./_veri.js');
+const { veri, esc, LIG_RENK, SITE, HALK_ESIK, kaloriKarsiligi, siviTur } = require('./_veri.js');
 const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 
 const EK_CSS = `
+.sivi{background:#E4E9F2;border-left:4px solid var(--teal,#1B2A4A);border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
 .tokcevap{display:flex;gap:16px;align-items:center;background:var(--forest);color:#fff;border-radius:22px;padding:16px 18px;margin:0 0 16px}
 .tokcevap .ts{flex:0 0 92px;height:92px;border-radius:50%;background:var(--lime);color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;line-height:1}
 .tokcevap .ts small{font-size:11px;font-weight:600}
@@ -173,6 +174,17 @@ function trAlternatif(y) {
 
 // ---------- yemek sayfası ----------
 
+// Drinks get an explanation instead of hours, so the gap doesn't look like missing data.
+function siviKutu(y, e) {
+  if (y.tur !== 'icecek') return '';
+  const tur = siviTur(y), sicak = tur === 'sicak';
+  const k = sicak ? kaloriKarsiligi(e.yemekler, y.kcal) : null;
+  const metin = tur === 'protein'
+    ? "A protein drink keeps you full a little, but less than solid food with the same calories. There's no reliable data on how much less, so we don't give it a fullness time. The calories still count toward your day."
+    : "Drinks leave the stomach fast, and the calories you drink aren't made up for at your next meal. That's why we don't give drinks a fullness time. The calories still count toward your day.";
+  return `<div class="sivi${sicak ? ' sicak' : ''}"><b>${sicak ? `${y.kcal} kcal, zero fullness.` : 'Why no fullness time?'}</b><p>${metin}${k ? ` For the same calories, <a href="${ADRES.yemek(k)}">${esc(k.tam)}</a> keeps you full for about ${saatEk(k.saat)}.` : ''}</p></div>`;
+}
+
 function yemekSayfasi(y, e) {
   const m = mutfakAdi(y);
   const L = TIER[y.lig];
@@ -191,7 +203,7 @@ function yemekSayfasi(y, e) {
   const komsu = komsular(y, e);
   const ciftler = (e.yemegin.get(y.slug) || []).slice().sort((a, b) => b.secme - a.secme).slice(0, 8);
   const kaynak = kaynakYaz(y.kaynak);
-  const altBaslik = [`${m.ic} ${m.ad}`, y.tanim, `${y.porsiyon ? `serving: ${y.porsiyon}` : 'one typical serving'}, ${y.kcal} kcal. Calories and hours are per serving, not per 100 g.`].filter(Boolean).map(esc).join(' · ');
+  const altBaslik = [`${m.ic} ${m.ad}`, y.tanim, `${y.porsiyon ? `serving: ${y.porsiyon}` : 'one typical serving'}, ${y.kcal} kcal. ${saatli ? 'Calories and hours are' : 'Calories are'} per serving, not per 100 g.`].filter(Boolean).map(esc).join(' · ');
 
   const kisaCevap = `${y.tam}${y.porsiyon ? '' : ' (1 serving)'} has <b>${y.kcal} calories</b>. Its PlateRank satiety score is <b>${y.doyuruculuk}</b>, which puts it in <b>tier ${y.lig}</b>: ${L.uzun}. It ranks <b>#${y.sira}</b> of the ${e.toplam} foods we score.`;
 
@@ -200,7 +212,7 @@ function yemekSayfasi(y, e) {
 ${y.gorsel ? `<figure class="foto"><img src="${y.gorsel}" alt="${esc(y.ad)}" width="1200" height="900" fetchpriority="high"><figcaption>Illustrative image</figcaption></figure>` : ''}
 <h1>${saatli ? `How long does ${esc(y.ad)} keep you full?` : esc(y.tam)}</h1>
 <p class="alt">${altBaslik}</p>
-${saatli ? `<div class="tokcevap"><div class="ts"><small>about</small><b>${saatYaz(y.saat)}</b><span>hour${y.saat === 1 ? '' : 's'}</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig], ['1 H', '5 H', '.'])}` : ''}
+${saatli ? `<div class="tokcevap"><div class="ts"><small>about</small><b>${saatYaz(y.saat)}</b><span>hour${y.saat === 1 ? '' : 's'}</span></div><p>${esc(sc)}</p></div>${surgu(y.saat, LIG_RENK[y.lig], ['1 H', '5 H', '.'])}` : siviKutu(y, e)}
 
 <div class="kart">
   <div class="skor">
