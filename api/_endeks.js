@@ -8,6 +8,8 @@ const ENDEKS = {
   tarih: '2026-10-19',
   tarihYazi: '19 Ekim 2026',
   sehir: 'İstanbul',
+  ogGorsel: '/img/endeks/tokluk-endeksi-2026-10-og.png',   // paylaşım önizlemesi (1200×630)
+  kareGorsel: '/img/endeks/tokluk-endeksi-2026-10.png',    // basın/sosyal medya görseli (1080×1350)
   restoranKaynak: 'Yemeksepeti, Kadıköy (Caferağa) teslimat adresi, indirimsiz liste fiyatı',
   marketKaynak: 'Migros Sanal Market raf fiyatı (kart indirimleri hariç)',
   disarida: ['Haşlanmış patates', 'Simit'], // (bilgi) tarifeli ya da evde

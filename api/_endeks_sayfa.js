@@ -123,7 +123,7 @@ ${c.map((t, i) => `<p${i === 0 ? ' class="cevap"' : ''}>${esc(t)}</p>`).join('\n
 ${r.map(kaynakHtml).join('\n')}
 
 <h2>Veriyi kullan</h2>
-<p>Tablonun tamamı <a href="/tokluk-endeksi.csv">CSV olarak indirilebilir</a>. Haber ve yazılarda kaynak gösterilerek serbestçe kullanılabilir.</p>
+<p>Tablonun tamamı <a href="/tokluk-endeksi.csv">CSV olarak indirilebilir</a>. Haber ve yazılarda kaynak gösterilerek serbestçe kullanılabilir.${ENDEKS.kareGorsel ? ` Paylaşım görseli: <a href="${ENDEKS.kareGorsel}" download>indir (1080×1350)</a>.` : ''}</p>
 <p class="te-cite">Kaynak: PlateRank Tokluk Endeksi, ${esc(ENDEKS.donem)} (platerank.dev/tokluk-endeksi)</p>
 <p>Sorular için: iletisim@platerank.dev</p>
 <div class="cta"><a class="btn" href="/">Yemeğinin kaç saat tok tuttuğuna bak</a></div>
@@ -154,7 +154,7 @@ ${r.map(kaynakHtml).join('\n')}
   return sayfa({
     baslik: `Tokluk Endeksi ${ENDEKS.donem}: İstanbul'da 1 saat tok kalmak kaç lira? · PlateRank`,
     aciklama: `${r.length} yemekte 1 saat tokluğun fiyatı: ${yalinAd(ilk.ad).toLocaleLowerCase('tr')} ${tl(ilk.saatFiyat)} TL, ${yalinAd(son.ad)} ${tl(son.saatFiyat)} TL. Kaynaklı fiyatlar, ${ENDEKS.donem}.`,
-    kanonik, govde, jsonld, ekCss: CSS_EK,
+    kanonik, govde, jsonld, ekCss: CSS_EK, ogGorsel: ENDEKS.ogGorsel,
   });
 }
 
