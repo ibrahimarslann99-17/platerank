@@ -50,12 +50,25 @@ function slugla(s) {
     .replace(/^-+|-+$/g, '');
 }
 
-// Tahmini tokluk süresi (saat). index.html'deki acikmaSuresi ile aynı formül; 1-5 saat, yarım saat adım.
+// Tok tutma süresi (saat). İki ayrı sayı (index.html'deki acikmaSuresi / ayniKaloriSuresi ile aynı):
+//   saat     : 1 porsiyonun tahmini süresi = enerji tabanı × verim. Büyük porsiyon daha uzun tutar.
+//   ayniSaat : aynı 300 kaloride süre. Yemekleri adil karşılaştırmak için (PlateRank'in asıl iddiası: kalori başına tokluk).
+// taban(kcal) = 0,8 + 2,7 × (kcal ÷ 500)^0,65 → ortalama verimde 100 kcal ≈ 1,7 sa, 300 kcal ≈ 2,7 sa, 600 kcal ≈ 3,9 sa
+// verim(puan) = √(puan ÷ 150), 0,6 ile 1,5 arasında. Protein, lif ve hacim zaten puanın içinde; ayrıca eklenmez.
+// Varsayım: mide karışık bir öğünü kabaca dakikada birkaç kalori hızla boşaltır, yani süre önce porsiyonun enerjisine bağlı.
+// Verim ağırlığı (karekök) en belirsiz parça; Meclis'e gelen gerçek bildirimlerle kalibre edilecek.
+const AYNI_KCAL = 300;
+function tabanSaat(kcal) { return 0.8 + 2.7 * Math.pow(Math.max(kcal, 1) / 500, 0.65); }
+function verimKatsayi(puan) { return Math.max(0.6, Math.min(1.5, Math.sqrt(Math.max(puan, 1) / 150))); }
+const yarimSaat = (s) => Math.round(s * 2) / 2;
+function sureVar(y) { return !(y.tur === 'icecek' || y.sadece_malzeme || y.kcal == null || y.doyuruculuk == null); }
 function tokSaat(y) {
-  if (y.tur === 'icecek' || y.sadece_malzeme) return null;
-  let s = 1 + (y.doyuruculuk / 280) * 3.2 + (y.protein || 0) * 0.02 + (y.lif || 0) * 0.05;
-  s = Math.max(1, Math.min(5, s));
-  return Math.round(s * 2) / 2;
+  if (!sureVar(y)) return null;
+  return yarimSaat(Math.max(0.5, Math.min(6, tabanSaat(y.kcal) * verimKatsayi(y.doyuruculuk))));
+}
+function ayniSaat(y) {
+  if (!sureVar(y)) return null;
+  return yarimSaat(tabanSaat(AYNI_KCAL) * verimKatsayi(y.doyuruculuk));
 }
 function saatYaz(s) { return String(s).replace('.', ','); }
 // Meclis medyanı (dk) → "3,5 saat" / "45 dk"
@@ -119,6 +132,7 @@ function hazirla(satirlar, meclis = []) {
     if (adIlk.has(anahtar)) y.kanonikSlug = adIlk.get(anahtar); else adIlk.set(anahtar, s);
     y.lig = lig(y.doyuruculuk);
     y.saat = tokSaat(y);
+    y.ayniSaat = ayniSaat(y);
     const h = halk.get(y.id);
     y.halkDk = h && h.medyan_dk != null ? Math.round(h.medyan_dk) : null;
     y.halkN = h ? h.saatli : 0;
@@ -147,4 +161,4 @@ async function veri() {
   return onbellek;
 }
 
-module.exports = { veri, hazirla, slugla, esc, lig, tokSaat, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
+module.exports = { veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };

@@ -29,9 +29,10 @@ function yontemSayfasi(d) {
 </ul>
 
 <h2>Tahmini tokluk süresi</h2>
-<p>Tokluk süresi puandan, protein ve liften türetilir:</p>
-<p class="cevap"><b>saat = 1 + (puan ÷ 280) × 3,2 + protein (g) × 0,02 + lif (g) × 0,05</b></p>
-<p>Sonuç 1 ile 5 saat arasında sınırlanır ve yarım saate yuvarlanır. İçeceklere ve tek başına yenmeyen malzemelere süre verilmez. Bu bir tahmindir; açlık kişiye, porsiyona ve gün içindeki diğer öğünlere göre değişir. Puanlanan ${saatli.length} yemeğin tahmini süreleri ${saatYaz(Math.min(...saatli.map((y) => y.saat)))} ile ${saatYaz(Math.max(...saatli.map((y) => y.saat)))} saat arasında dağılıyor.</p>
+<p>PlateRank iki süre verir. <b>Porsiyon süresi</b> "bu porsiyon seni kaç saat tutar?" sorusunun cevabıdır. <b>Aynı kaloride süre</b> ise yemekleri adil karşılaştırmak içindir: her yemeğin 300 kalorisi kaç saat tutar?</p>
+<p class="cevap"><b>porsiyon süresi = taban(kalori) × verim<br>taban = 0,8 + 2,7 × (kalori ÷ 500)<sup>0,65</sup> · verim = √(puan ÷ 150), 0,6 ile 1,5 arası<br>aynı kaloride süre = taban(300) × verim</b></p>
+<p>Mantığı şu: mide karışık bir öğünü kabaca dakikada birkaç kalori hızla boşaltır, yani süre önce porsiyonun enerjisine bağlıdır; büyük porsiyon daha uzun tutar. Puan ise o enerjinin ne kadar verimli doyurduğunu ölçer: protein, lif ve hacim süreyi uzatır, şeker kısaltır. Bu yüzden protein ve lif formüle ayrıca eklenmez, zaten puanın içindedir. Verimin ağırlığı en belirsiz parçadır ve yiyenlerin bildirdiği saatlerle kalibre edilecektir.</p>
+<p>Sonuç yarım saate yuvarlanır. İçeceklere ve tek başına yenmeyen malzemelere süre verilmez. Bu bir tahmindir; açlık kişiye, porsiyona ve gün içindeki diğer öğünlere göre değişir. Puanlanan ${saatli.length} yemeğin tahmini süreleri ${saatYaz(Math.min(...saatli.map((y) => y.saat)))} ile ${saatYaz(Math.max(...saatli.map((y) => y.saat)))} saat arasında dağılıyor.</p>
 ${ornek.length ? `<p>Örnekler: ${ornek.map((y) => `<a href="/yemek/${y.slug}">${esc(y.ad)}</a> ${y.kcal} kcal, yaklaşık ${saatYaz(y.saat)} saat`).join('; ')}.</p>` : ''}
 
 <h2>Yiyenlerin bildirdiği saatler</h2>

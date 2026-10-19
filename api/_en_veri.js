@@ -63,11 +63,11 @@ function ciftleriKur(liste, idIle) {
   };
   for (const [p, q] of SECME_CIFTLER) ekle(idIle.get(p), idIle.get(q), true);
 
-  // Otomatik ortaklar: aynı tür, kalori farkı en fazla ~2,2 kat, tokluk süresi en az yarım saat farklı.
+  // Otomatik ortaklar: aynı tür, kalori farkı en fazla ~2,2 kat, aynı kaloride tokluk süresi en az yarım saat farklı.
   // Önce farklı ligden olan (karşıtlık), sonra kalorisi en yakın olan seçilir.
   for (const a of aday) {
     const ortak = aday
-      .filter((b) => b !== a && b.tur === a.tur && Math.abs(b.saat - a.saat) >= 0.5
+      .filter((b) => b !== a && b.tur === a.tur && Math.abs(b.ayniSaat - a.ayniSaat) >= 0.5
         && Math.max(a.kcal, b.kcal) / Math.max(1, Math.min(a.kcal, b.kcal)) <= 2.2)
       .sort((p, q) => (q.lig !== a.lig) - (p.lig !== a.lig)
         || Math.abs(p.kcal - a.kcal) - Math.abs(q.kcal - a.kcal)

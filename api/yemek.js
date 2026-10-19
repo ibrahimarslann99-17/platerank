@@ -85,11 +85,12 @@ function iyelikDen(n) { const k = iyelik(n); return k + (/[iü]$/.test(k) ? 'nde
 function saatCevabi(y, kok) {
   if (y.saat == null) return null;
   const S = saatYaz(y.saat);
-  let c = `${kok} hesaba göre yaklaşık ${S} saat tok tutar.`;
+  let c = `${kok} (${y.kcal} kcal) hesaba göre yaklaşık ${S} saat tok tutar.`;
   const uzun = 100 - y.saatYuzde;
   if (y.saatYuzde >= 60) c += ` Bu, puanlanan yemeklerin %${iyelikDen(y.saatYuzde)} uzun.`;
   else if (uzun >= 95) c += ' Puanlanan yemeklerin neredeyse hepsi bundan uzun tok tutuyor.';
   else if (y.saatYuzde <= 30) c += ` Bu, puanlanan yemeklerin çoğundan kısa; %${iyelik(uzun)} daha uzun tok tutuyor.`;
+  if (y.ayniSaat != null) c += ` Kalori başına bakınca: aynı 300 kaloride yaklaşık ${saatYaz(y.ayniSaat)} saat.`;
   if (y.halkDk != null) c += ` Yiyenlerden ${y.halkN} kişinin bildirdiği orta değer ${dkYaz(y.halkDk)}.`;
   return c;
 }

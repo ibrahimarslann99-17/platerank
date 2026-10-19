@@ -1191,11 +1191,18 @@ function sekerSoku(f){
   if(puan>=1.3) return {seviye:2, ad:'Orta', cls:'g-mid'};
   return {seviye:1, ad:'Yavaş', cls:'g-slow'};
 }
+// Tok tutma süresi: api/_veri.js'teki tokSaat/ayniSaat ile aynı formül.
+// acikmaSuresi: 1 porsiyonun süresi (enerji tabanı × verim). ayniKaloriSuresi: aynı 300 kaloride süre (adil karşılaştırma).
+function tabanSaat(k){ return 0.8 + 2.7*Math.pow(Math.max(k,1)/500, 0.65); }
+function verimKatsayi(d){ return Math.max(0.6, Math.min(1.5, Math.sqrt(Math.max(d,1)/150))); }
+function sureVar(f){ return !(f.protein==null || f.tur==='icecek' || f.sadece_malzeme || f.kcal==null || f.doyuruculuk==null); }   // içeceklere süre verilmez
 function acikmaSuresi(f){
-  if(f.protein==null || f.tur==='icecek' || f.sadece_malzeme) return null;   // içeceklere süre verilmez (yöntem sayfası ve sunucuyla aynı kural)
-  let s = 1 + (f.doyuruculuk/280)*3.2 + f.protein*0.02 + f.lif*0.05;
-  s = Math.max(1, Math.min(5, s));
-  return Math.round(s*2)/2;
+  if(!sureVar(f)) return null;
+  return Math.round(Math.max(0.5, Math.min(6, tabanSaat(f.kcal)*verimKatsayi(f.doyuruculuk)))*2)/2;
+}
+function ayniKaloriSuresi(f){
+  if(!sureVar(f)) return null;
+  return Math.round(tabanSaat(300)*verimKatsayi(f.doyuruculuk)*2)/2;
 }
 function saatStr(t){ return String(t).replace('.',','); }
 // ---------- Takas kartı: aynı proteini daha uzun tok tutan yemek (tercihen başka mutfaktan) ----------
@@ -1244,14 +1251,15 @@ function takasHtml(f, baslik, etiket){
   return h + '</div>';
 }
 // Liste satırının altındaki tokluk adımları (5 daire = 5 saat)
-function tsureHtml(t){
+// etiket: daireler aynı 300 kalori içinse 'sa · 300 kcal', porsiyon içinse 'sa · porsiyon'
+function tsureHtml(t, etiket){
   if(t==null) return '';
-  let h = '<div class="tsure" aria-label="Tahmini '+saatStr(t)+' saat tok tutar">';
+  let h = '<div class="tsure" aria-label="Tahmini '+saatStr(t)+' saat tok tutar ('+(etiket||'300 kcal')+')">';
   for(let k=1;k<=5;k++){
     if(k>1){ const v = t>=k ? 100 : (t>=k-0.5 ? 50 : 0); h += '<span class="tl">'+(v?'<i style="width:'+v+'%;--k:'+(k-1)+'"></i>':'')+'</span>'; }
     h += '<span class="td'+(t>=k?' on':'')+'" style="--k:'+k+'"></span>';
   }
-  return h + '<b>'+saatStr(t)+'<small> / 5 sa</small></b></div>';
+  return h + '<b>'+saatStr(t)+'<small> sa · '+(etiket||'300 kcal')+'</small></b></div>';
 }
 function metrHtml(f){
   const g = sekerSoku(f);
@@ -1260,7 +1268,8 @@ function metrHtml(f){
   const bars = `<span class="gbars ${g.cls}">`+[1,2,3].map(i=>`<i class="${i<=g.seviye?'on':''}"></i>`).join('')+`</span>`;
   return `<div class="metr">
     <span class="mchip ${g.seviye===3?'warn':(g.seviye===1?'cool':'')}">${bars} Şeker şoku: ${g.ad}</span>
-    <span class="mchip">⏱ tekrar acıkma ~${saatStr(t)} sa</span>
+    <span class="mchip">⏱ bu porsiyon ~${saatStr(t)} sa tok tutar</span>
+    ${ayniKaloriSuresi(f)!=null?`<span class="mchip">⚖ aynı 300 kaloride ~${saatStr(ayniKaloriSuresi(f))} sa</span>`:''}
   </div>`;
 }
 function satietyToTier(s){ if(s>=200)return 'S'; if(s>=150)return 'A'; if(s>=100)return 'B'; if(s>=70)return 'C'; return 'D'; }
@@ -1609,7 +1618,7 @@ function heroHtml(){
       <span>${ic('<path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.5-4.5 2.5-6 .5 2 1.5 3 2.5 3 0-3-1-5 0-8z"/>')}${f.kcal} kcal</span>
       ${f.protein!=null?`<span>${ic('<path d="M6.5 6.5 17.5 17.5"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/>')}${f.protein} g protein</span>`:''}
     </div>
-    ${t?`<div class="hero-tok">${tsureHtml(t)}<div class="ht-alt">tahmini tok tutma süresi</div></div>`:''}
+    ${ayniKaloriSuresi(f)!=null?`<div class="hero-tok">${tsureHtml(ayniKaloriSuresi(f))}<div class="ht-alt">aynı 300 kaloride tok tutma süresi · porsiyonu (${f.kcal} kcal) ~${saatStr(t)} sa</div></div>`:''}
     <button class="hero-btn" id="hero-btn" data-id="${f.id}" data-m="${f.mutfak}">Listede gör</button>
   </div>
   <p class="hero-ipucu">Alttaki menüden bir bölüm seç ↓</p>`;
@@ -1674,7 +1683,7 @@ function renderAuto(){
   let html = "";
   if(aramaAktif) html += '<div class="sonucbilgi">"'+esc(arama)+'" için '+foods.length+' sonuç · tüm mutfaklarda arandı</div>';
   else if(currentCuisine==='hm') html += hmBanner();
-  html += `<p class="note">Kalori başına tahmini doyuruculuk. Kalori ve tok tutma süresi <b>1 porsiyon</b> içindir, 100 gram değil. Bir satıra dokun, detayını gör.</p>`;
+  html += `<p class="note">Daireler: aynı <b>300 kalori</b> kaç saat tok tutar. Kaloriler 1 porsiyon içindir, 100 g değil. Porsiyonun kendi süresi için satıra dokun.</p>`;
   if(currentCuisine==='market' && !aramaAktif) html += `<p class="note">Bu sekmedeki ürünlerin besin değerleri <a href="https://tr.openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> veri tabanından alınmıştır, <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL 1.0</a> lisansıyla.</p>`;
   html += tierListHtml(foods, max, myFavs(), new Set(myMenu()));
   return html;
@@ -1700,14 +1709,14 @@ function arowHtml(f,i,max,favs,menuSet){
     const bildirLink = saatsiz(f) || !votingOpen ? '' : hizliBildirHtml(f.id);
     const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
-      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${t==null?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
+      ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${ayniKaloriSuresi(f)==null?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
       </div>
       <div class="kcal">${f.kcal} kcal</div>
       <div class="acts">
         <button class="favbtn ${fav?'on':''}" data-fav="${f.id}" title="Favorilere ekle/çıkar" aria-label="Favori">★</button>
         <button class="menubtn ${inMenu?'on':''}" data-menu="${f.id}" title="Menüye ekle/çıkar" aria-label="Menüye ekle">+</button>
       </div>
-      ${tsureHtml(t)}
+      ${tsureHtml(ayniKaloriSuresi(f))}
       <div class="detay">${ust}${lig} ligi: ${TIER_INFO[lig]}<br>doyuruculuk skoru ${f.doyuruculuk}<br><b>Hesap 1 porsiyon üzerinden (${f.kcal} kcal)</b>, 100 gram değil${/\(([^)]*)\)\s*$/.test(f.ad) ? ' · porsiyon: '+esc(f.ad.match(/\(([^)]*)\)\s*$/)[1]) : ' · tipik bir porsiyon'}.${nut}${metrHtml(f)}${takasHtml(f)}${f.protein!=null?('<br><span style="opacity:0.7">'+(f.kaynak?'besin değerleri kaynaklı: '+esc(f.kaynak)+' · doyuruculuk skoru hesaplamadır':'besin değerleri ve metrikler tahminidir')+'</span>'):''}${sayfaLink}</div>
     </div>`;
 }

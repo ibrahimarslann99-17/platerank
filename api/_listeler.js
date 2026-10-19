@@ -8,11 +8,13 @@ const OLCU = {
   lif: { ad: 'lif', yaz: (y) => `${y.lif} g lif` },
   puan: { ad: 'puan', yaz: (y) => `${y.kcal} kcal` },
   oran: { ad: 'protein oranı', yaz: (y) => `${Math.round((y.protein / y.kcal) * 100)} g / 100 kcal` },
-  saat: { ad: 'tokluk', yaz: (y) => `~${String(y.saat).replace('.', ',')} saat tok tutar` },
+  saat: { ad: 'tokluk', yaz: (y) => `porsiyonu ~${String(y.saat).replace('.', ',')} saat tok tutar` },
+  ayni: { ad: 'kalori başına tokluk', yaz: (y) => `300 kcal'de ~${String(y.ayniSaat).replace('.', ',')} sa · porsiyonu ~${String(y.saat).replace('.', ',')} sa` },
 };
 const sy = (x) => String(x).replace('.', ',');
 const EV = ['tr', 'temel', 'hm'];   // Türk mutfağı, temel gıdalar, evde yapılanlar
 const saateGore = (a, b) => b.saat - a.saat || b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal;
+const ayniyaGore = (a, b) => b.ayniSaat - a.ayniSaat || b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal;
 
 const puanaGore = (a, b) => b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal;
 const ort = (l, k) => Math.round(l.reduce((t, y) => t + y[k], 0) / Math.max(1, l.length));
@@ -250,25 +252,25 @@ const LISTELER = [
     filtre: (y) => y.saat != null && EV.includes(y.mutfak),
     sira: saateGore,
     olcu: 'saat', limit: 40,
-    giris: (l) => `Aynı kaloriyle biri seni 4 saat tutar, öbürü 1,5 saatte acıktırır. Bu liste Türk mutfağından ve evde yapılan yemekleri tahmini tokluk süresine göre sıralıyor: ilk sıradaki ${l[0].ad} yaklaşık ${sy(l[0].saat)} saat tok tutuyor. Süreyi en çok protein, lif ve hacim uzatıyor; şeker kısaltıyor.`,
+    giris: (l) => `Bir porsiyonun seni kaç saat tutacağı iki şeye bağlı: ne kadar yediğin (kalori) ve o kalorinin ne kadar verimli doyurduğu. Bu liste Türk mutfağından ve evde yapılan yemekleri 1 porsiyonun tahmini tokluk süresine göre sıralıyor: ilk sıradaki ${l[0].ad} (${l[0].kcal} kcal) yaklaşık ${sy(l[0].saat)} saat tok tutuyor. Verimi en çok protein, lif ve hacim artırıyor; şeker düşürüyor.`,
     sss: (l) => [
       ['En uzun tok tutan yemek hangisi?', `${l[0].ad}: yaklaşık ${sy(l[0].saat)} saat, ${l[0].kcal} kcal.`],
-      ['Tokluk süresi nasıl hesaplanıyor?', 'Porsiyonun doyuruculuk puanından (protein, lif, hacim artırır; kalori yoğunluğu ve şeker düşürür) tahmin ediliyor; 1 ile 5 saat arasında yarım saatlik adımlarla. Yiyenlerin bildirdiği gerçek saatler de PlateRank\'te ayrıca toplanıyor.'],
+      ['Tokluk süresi nasıl hesaplanıyor?', 'Porsiyonun kalorisinden bir taban süre çıkıyor (büyük porsiyon daha uzun tutar), bu süre doyuruculuk puanıyla çarpılıyor (protein, lif ve hacim artırır; şeker düşürür). Yarım saate yuvarlanıyor. Yiyenlerin bildirdiği gerçek saatler de PlateRank\'te ayrıca toplanıyor.'],
       ['Yemekten sonra kaç saatte acıkmak normal?', 'Karışık bir öğünden sonra 3-4 saat tipik aralıktır. 2 saatten önce acıkıyorsan tabağında protein ve lif az, şeker ya da rafine karbonhidrat fazla olabilir.'],
     ],
     ilgili: ['en-uzun-tok-tutan-yiyecekler', 'cabuk-acikitan-yiyecekler', 'gece-acikmamak-icin'],
   },
   {
     slug: 'en-uzun-tok-tutan-yiyecekler',
-    baslik: 'En uzun tok tutan yiyecekler: 4 saat ve üzeri',
+    baslik: 'En uzun tok tutan yiyecekler: kalori başına şampiyonlar',
     kisa: 'En uzun tok tutanlar',
-    filtre: (y) => y.saat != null && y.saat >= 4,
-    sira: saateGore,
-    olcu: 'saat', limit: 25,
-    giris: (l) => `Tahmini tokluk süresi 4 saat ve üzerinde olan yiyecekler. Ortak noktaları belli: bol protein, bol lif ya da çorba gibi hacimli bir yapı. Listenin ortalaması ${ort(l, 'kcal')} kcal; yani uzun tokluk için çok kalori gerekmiyor.`,
+    filtre: (y) => y.ayniSaat != null && y.ayniSaat >= 3.5,
+    sira: ayniyaGore,
+    olcu: 'ayni', limit: 25,
+    giris: (l) => `Aynı 300 kaloriyle en uzun tok tutan yiyecekler: hepsi 300 kalorisiyle tahminen 3,5 saat ya da daha uzun tutuyor. Ortak noktaları belli: bol protein, bol lif ya da çorba gibi hacimli bir yapı. Listenin porsiyon ortalaması ${ort(l, 'kcal')} kcal; yani uzun tokluk için çok kalori gerekmiyor.`,
     sss: (l) => [
-      ['Hangi yiyecek en uzun süre tok tutar?', `${l[0].ad}, yaklaşık ${sy(l[0].saat)} saat.`],
-      ['Az kalorili ama uzun tok tutan ne var?', `${enAz(l, 'kcal').ad}: ${enAz(l, 'kcal').kcal} kcal ile yaklaşık ${sy(enAz(l, 'kcal').saat)} saat.`],
+      ['Hangi yiyecek kalori başına en uzun tok tutar?', `${l[0].ad}: aynı 300 kaloride yaklaşık ${sy(l[0].ayniSaat)} saat.`],
+      ['Az kalorili ama uzun tok tutan ne var?', `${enAz(l, 'kcal').ad}: ${enAz(l, 'kcal').kcal} kcal'lik porsiyonu yaklaşık ${sy(enAz(l, 'kcal').saat)} saat tutar.`],
     ],
     ilgili: ['hangi-yemek-kac-saat-tok-tutar', 'diyet-icin-doyurucu-yemekler', 'yuksek-proteinli-yemekler'],
   },
@@ -276,10 +278,10 @@ const LISTELER = [
     slug: 'cabuk-acikitan-yiyecekler',
     baslik: 'Çabuk acıktıran yiyecekler: 2 saati bulmadan bitenler',
     kisa: 'Çabuk acıktıranlar',
-    filtre: (y) => y.saat != null && y.saat <= 1.5,
-    sira: (a, b) => a.saat - b.saat || a.doyuruculuk - b.doyuruculuk || b.kcal - a.kcal,
-    olcu: 'saat', limit: 25,
-    giris: (l) => `Yedikten kısa süre sonra yine mi açsın? Suçlu büyük ihtimalle tabakta. Bu listedeki yiyeceklerin tahmini tokluk süresi 1,5 saat ya da daha kısa; çoğunda şeker yüksek, protein ve lif düşük. Listenin ortalaması ${ort(l, 'kcal')} kcal: kalori var, tokluk yok.`,
+    filtre: (y) => y.ayniSaat != null && y.ayniSaat <= 1.5,
+    sira: (a, b) => a.ayniSaat - b.ayniSaat || a.doyuruculuk - b.doyuruculuk || b.kcal - a.kcal,
+    olcu: 'ayni', limit: 25,
+    giris: (l) => `Yedikten kısa süre sonra yine mi açsın? Suçlu büyük ihtimalle tabakta. Bu listedeki yiyeceklerin 300 kalorisi tahminen en fazla 1,5 saat tutuyor; çoğunda şeker yüksek, protein ve lif düşük. Listenin porsiyon ortalaması ${ort(l, 'kcal')} kcal: kalori var, tokluk yok.`,
     sss: (l) => [
       ['En çabuk acıktıran yiyecek hangisi?', `${l[0].ad}: ${l[0].kcal} kcal, doyuruculuk puanı sadece ${l[0].doyuruculuk}.`],
       ['Neden yedikten sonra çabuk acıkıyorum?', 'Şeker ve rafine karbonhidrat kan şekerini hızla yükseltip düşürür; protein ve lif az olduğunda mide de çabuk boşalır. İkisi birleşince bir saat sonra açlık geri gelir.'],
@@ -290,10 +292,10 @@ const LISTELER = [
     slug: 'gece-acikmamak-icin',
     baslik: 'Gece acıkmamak için akşam ne yemeli? Tok tutan akşam yemekleri',
     kisa: 'Gece acıkmamak için',
-    filtre: (y) => ['tr', 'hm'].includes(y.mutfak) && ['ana', 'corba'].includes(y.tur) && y.kcal >= 150 && y.kcal <= 450 && y.seker <= 8 && y.saat != null && y.saat >= 3.5,
+    filtre: (y) => ['tr', 'hm'].includes(y.mutfak) && ['ana', 'corba'].includes(y.tur) && y.kcal >= 150 && y.kcal <= 450 && y.seker <= 8 && y.ayniSaat != null && y.ayniSaat >= 3,
     sira: (a, b) => b.saat - a.saat || b.protein - a.protein || a.kcal - b.kcal,
     olcu: 'saat', limit: 20,
-    giris: (l) => `Gece buzdolabına gitmenin sebebi çoğu zaman akşam yemeğinin çabuk bitmesi. Bu listedeki ev yemekleri 150-450 kcal arasında, şekeri düşük ve tahminen en az 3,5 saat tok tutuyor; aynı sürede proteini yüksek olan öne alındı. Ortalama ${ort(l, 'kcal')} kcal ve ${ort(l, 'protein')} g protein.`,
+    giris: (l) => `Gece buzdolabına gitmenin sebebi çoğu zaman akşam yemeğinin çabuk bitmesi. Bu listedeki ev yemekleri 150-450 kcal arasında, şekeri düşük ve kalori başına tok tutanlardan; porsiyonu en uzun tutan üstte, eşitlikte proteini yüksek olan öne alındı. Ortalama ${ort(l, 'kcal')} kcal ve ${ort(l, 'protein')} g protein.`,
     sss: (l) => [
       ['Akşam ne yersem gece acıkmam?', `Protein ve lifi yüksek, şekeri düşük bir tabak. Bu listenin ilk üçü: ${l.slice(0, 3).map((y) => y.ad).join(', ')}.`],
       ['Gece acıkınca ne yenir?', 'Gece atıştırması gerekiyorsa proteinli ve hafif bir şey seç: yoğurt, haşlanmış yumurta, bir avuç kuruyemiş. Tatlı ve hamur işi kısa sürede acıktırır.'],

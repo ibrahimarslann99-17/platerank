@@ -25,9 +25,11 @@ UST, BANT0, BANT1 = 790, 790, 1120
 PAPER = (230, 239, 232); FOREST = (14, 34, 23); LIME = (213, 236, 98); BEYAZ = (255, 255, 255)
 KIRMIZI = (204, 62, 52); KOYU = (30, 54, 39); SOLUK = (176, 196, 182)
 
-def tok_saat(d, p, l):
-    s = 1 + (d / 280) * 3.2 + p * 0.02 + l * 0.05
-    s = max(1, min(5, s)); return round(s * 2) / 2
+def tok_saat(d, p, l, kcal=300):
+    # api/_veri.js tokSaat ile aynı: taban(kalori) × verim(puan). kcal verilmezse aynı 300 kaloride süre.
+    taban = 0.8 + 2.7 * (max(kcal, 1) / 500) ** 0.65
+    verim = max(0.6, min(1.5, (max(d, 1) / 150) ** 0.5))
+    return round(max(0.5, min(6, taban * verim)) * 2) / 2
 def sy(x): return (str(int(x)) if x == int(x) else f'{x:.1f}').replace('.', ',')
 
 # a = üstteki, b = alttaki yemek. d: doyuruculuk, p: protein, l: lif, s: şeker

@@ -103,7 +103,7 @@ function satir(x, sag) {
 function ciftSatiri(c, y) {
   const o = y ? (c.a === y ? c.b : c.a) : null;
   const metin = o ? `${y.ad} vs ${o.tam}` : `${c.a.ad} vs ${c.b.ad}`;
-  const sag = o && o.saat != null && y.saat != null ? (o.saat > y.saat ? `${o.ad} wins` : o.saat < y.saat ? `${y.ad} wins` : 'tie') : '';
+  const sag = o && o.ayniSaat != null && y.ayniSaat != null ? (o.ayniSaat > y.ayniSaat ? `${o.ad} wins` : o.ayniSaat < y.ayniSaat ? `${y.ad} wins` : 'tie') : '';
   return `<li><a href="/en/vs/${c.slug}"><span class="lg" style="background:var(--teal)">vs</span><span class="ad">${esc(metin)}</span>${sag ? `<span class="dg">${esc(sag)}</span>` : ''}</a></li>`;
 }
 function mutfakAdi(y) { return CUISINE[y.mutfak] || { ad: 'Other', ic: '🍽️', id: y.mutfak }; }
@@ -133,11 +133,12 @@ function sebepler(y) {
 
 function saatCevabi(y) {
   if (y.saat == null) return null;
-  let c = `${y.ad} keeps you full for about ${saatEk(y.saat)}, by our estimate.`;
+  let c = `One serving of ${y.ad} (${y.kcal} kcal) keeps you full for about ${saatEk(y.saat)}, by our estimate.`;
   const uzun = 100 - y.saatYuzde;
   if (y.saatYuzde >= 60) c += ` That is longer than ${yuzdeAd(y.saatYuzde)} of the foods we score.`;
   else if (uzun >= 95) c += ' Almost every food we score keeps you full longer.';
   else if (y.saatYuzde <= 30) c += ` That is shorter than most: ${yuzdeAd(uzun)} of the foods we score keep you full longer.`;
+  if (y.ayniSaat != null) c += ` Calorie for calorie: 300 kcal of it lasts about ${saatEk(y.ayniSaat)}.`;
   if (y.halkDk != null) c += ` ${y.halkN} people who ate it reported a median of ${dkYaz(y.halkDk)}.`;
   return c;
 }
@@ -278,22 +279,22 @@ ${komsu.length ? `<h2>Nearby in the ${esc(m.ad)} ranking</h2><ul class="liste">$
 function ciftSayfasi(c, e, listede) {
   const { a, b } = c;
   const kanonik = ADRES.cift(c.slug);
-  const fark = Math.abs(a.saat - b.saat);
+  // Hüküm kalori başına verilir (aynı 300 kcal); porsiyon süresi ayrıca yazılır.
+  const fark = Math.abs(a.ayniSaat - b.ayniSaat);
   const berabere = fark === 0;
-  const [k, z] = berabere ? (a.doyuruculuk >= b.doyuruculuk ? [a, b] : [b, a]) : (a.saat > b.saat ? [a, b] : [b, a]);
+  const [k, z] = berabere ? (a.doyuruculuk >= b.doyuruculuk ? [a, b] : [b, a]) : (a.ayniSaat > b.ayniSaat ? [a, b] : [b, a]);
+  const porsiyonCumle = ` Per serving: ${a.ad} (${a.kcal} kcal) lasts about ${saatEk(a.saat)}, ${b.ad} (${b.kcal} kcal) about ${saatEk(b.saat)}.`;
 
   const baslik = `${a.ad} vs ${b.ad}: which keeps you full longer? · PlateRank`;
   const aciklama = berabere
-    ? `${a.ad} and ${b.ad} both keep you full for about ${saatEk(a.saat)}. Calories, protein, fiber and satiety score compared side by side.`
-    : `${k.ad} keeps you full about ${saatEk(fark)} longer than ${z.ad} (${saatYaz(k.saat)} vs ${saatYaz(z.saat)} hours). Calories, protein, fiber and satiety score compared side by side.`;
+    ? `Calorie for calorie, ${a.ad} and ${b.ad} are even: 300 kcal of either keeps you full about ${saatEk(a.ayniSaat)}. Calories, protein, fiber and hours per serving compared side by side.`
+    : `Calorie for calorie, ${k.ad} keeps you full about ${saatEk(fark)} longer than ${z.ad} (${saatYaz(k.ayniSaat)} vs ${saatYaz(z.ayniSaat)} hours per 300 kcal). Calories, protein, fiber and hours per serving compared side by side.`;
 
   let cevap;
   if (berabere) {
-    cevap = `It's a tie on hours: both keep you full for about ${saatEk(a.saat)}. On fullness per calorie, ${k.ad} scores higher (${k.doyuruculuk} vs ${z.doyuruculuk}).`;
+    cevap = `Calorie for calorie it's a tie: 300 kcal of either keeps you full about ${saatEk(a.ayniSaat)}.` + porsiyonCumle;
   } else {
-    cevap = `Winner: ${k.ad}. It keeps you full for about ${saatEk(k.saat)}, ${z.ad} for about ${saatEk(z.saat)}.`;
-    if (k.kcal <= z.kcal) cevap += ` And it does it with fewer calories: ${k.kcal} vs ${z.kcal} kcal.`;
-    else cevap += ` ${z.ad} is lighter (${z.kcal} vs ${k.kcal} kcal), but its fullness doesn't last as long.`;
+    cevap = `Calorie for calorie, ${k.ad} wins: 300 kcal of it keeps you full about ${saatEk(k.ayniSaat)}, the same 300 kcal of ${z.ad} about ${saatEk(z.ayniSaat)}.` + porsiyonCumle;
   }
 
   const K = esc(k.ad), Z = esc(z.ad);
@@ -315,11 +316,11 @@ function ciftSayfasi(c, e, listede) {
 
   if (lehine.length) neden.push(`<b>In ${Z}'s favor:</b> ${lehine.join(' and ')}, but not enough to close the gap.`);
   const takas = !berabere && z.kcal > k.kcal
-    ? `<p><b>Swap tip:</b> choosing ${esc(k.ad)} over ${esc(z.ad)} saves ${z.kcal - k.kcal} kcal and keeps you full ${saatEk(fark)} longer.</p>` : '';
+    ? `<p><b>Swap tip:</b> choosing ${esc(k.ad)} over ${esc(z.ad)} saves ${z.kcal - k.kcal} kcal${k.saat >= z.saat ? ' and keeps you full at least as long.' : `, for about ${saatEk(z.saat - k.saat)} less fullness per serving.`}</p>` : '';
 
   const kart = (y) => {
     const g = y.gorsel ? `<img src="/img/yemek/k/${y.trSlug}.webp" alt="${esc(y.ad)}" width="400" height="300" loading="lazy" decoding="async">` : '<span class="bos"></span>';
-    return `<a href="/en/food/${y.slug}"${y === k && !berabere ? ' class="kazanan"' : ''}>${y === k && !berabere ? '<span class="rozet">LASTS LONGER</span>' : ''}${g}<div class="ic"><b>${esc(y.tam)}</b><span><span class="lgk" style="background:${LIG_RENK[y.lig]}">${y.lig}</span>~${saatEk(y.saat)} · ${y.kcal} kcal</span></div></a>`;
+    return `<a href="/en/food/${y.slug}"${y === k && !berabere ? ' class="kazanan"' : ''}>${y === k && !berabere ? '<span class="rozet">MORE FILLING</span>' : ''}${g}<div class="ic"><b>${esc(y.tam)}</b><span><span class="lgk" style="background:${LIG_RENK[y.lig]}">${y.lig}</span>~${saatEk(y.saat)} per serving · ${y.kcal} kcal</span></div></a>`;
   };
   const iyi = (x, y, yuksekIyi) => (x === y ? ['', ''] : (x > y) === yuksekIyi ? [' class="iyi"', ''] : ['', ' class="iyi"']);
   const sat = (ad, x, y, yaz, yuksekIyi) => {
@@ -328,7 +329,8 @@ function ciftSayfasi(c, e, listede) {
   };
   const p100 = (y) => Math.round((y.protein / Math.max(1, y.kcal)) * 1000) / 10;
   const tablo = `<table class="kars"><thead><tr><th></th><th>${esc(a.ad)}</th><th>${esc(b.ad)}</th></tr></thead><tbody>
-${sat('Est. hours full', a.saat, b.saat, (v) => `~${saatYaz(v)} h`, true)}
+${sat('Hours full, per 300 kcal', a.ayniSaat, b.ayniSaat, (v) => `~${saatYaz(v)} h`, true)}
+${sat('Hours full, per serving', a.saat, b.saat, (v) => `~${saatYaz(v)} h`, true)}
 ${a.halkDk != null || b.halkDk != null ? `<tr><td>Reported by eaters</td><td>${a.halkDk != null ? dkYaz(a.halkDk) : '–'}</td><td>${b.halkDk != null ? dkYaz(b.halkDk) : '–'}</td></tr>` : ''}
 ${sat('Satiety score', a.doyuruculuk, b.doyuruculuk, String, true)}
 <tr><td>Tier</td><td>${a.lig} · ${TIER[a.lig].kisa}</td><td>${b.lig} · ${TIER[b.lig].kisa}</td></tr>
@@ -348,7 +350,7 @@ ${sat('Fat', a.yag, b.yag, (v) => `${v} g`, null)}
 <h1>${esc(a.ad)} vs ${esc(b.ad)}: which keeps you full longer?</h1>
 <p class="alt">Per serving: ${esc(a.tam)} and ${esc(b.tam)}</p>
 <div class="ikili">${kart(a)}${kart(b)}</div>
-<div class="tokcevap"><div class="ts">${berabere ? '<small>both</small><b>=</b><span>tie</span>' : `<small>longer by</small><b>+${saatYaz(fark)}</b><span>hour${fark === 1 ? '' : 's'}</span>`}</div><p>${esc(cevap)}</p></div>
+<div class="tokcevap"><div class="ts">${berabere ? '<small>both</small><b>=</b><span>tie</span>' : `<small>per 300 kcal</small><b>+${saatYaz(fark)}</b><span>hour${fark === 1 ? '' : 's'}</span>`}</div><p>${esc(cevap)}</p></div>
 
 <h2>Side by side</h2>
 ${tablo}
@@ -418,8 +420,8 @@ ${gruplar.map((g) => `<h2 id="${g.m.id}">${g.m.ic} ${esc(g.m.ad)}</h2><ul class=
 
 function anaSayfa(e) {
   const saatli = e.sirali.filter((y) => y.saat != null && !y.kanonik);
-  const enUzun = saatli.slice().sort((a, b) => b.saat - a.saat || b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal).slice(0, 10);
-  const enKisa = saatli.slice().sort((a, b) => a.saat - b.saat || a.doyuruculuk - b.doyuruculuk).slice(0, 10);
+  const enUzun = saatli.slice().sort((a, b) => b.ayniSaat - a.ayniSaat || b.doyuruculuk - a.doyuruculuk || a.kcal - b.kcal).slice(0, 10);
+  const enKisa = saatli.slice().sort((a, b) => a.ayniSaat - b.ayniSaat || a.doyuruculuk - b.doyuruculuk).slice(0, 10);
   const secme = [...e.ciftler.values()].filter((c) => c.secme)
     .sort((p, q) => ((p.a.mutfak === 'tr') + (p.b.mutfak === 'tr')) - ((q.a.mutfak === 'tr') + (q.b.mutfak === 'tr'))).slice(0, 12);
   const arama = JSON.stringify(e.sirali.filter((y) => !y.kanonik).map((y) => [y.tam, y.slug, y.lig, y.saat]))
@@ -429,11 +431,11 @@ function anaSayfa(e) {
 <p class="alt">PlateRank ranks ${e.toplam} foods from 13 cuisines by how long they keep you full per calorie. Every food gets a satiety score, a tier from S to D and an estimated number of hours before you're hungry again.</p>
 <div class="ara"><input id="ara" type="search" placeholder="Search a food: lentil soup, ramen, Greek yogurt…" autocomplete="off" aria-label="Search a food"><ul id="sonuc"></ul></div>
 
-<h2>Keep you full the longest</h2>
-<ul class="liste">${enUzun.map((x) => satir(x, `~${saatYaz(x.saat)} h · ${x.kcal} kcal`)).join('')}</ul>
+<h2>Keep you full the longest, calorie for calorie</h2>
+<ul class="liste">${enUzun.map((x) => satir(x, `~${saatYaz(x.ayniSaat)} h / 300 kcal`)).join('')}</ul>
 
-<h2>Leave you hungry the fastest</h2>
-<ul class="liste">${enKisa.map((x) => satir(x, `~${saatYaz(x.saat)} h · ${x.kcal} kcal`)).join('')}</ul>
+<h2>Leave you hungry the fastest, calorie for calorie</h2>
+<ul class="liste">${enKisa.map((x) => satir(x, `~${saatYaz(x.ayniSaat)} h / 300 kcal`)).join('')}</ul>
 
 <h2>Head-to-head</h2>
 <ul class="liste">${secme.map((c) => ciftSatiri(c)).join('')}</ul>
@@ -487,9 +489,10 @@ function yontemSayfasi(e) {
 </ul>
 
 <h2>Estimated hours full</h2>
-<p>Hours are derived from the score, protein and fiber:</p>
-<p class="cevap"><b>hours = 1 + (score ÷ 280) × 3.2 + protein (g) × 0.02 + fiber (g) × 0.05</b></p>
-<p>The result is capped between 1 and 5 hours and rounded to the nearest half hour. Drinks get no estimate. It is an estimate: hunger depends on the person, the portion and the rest of the day. Across the ${saatli.length} foods with an estimate, it ranges from ${saatYaz(Math.min(...saatli.map((y) => y.saat)))} to ${saatYaz(Math.max(...saatli.map((y) => y.saat)))} hours.</p>
+<p>PlateRank gives two numbers. <b>Hours per serving</b> answers "how long will this serving keep me full?". <b>Hours per 300 kcal</b> compares foods fairly: how long does 300 kcal of each keep you full?</p>
+<p class="cevap"><b>hours per serving = base(calories) × efficiency<br>base = 0.8 + 2.7 × (calories ÷ 500)<sup>0.65</sup> · efficiency = √(score ÷ 150), between 0.6 and 1.5<br>hours per 300 kcal = base(300) × efficiency</b></p>
+<p>The logic: the stomach empties a mixed meal at roughly a few calories per minute, so duration depends first on how much energy a serving holds; a bigger serving lasts longer. The score measures how efficiently those calories fill you: protein, fiber and volume extend it, sugar shortens it. That is why protein and fiber are not added again; they are already in the score. The weight of efficiency is the least certain part and will be calibrated against eaters' reports.</p>
+<p>Results are rounded to the nearest half hour. Drinks get no estimate. It is an estimate: hunger depends on the person, the portion and the rest of the day. Across the ${saatli.length} foods with an estimate, it ranges from ${saatYaz(Math.min(...saatli.map((y) => y.saat)))} to ${saatYaz(Math.max(...saatli.map((y) => y.saat)))} hours.</p>
 ${ornek.length ? `<p>Examples: ${ornek.map((y) => `<a href="/en/food/${y.slug}">${esc(y.tam)}</a>, ${y.kcal} kcal, about ${saatEk(y.saat)}`).join('; ')}.</p>` : ''}
 
 <h2>Hours reported by eaters</h2>

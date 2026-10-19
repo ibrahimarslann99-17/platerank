@@ -6,14 +6,14 @@ const { LISTELER, listeKalemleri } = require('./_listeler.js');
 
 function metin(d) {
   const saatli = d.sirali.filter((y) => y.saat != null && !y.kanonikSlug);
-  const enUzun = saatli.slice().sort((a, b) => b.saat - a.saat || b.doyuruculuk - a.doyuruculuk).slice(0, 15);
-  const enKisa = saatli.slice().sort((a, b) => a.saat - b.saat || a.doyuruculuk - b.doyuruculuk).slice(0, 10);
-  const satir = (y) => `- [${y.ad}](${SITE}/yemek/${y.slug}): yaklaşık ${saatYaz(y.saat)} saat tok tutar, ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif, doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi)`;
+  const enUzun = saatli.slice().sort((a, b) => b.ayniSaat - a.ayniSaat || b.doyuruculuk - a.doyuruculuk).slice(0, 15);
+  const enKisa = saatli.slice().sort((a, b) => a.ayniSaat - b.ayniSaat || a.doyuruculuk - b.doyuruculuk).slice(0, 10);
+  const satir = (y) => `- [${y.ad}](${SITE}/yemek/${y.slug}): porsiyonu (${y.kcal} kcal) yaklaşık ${saatYaz(y.saat)} saat, aynı 300 kaloride ${saatYaz(y.ayniSaat)} saat tok tutar, ${y.protein} g protein, ${y.lif} g lif, doyuruculuk puanı ${y.doyuruculuk} (${y.lig} ligi)`;
   return `# PlateRank
 
 > PlateRank (platerank.dev), ${d.toplam} yemeği kalori başına ne kadar tok tuttuklarına göre sıralayan Türkçe bir veri sitesidir. Her yemek için kalori ve besin değerleri, bir doyuruculuk puanı, bu puandan türetilen tahmini tokluk süresi (1-5 saat) ve yeterli bildirim varsa yiyenlerin bildirdiği gerçek tokluk saatlerinin medyanı verilir.
 
-Tahmini tokluk süresi = 1 + (puan ÷ 280) × 3,2 + protein (g) × 0,02 + lif (g) × 0,05; 1-5 saat arasında sınırlanır, yarım saate yuvarlanır. Puan ölçüm değil, yemekleri birbirine göre sıralayan bir hesaptır: protein, lif ve hacim artırır; kalori yoğunluğu ve şeker düşürür. Ligler: S 200+, A 150-199, B 100-149, C 70-99, D 70 altı. Besin değerlerinin bir kısmı USDA FoodData Central, Open Food Facts ve McDonald's Türkiye resmi tablosundan gelir; kaynak her yemek sayfasında yazılıdır. Klinik araç değildir, diyet tavsiyesi vermez. Alıntılarda kaynak: PlateRank (platerank.dev).
+İki süre verilir: porsiyon süresi = taban(kalori) × verim; taban = 0,8 + 2,7 × (kalori ÷ 500)^0,65, verim = √(puan ÷ 150) (0,6-1,5). Aynı kaloride süre = taban(300) × verim; yemekleri kalori başına adil karşılaştırmak içindir. Yarım saate yuvarlanır, içeceklere süre verilmez. Puan ölçüm değil, yemekleri birbirine göre sıralayan bir hesaptır: protein, lif ve hacim artırır; kalori yoğunluğu ve şeker düşürür. Ligler: S 200+, A 150-199, B 100-149, C 70-99, D 70 altı. Besin değerlerinin bir kısmı USDA FoodData Central, Open Food Facts ve McDonald's Türkiye resmi tablosundan gelir; kaynak her yemek sayfasında yazılıdır. Klinik araç değildir, diyet tavsiyesi vermez. Alıntılarda kaynak: PlateRank (platerank.dev).
 
 ## Yöntem
 
@@ -23,11 +23,11 @@ Tahmini tokluk süresi = 1 + (puan ÷ 280) × 3,2 + protein (g) × 0,02 + lif (g
 
 ${LISTELER.map((t) => { const l = listeKalemleri(t, d); return `- [${t.baslik}](${SITE}/liste/${t.slug}): ${l.length} yemek; ilk sıralar ${l.slice(0, 3).map((y) => y.ad.split(' (')[0]).join(', ')}`; }).join('\n')}
 
-## En uzun tok tutan yemekler
+## Kalori başına en uzun tok tutan yemekler
 
 ${enUzun.map(satir).join('\n')}
 
-## En çabuk acıktıranlar
+## Kalori başına en çabuk acıktıranlar
 
 ${enKisa.map(satir).join('\n')}
 
