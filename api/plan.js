@@ -7,6 +7,8 @@ const { hedefHesapla } = require('./_hedef');
 const { sorgu, kullanici, aboneMi } = require('./_supa');
 
 const ZORUNLU = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'email'];
+// Veritabanina yalnizca bunlar yazilir. Saglik kapisi cevaplari (hamile, kronikHastalik) asla saklanmaz.
+const SAKLANAN = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'ogunSayisi', 'kahvalti', 'dil'];
 const SAAT = /^([01]\d|2[0-3]):[0-5]\d$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -50,7 +52,7 @@ module.exports = async function handler(req, res) {
       const [kayit] = await sorgu('planlar', {
         method: 'POST',
         prefer: 'return=representation',
-        body: { email: g.email.toLowerCase(), dil: g.dil === 'en' ? 'en' : 'tr', girdi: g, hedef: h },
+        body: { email: g.email.toLowerCase(), dil: g.dil === 'en' ? 'en' : 'tr', girdi: Object.fromEntries(SAKLANAN.filter((k) => g[k] !== undefined).map((k) => [k, g[k]])), hedef: h },
       });
       return res.status(200).json({ plan_id: kayit.id, ...ucretsiz(h) });
     }

@@ -73,6 +73,30 @@
       "destination": "/lisans.html"
     },
     {
+      "source": "/kosullar",
+      "destination": "/kosullar.html"
+    },
+    {
+      "source": "/gizlilik",
+      "destination": "/gizlilik.html"
+    },
+    {
+      "source": "/iade",
+      "destination": "/iade.html"
+    },
+    {
+      "source": "/en/terms",
+      "destination": "/en-terms.html"
+    },
+    {
+      "source": "/en/privacy",
+      "destination": "/en-privacy.html"
+    },
+    {
+      "source": "/en/refund",
+      "destination": "/en-refund.html"
+    },
+    {
       "source": "/en",
       "destination": "/api/en?p=home"
     },
