@@ -4,12 +4,14 @@
 //   /en/food/:slug      → p=food&s=  tek yemek: kaç saat tok tutar, kalori, alternatifler
 //   /en/vs/:a-vs-:b     → p=vs&s=    iki yemek: hangisi daha uzun tok tutar
 //   /en/method          → p=method   yöntem
+//   /en/plan            → p=plan     Stay Full Plan satış sayfası + anket (api/_tokplan_sayfa.js, /tokplan.js)
 //   /sitemap-en.xml     → p=sitemap
 // HTML sunucuda üretilir; tasarım ve CSS Türkçe sayfalarla aynı.
 
 const { veri, esc, LIG_RENK, SITE, HALK_ESIK, kaloriKarsiligi, siviTur } = require('./_veri.js');
 const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
+const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
 
 const EK_CSS = `
 .sivi{background:#E4E9F2;border-left:4px solid var(--teal,#1B2A4A);border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
@@ -586,6 +588,10 @@ module.exports = {
     const url = new URL(request.url);
     const p = url.searchParams.get('p') || 'home';
     const s = (url.searchParams.get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    if (p === 'plan') {
+      const t = tokPlanSayfasi();
+      return yanit(sayfa({ baslik: t.baslik, aciklama: t.aciklama, kanonik: t.kanonik, govde: `<style>${t.css}</style>${t.govde}` }), 200, 'public, max-age=0, s-maxage=600');
+    }
     let d;
     try { d = await veri(); } catch (err) {
       if (p === 'sitemap') return new Response('', { status: 503, headers: { 'cache-control': 'no-store' } });

@@ -117,6 +117,10 @@
       "destination": "/api/en?p=method"
     },
     {
+      "source": "/en/plan",
+      "destination": "/api/en?p=plan"
+    },
+    {
       "source": "/sitemap-en.xml",
       "destination": "/api/en?p=sitemap"
     }

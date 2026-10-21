@@ -14,10 +14,10 @@ const EKLER = {
   '43d1e5e6': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.05 },         // Yuksek proteinli yogurt / quark
   '91f66e95': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.05 },         // Meyveli lor (cottage)
   'e62253a7': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.2 },          // Whey + su
-  '300e6d05': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.3 },          // Bezelye proteinli yogurt (vegan)
-  '3c7ab74b': { yer: ['ogle', 'aksam', 'ara'], katlar: [1], alis: 0.2 },     // Edamame kase (vegan)
-  '2a21f2fe': { yer: ['kahvalti', 'ara'], katlar: [1, 2], alis: 0.1 },       // Soya sutu (vegan)
-  '56cd17cf': { yer: ['ogle', 'aksam'], katlar: [1], alis: 0.15 },           // Izgara tofu (vegan)
+  '300e6d05': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.3, bitkisel: true },          // Bezelye proteinli yogurt (vegan)
+  '3c7ab74b': { yer: ['ogle', 'aksam', 'ara'], katlar: [1], alis: 0.2, bitkisel: true },     // Edamame kase (vegan)
+  '2a21f2fe': { yer: ['kahvalti', 'ara'], katlar: [1, 2], alis: 0.1, bitkisel: true },       // Soya sutu (vegan)
+  '56cd17cf': { yer: ['ogle', 'aksam'], katlar: [1], alis: 0.15, bitkisel: true },           // Izgara tofu (vegan)
   '98f95225': { yer: ['kahvalti', 'ara'], katlar: [1], alis: 0.05 },         // Kefir
 };
 
@@ -61,7 +61,7 @@ function tabanHavuz(tip, liste, ekIdler, gevsek) {
 
 function parca(y, kat, rol) {
   return {
-    id: y.id, ad: y.ad, mutfak: y.mutfak, kat, rol,
+    id: y.id, ad: y.ad, mutfak: y.mutfak, kat, rol, slug: y.slug, gorsel: y.gorsel, porsiyon: y.porsiyon,
     kcal: y.kcal * kat, protein: y.protein * kat, yag: y.yag * kat, lif: y.lif * kat,
     karbonhidrat: y.karbonhidrat * kat, puanKcal: y.doyuruculuk * y.kcal * kat,
   };
@@ -76,7 +76,7 @@ function topla(parcalar) {
 }
 
 // Bir ogun icin tum adaylari puanla. Donus: puana gore sirali aday listesi.
-function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pAlt = PROTEIN_ALT) {
+function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pAlt = PROTEIN_ALT, yanCeza = () => 0) {
   const sonuc = [];
   const kMin = hedef.kcal * (1 - tol), kMax = hedef.kcal * (1 + tol);
   const pMin = hedef.protein * pAlt;
@@ -100,16 +100,20 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
           let enIyi = null;
           for (const y of yanlar) {
             if (y.id === b.id) continue;
-            const fark = Math.abs(y.kcal - eksik);
+            if (y.tur === b.tur) continue; // corbanin yanina corba, salatanin yanina salata yok
+            // Kaloriye yakinlik + ayni mutfaktan olma + hafta icinde az tekrar
+            const fark = Math.abs(y.kcal - eksik) / hedef.kcal + (y.mutfak === b.mutfak ? 0 : 0.15) + yanCeza(y);
             if (!enIyi || fark < enIyi[1]) enIyi = [y, fark];
           }
           if (enIyi) { ps.push(parca(enIyi[0], 1, 'yan')); t = topla(ps); }
         }
         if (t.kcal < kMin || t.kcal > kMax || t.protein < pMin) continue;
         if (t.protein > hedef.protein * 1.8) continue;
+        const sapma = (t.kcal - hedef.kcal) / hedef.kcal;
         const skor = t.tokSaat
-          - Math.abs(t.kcal - hedef.kcal) / hedef.kcal * 2
-          - Math.max(0, t.protein / hedef.protein - 1.3) * 1.5   // proteini abartma; makro haritasi bozulur
+          - Math.abs(sapma) * 2
+          - Math.max(0, sapma) * 6   // hedefin ustune cikmak kilo verme acigini yer; altinda kalmak daha az zararli
+          - Math.max(0, t.protein / hedef.protein - 1.2) * 2.5   // proteini abartma; makro haritasi bozulur
           - (kat === 1 ? 0 : 0.15)
           - (ps.length - 1) * 0.25
           - (es ? es[2] : 0)
@@ -128,9 +132,41 @@ function yuvarla(t) {
 }
 function disari(a) {
   return {
-    parcalar: a.parcalar.map((p) => ({ id: p.id, ad: p.ad, rol: p.rol, kat: p.kat, kcal: Math.round(p.kcal), protein: Math.round(p.protein) })),
+    parcalar: a.parcalar.map((p) => ({
+      id: p.id, ad: p.ad, rol: p.rol, kat: p.kat, kcal: Math.round(p.kcal), protein: Math.round(p.protein),
+      ...(p.slug ? { slug: p.slug } : {}), ...(p.gorsel ? { gorsel: true } : {}), ...(p.porsiyon ? { porsiyon: p.porsiyon } : {}),
+      ...(EKLER[p.id.slice(0, 8)] && EKLER[p.id.slice(0, 8)].adet ? { adet: true } : {}),
+    })),
     toplam: yuvarla(a.toplam),
   };
+}
+
+// Ogun saatleri: ilk ogun kalkistan 30 dk sonra. Sonrakiler bir onceki ogunun toklugu bittiginde konur:
+// en az 2 saat ara, son ogun en gec yatmadan 3 saat once, kalan ogunlere yer birakarak.
+// Her ogune tokluk bitis saati ve bir sonraki ogune kadar kalan ac sure (dk) yazilir; grafik bunu cizer.
+function saatDk(hhmm) { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; }
+function dkSaat(dk) { dk = ((Math.round(dk / 15) * 15) % 1440 + 1440) % 1440; return `${String(Math.floor(dk / 60)).padStart(2, '0')}:${String(dk % 60).padStart(2, '0')}`; }
+function saatAta(ogunler, kalkis, yatis) {
+  if (!kalkis || !yatis) return;
+  const bas = saatDk(kalkis) + 30;
+  let son = saatDk(yatis) - 180;
+  if (son <= bas) son += 1440;
+  const n = ogunler.length;
+  const zaman = [bas];
+  for (let i = 1; i < n; i++) {
+    const onceki = ogunler[i - 1].secim ? ogunler[i - 1].secim.toplam.tokSaat * 60 : 240;
+    const enGec = son - (n - 1 - i) * 120;
+    zaman.push(Math.max(zaman[i - 1] + 120, Math.min(zaman[i - 1] + onceki, enGec)));
+  }
+  ogunler.forEach((o, i) => {
+    const t = zaman[i];
+    o.saat = dkSaat(t);
+    if (!o.secim) return;
+    const bitis = t + o.secim.toplam.tokSaat * 60;
+    o.tokBitis = dkSaat(bitis);
+    const sonraki = i < n - 1 ? zaman[i + 1] : son + 180;
+    o.acDk = Math.max(0, Math.round((sonraki - bitis) / 15) * 15);
+  });
 }
 
 // Ana giris
@@ -148,6 +184,8 @@ function planUret(hedef, yemekler, secenek = {}) {
 
   const sonKullanim = new Map(); // tabanId -> gun
   const ekSayac = new Map();     // ek id -> haftadaki kullanim
+  const yanSayac = new Map();    // yan tabak id -> haftadaki kullanim
+  const yanCeza = (y) => (yanSayac.get(y.id) || 0) * 0.12;
   const gunler = [];
   for (let g = 0; g < s.gun; g++) {
     const gunMutfak = new Set();
@@ -157,7 +195,10 @@ function planUret(hedef, yemekler, secenek = {}) {
       const tip = ogunTipi(oh.ogun);
       const ekler = ekY.filter((y) => EKLER[y.id.slice(0, 8)].yer.includes(tip)).map((y) => {
         const e = EKLER[y.id.slice(0, 8)];
-        return { y, katlar: e.katlar, ceza: e.alis + (ekSayac.get(y.id) || 0) * 0.2 + (gunEk.has(y.id) ? 0.6 : 0) };
+        // Yumurta kahvaltida 3'e kadar, diger ogunlerde en fazla 2. Bitkisel ekler et yiyene seyrek.
+        const katlar = e.adet && tip !== 'kahvalti' ? e.katlar.filter((k) => k <= 2) : e.katlar;
+        const alis = e.alis + (e.bitkisel && !s.diyet ? 0.4 : 0);
+        return { y, katlar, ceza: alis + (ekSayac.get(y.id) || 0) * 0.2 + (gunEk.has(y.id) ? 0.6 : 0) };
       });
       const ceza = (b) => {
         const son = sonKullanim.get(b.id);
@@ -170,9 +211,9 @@ function planUret(hedef, yemekler, secenek = {}) {
         return c;
       };
       // Bulamazsa kademeli gevset: once havuz, sonra tolerans
-      let a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, false), ekler, yanlar, ceza, rnd);
-      if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd);
-      if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, 0.15, 0.8);
+      let a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, false), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
+      if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
+      if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, 0.15, 0.8, yanCeza);
       if (!a.length) { ogunler.push({ ogun: oh.ogun, hedef: oh, secim: null, alternatifler: [] }); continue; }
       const secim = a[0];
       // Alternatifler: farkli ana tabakli sonraki en iyi iki aday
@@ -180,10 +221,14 @@ function planUret(hedef, yemekler, secenek = {}) {
       const goruldu = new Set([secim.tabanId]);
       for (const x of a) { if (alt.length >= 2) break; if (!goruldu.has(x.tabanId)) { alt.push(x); goruldu.add(x.tabanId); } }
       sonKullanim.set(secim.tabanId, g);
-      for (const p of secim.parcalar) if (p.rol === 'ek') { ekSayac.set(p.id, (ekSayac.get(p.id) || 0) + 1); gunEk.add(p.id); }
+      for (const p of secim.parcalar) {
+        if (p.rol === 'ek') { ekSayac.set(p.id, (ekSayac.get(p.id) || 0) + 1); gunEk.add(p.id); }
+        if (p.rol === 'yan') yanSayac.set(p.id, (yanSayac.get(p.id) || 0) + 1);
+      }
       if (tip === 'ogle' || tip === 'aksam') gunMutfak.add(secim.parcalar[0].mutfak);
       ogunler.push({ ogun: oh.ogun, hedef: oh, secim: disari(secim), alternatifler: alt.map(disari) });
     }
+    saatAta(ogunler, s.kalkis, s.yatis);
     const t = { kcal: 0, protein: 0, yag: 0, lif: 0, karbonhidrat: 0 };
     for (const o of ogunler) if (o.secim) for (const k in t) t[k] += o.secim.toplam[k];
     gunler.push({ gun: g + 1, ogunler, toplam: t });
