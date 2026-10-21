@@ -35,10 +35,16 @@ async function kullanici(req) {
 }
 
 // Kapi: aktif abonelik ya da iptal edilmis ama donemi bitmemis abonelik.
+// Eslesme: kullanici id, e-posta ya da plan id. Plan id sart: odeme ekraninda farkli e-posta yazan
+// ve webhook geldiginde henuz giris yapmamis kullanici ancak plan id ile bulunur.
 // E-postalar kucuk harfle saklanir; PostgREST or() icinde nokta iceren deger tirnakla verilir.
-async function aboneMi(userId, email) {
+const UUID_ = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+async function aboneMi(userId, email, planId) {
   const e = String(email || '').toLowerCase().replace(/"/g, '');
-  const kosul = userId ? `(user_id.eq.${userId},email.eq."${e}")` : `(email.eq."${e}")`;
+  const parca = [`email.eq."${e}"`];
+  if (userId && UUID_.test(userId)) parca.push(`user_id.eq.${userId}`);
+  if (planId && UUID_.test(planId)) parca.push(`plan_id.eq.${planId}`);
+  const kosul = `(${parca.join(',')})`;
   const satirlar = await sorgu(`abonelikler?select=durum,donem_sonu&or=${encodeURIComponent(kosul)}`);
   const simdi = Date.now();
   return (satirlar || []).some((s) =>

@@ -4,11 +4,16 @@
 // Hesap ve kapi sadece burada calisir; tarayiciya yalnizca sonuc gider.
 
 const { hedefHesapla } = require('./_hedef');
+const { planUret } = require('./_motor');
 const { sorgu, kullanici, aboneMi } = require('./_supa');
+const EN_AD = require('./_en_adlar');
 
 const ZORUNLU = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'email'];
 // Veritabanina yalnizca bunlar yazilir. Saglik kapisi cevaplari (hamile, kronikHastalik) asla saklanmaz.
-const SAKLANAN = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'ogunSayisi', 'kahvalti', 'dil'];
+const SAKLANAN = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'ogunSayisi', 'kahvalti', 'dil', 'diyet', 'alerjen', 'mutfakHaric'];
+const ALERJENLER = ['et', 'balik', 'sut', 'yumurta', 'gluten', 'kuruyemis', 'soya', 'baklagil'];
+const MUTFAKLAR = ['tr', 'us', 'it', 'jp', 'mx', 'cn', 'me', 'kr', 'in', 'th', 'veg', 'hm', 'temel'];
+const HAFTA_MS = 7 * 24 * 3600 * 1000;
 const SAAT = /^([01]\d|2[0-3]):[0-5]\d$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -24,6 +29,9 @@ function dogrula(g) {
   if (!['ver', 'saglik', 'kas'].includes(g.hedef)) return 'hedef';
   if (!SAAT.test(g.kalkis) || !SAAT.test(g.yatis)) return 'saat';
   if (!/^[^@\s"]+@[^@\s"]+\.[^@\s"]+$/.test(g.email) || g.email.length > 200) return 'email';
+  if (g.diyet != null && !['vejetaryen', 'vegan'].includes(g.diyet)) return 'diyet';
+  if (g.alerjen != null && !(Array.isArray(g.alerjen) && g.alerjen.every((a) => ALERJENLER.includes(a)))) return 'alerjen';
+  if (g.mutfakHaric != null && !(Array.isArray(g.mutfakHaric) && g.mutfakHaric.every((m) => MUTFAKLAR.includes(m)))) return 'mutfak';
   return null;
 }
 
@@ -36,6 +44,36 @@ function ucretsiz(h) {
     onerilenOgunSayisi: h.onerilenOgunSayisi,
     kilitli: true,
   };
+}
+
+// Plana girebilecek yemekler. Zincir ve market urunleri ile tek basina malzemeler disarida.
+// Icecek ve tatlilari motor kendisi eler; yalnizca protein eki olan icecekler (kefir, whey, soya sutu) plana girer.
+async function yemekleriCek() {
+  const kolon = 'id,ad,tur,mutfak,kcal,protein,yag,lif,karbonhidrat,doyuruculuk,alerjenler,diyet';
+  const f = 'yayinda=eq.true&or=(sadece_malzeme.is.null,sadece_malzeme.is.false)&mutfak=not.in.(zincir,market)&tur=neq.malzeme&kcal=not.is.null&doyuruculuk=not.is.null';
+  return sorgu(`yemekler?select=${kolon}&${f}&order=id.asc&limit=5000`);
+}
+
+// Haftalik plan: plan olusturulduktan sonraki her 7 gunde yeni hafta, tohum plan id + hafta no.
+async function haftalikPlan(kayit) {
+  const hafta = Math.floor((Date.now() - Date.parse(kayit.created_at)) / HAFTA_MS);
+  if (kayit.plan && kayit.plan.hafta === hafta) return kayit.plan;
+  const g = kayit.girdi || {};
+  const en = kayit.dil === 'en';
+  let yemekler = await yemekleriCek();
+  if (en) yemekler = yemekler.filter((y) => EN_AD[y.id.slice(0, 8)]).map((y) => ({ ...y, ad: EN_AD[y.id.slice(0, 8)][0] }));
+  const sonuc = planUret(kayit.hedef, yemekler, {
+    diyet: g.diyet || null,
+    alerjen: g.alerjen || [],
+    mutfakHaric: g.mutfakHaric || [],
+    mutfakAgirlik: en ? { tr: 0.7 } : {},
+    kalkis: g.kalkis,
+    yatis: g.yatis,
+    tohum: `${kayit.id}:${hafta}`,
+  });
+  const plan = { hafta, olusturma: new Date().toISOString(), gunler: sonuc.gunler };
+  await sorgu(`planlar?id=eq.${kayit.id}`, { method: 'PATCH', body: { plan } });
+  return plan;
 }
 
 module.exports = async function handler(req, res) {
@@ -61,7 +99,7 @@ module.exports = async function handler(req, res) {
       const id = String(req.query.id || '');
       if (!UUID.test(id)) return res.status(400).json({ hata: 'id' });
 
-      const [plan] = await sorgu(`planlar?id=eq.${id}&select=id,email,user_id,hedef`);
+      const [plan] = await sorgu(`planlar?id=eq.${id}&select=id,email,user_id,dil,girdi,hedef,plan,created_at`);
       if (!plan) return res.status(404).json({ hata: 'yok' });
       if (plan.hedef?.engel) return res.status(200).json({ engel: plan.hedef.engel });
 
@@ -74,10 +112,10 @@ module.exports = async function handler(req, res) {
         await sorgu(`planlar?id=eq.${id}`, { method: 'PATCH', body: { user_id: u.id } });
       }
 
-      if (!(await aboneMi(u.id, plan.email))) return res.status(200).json(ucretsiz(plan.hedef));
+      if (!(await aboneMi(u.id, plan.email, plan.id))) return res.status(200).json(ucretsiz(plan.hedef));
 
-      // Sonraki adim: motor burada 7 gunluk plani uretecek.
-      return res.status(200).json({ ...plan.hedef, kilitli: false, gunler: null });
+      const hafta = await haftalikPlan(plan);
+      return res.status(200).json({ ...plan.hedef, kilitli: false, hafta: hafta.hafta, gunler: hafta.gunler });
     }
 
     res.setHeader('Allow', 'GET, POST');
