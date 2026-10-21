@@ -1,0 +1,2793 @@
+[
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Çırpılmış yumurta (2 yumurta)",
+  "ad_en": "Scrambled eggs (2 eggs)",
+  "arama": "Egg, scrambled",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Yumurtalı peynirli biscuit",
+  "ad_en": "Egg and cheese biscuit",
+  "arama": "Biscuit with egg and cheese",
+  "porsiyon_g": 140,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Kahvaltı burritosu (yumurta, sosis, peynir)",
+  "ad_en": "Breakfast burrito",
+  "arama": "Burrito with egg, sausage, and cheese",
+  "porsiyon_g": 220,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "French toast (2 dilim)",
+  "ad_en": "French toast (2 slices)",
+  "arama": "French toast, plain",
+  "porsiyon_g": 130,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Waffle (şuruplu, 2 adet)",
+  "ad_en": "Waffles with syrup (2)",
+  "arama": "Waffle, plain",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Biscuits and gravy",
+  "ad_en": "Biscuits and gravy",
+  "arama": "Biscuits and gravy",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Hash brown",
+  "ad_en": "Hash browns",
+  "arama": "Hash brown",
+  "porsiyon_g": 150,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Bacon (3 dilim)",
+  "ad_en": "Bacon (3 slices)",
+  "arama": "Pork bacon, cooked",
+  "porsiyon_g": 35,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Yoğurt parfe (meyveli, granolalı)",
+  "ad_en": "Yogurt parfait",
+  "arama": "Yogurt parfait",
+  "porsiyon_g": 220,
+  "alerjenler": [
+   "sut",
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Overnight oats (sütlü)",
+  "ad_en": "Overnight oats",
+  "arama": "Oatmeal, made with milk",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Krem peynirli bagel",
+  "ad_en": "Bagel with cream cheese",
+  "arama": "Bagel with cream cheese",
+  "porsiyon_g": 130,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "English muffin sandviç (yumurta, jambon, peynir)",
+  "ad_en": "English muffin with egg, ham and cheese",
+  "arama": "English muffin with egg, cheese, and ham",
+  "porsiyon_g": 140,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Meyveli lor peyniri (cottage cheese)",
+  "ad_en": "Cottage cheese with fruit",
+  "arama": "Cottage cheese, with fruit",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Fıstık ezmeli tost",
+  "ad_en": "Peanut butter toast",
+  "arama": "Peanut butter sandwich",
+  "porsiyon_g": 90,
+  "alerjenler": [
+   "gluten",
+   "kuruyemis",
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Kahvaltılık sosis (2 köfte)",
+  "ad_en": "Breakfast sausage patties (2)",
+  "arama": "Pork sausage, breakfast",
+  "porsiyon_g": 60,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Yaban mersinli muffin",
+  "ad_en": "Blueberry muffin",
+  "arama": "Muffin, blueberry",
+  "porsiyon_g": 110,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Peynirli grits",
+  "ad_en": "Cheese grits",
+  "arama": "Grits, with cheese",
+  "porsiyon_g": 240,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Sebzeli yumurta beyazı omleti",
+  "ad_en": "Egg white omelet with vegetables",
+  "arama": "Egg white omelet, with vegetables",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Meyveli yulaf lapası (suyla)",
+  "ad_en": "Oatmeal with fruit",
+  "arama": "Oatmeal, made with water, with fruit",
+  "porsiyon_g": 250,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Quiche Lorraine (dilim)",
+  "ad_en": "Quiche Lorraine (slice)",
+  "arama": "Quiche with meat",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Hindi sandviç",
+  "ad_en": "Turkey sandwich",
+  "arama": "Turkey sandwich",
+  "porsiyon_g": 230,
+  "alerjenler": [
+   "gluten",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Grilled cheese sandviç",
+  "ad_en": "Grilled cheese sandwich",
+  "arama": "Grilled cheese sandwich",
+  "porsiyon_g": 140,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Pulled pork sandviç",
+  "ad_en": "Pulled pork sandwich",
+  "arama": "Pulled pork sandwich",
+  "porsiyon_g": 240,
+  "alerjenler": [
+   "gluten",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Chicken pot pie",
+  "ad_en": "Chicken pot pie",
+  "arama": "Chicken pot pie",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Dana yahni (beef stew)",
+  "ad_en": "Beef stew",
+  "arama": "Beef stew with potatoes and vegetables",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Shrimp and grits",
+  "ad_en": "Shrimp and grits",
+  "arama": "Shrimp and grits",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "balik",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Jambalaya",
+  "ad_en": "Jambalaya",
+  "arama": "Jambalaya with meat and seafood",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Ton balıklı sandviç",
+  "ad_en": "Tuna salad sandwich",
+  "arama": "Tuna salad sandwich",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "gluten",
+   "balik",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Tavuklu şehriye çorbası",
+  "ad_en": "Chicken noodle soup",
+  "arama": "Chicken noodle soup",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Pot roast (fırın dana)",
+  "ad_en": "Pot roast",
+  "arama": "Beef pot roast",
+  "porsiyon_g": 280,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Eggs Benedict",
+  "ad_en": "Eggs Benedict",
+  "arama": "Eggs Benedict",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Steak and eggs",
+  "ad_en": "Steak and eggs",
+  "arama": "Steak and eggs",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Chicken and waffles",
+  "ad_en": "Chicken and waffles",
+  "arama": "Chicken and waffles",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Kruvasan kahvaltı sandviçi (yumurta, sosis, peynir)",
+  "ad_en": "Croissant breakfast sandwich",
+  "arama": "Croissant sandwich with egg, cheese, and sausage",
+  "porsiyon_g": 170,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Denver omleti (jambonlu, biberli)",
+  "ad_en": "Denver omelet",
+  "arama": "Omelet with ham, peppers, and onions",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "yumurta",
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Corned beef hash",
+  "ad_en": "Corned beef hash",
+  "arama": "Corned beef hash",
+  "porsiyon_g": 230,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Tarçınlı çörek (cinnamon roll)",
+  "ad_en": "Cinnamon roll",
+  "arama": "Cinnamon roll",
+  "porsiyon_g": 100,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Tam tahıllı pancake (sade, 3 adet)",
+  "ad_en": "Whole grain pancakes (3)",
+  "arama": "Pancakes, whole grain",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Muzlu kek (banana bread, dilim)",
+  "ad_en": "Banana bread (slice)",
+  "arama": "Banana bread",
+  "porsiyon_g": 80,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "kahvalti",
+  "ad": "Cream of wheat (sütlü irmik lapası)",
+  "ad_en": "Cream of wheat",
+  "arama": "Cream of wheat, made with milk",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Reuben sandviç",
+  "ad_en": "Reuben sandwich",
+  "arama": "Reuben sandwich",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Club sandviç",
+  "ad_en": "Club sandwich",
+  "arama": "Club sandwich",
+  "porsiyon_g": 280,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Nashville acılı tavuk sandviç",
+  "ad_en": "Nashville hot chicken sandwich",
+  "arama": "Chicken fillet sandwich, fried, spicy",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "sut",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Lobster roll",
+  "ad_en": "Lobster roll",
+  "arama": "Lobster roll",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "gluten",
+   "balik",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Crab cake (2 adet)",
+  "ad_en": "Crab cakes (2)",
+  "arama": "Crab cake",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "balik",
+   "gluten",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Fish and chips",
+  "ad_en": "Fish and chips",
+  "arama": "Fish and chips",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "balik",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Barbekü kaburga (yarım raf)",
+  "ad_en": "BBQ ribs (half rack)",
+  "arama": "Pork ribs, barbecued",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Brisket (tütsülenmiş dana göğüs)",
+  "ad_en": "Smoked brisket",
+  "arama": "Beef brisket, cooked",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Sloppy joe",
+  "ad_en": "Sloppy joe",
+  "arama": "Sloppy joe",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "gluten",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Chicken fried steak",
+  "ad_en": "Chicken fried steak",
+  "arama": "Chicken fried steak",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Chicken Alfredo",
+  "ad_en": "Chicken Alfredo",
+  "arama": "Fettuccine Alfredo with chicken",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Köfteli spagetti",
+  "ad_en": "Spaghetti and meatballs",
+  "arama": "Spaghetti with tomato sauce and meatballs",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Baked ziti",
+  "ad_en": "Baked ziti",
+  "arama": "Baked ziti",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Fırın hindi (soslu)",
+  "ad_en": "Roast turkey with gravy",
+  "arama": "Turkey, roasted, with gravy",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Izgara sirloin steak",
+  "ad_en": "Grilled sirloin steak",
+  "arama": "Beef steak, grilled",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Izgara domuz pirzola",
+  "ad_en": "Grilled pork chop",
+  "arama": "Pork chop, grilled",
+  "porsiyon_g": 180,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Cajun kedi balığı",
+  "ad_en": "Blackened catfish",
+  "arama": "Catfish, cooked",
+  "porsiyon_g": 180,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Poke bowl (somonlu)",
+  "ad_en": "Salmon poke bowl",
+  "arama": "Poke bowl",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "balik",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Tavuklu Caesar wrap",
+  "ad_en": "Chicken Caesar wrap",
+  "arama": "Wrap with chicken and Caesar dressing",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "sut",
+   "yumurta",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Köfteli sub sandviç",
+  "ad_en": "Meatball sub",
+  "arama": "Meatball sandwich",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Hindi burger",
+  "ad_en": "Turkey burger",
+  "arama": "Turkey burger",
+  "porsiyon_g": 220,
+  "alerjenler": [
+   "gluten",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "ana",
+  "ad": "Kızarmış karides sepeti",
+  "ad_en": "Fried shrimp basket",
+  "arama": "Shrimp, breaded and fried",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "balik",
+   "gluten",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Chef salata",
+  "ad_en": "Chef salad",
+  "arama": "Chef salad",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Taco salata",
+  "ad_en": "Taco salad",
+  "arama": "Taco salad",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "sut",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Tavuk salatası (mayonezli)",
+  "ad_en": "Chicken salad",
+  "arama": "Chicken salad",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "et",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Yumurta salatası",
+  "ad_en": "Egg salad",
+  "arama": "Egg salad",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Waldorf salata",
+  "ad_en": "Waldorf salad",
+  "arama": "Waldorf salad",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "kuruyemis",
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "salata",
+  "ad": "Coleslaw",
+  "ad_en": "Coleslaw",
+  "arama": "Coleslaw",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Gumbo (tavuk ve sosisli)",
+  "ad_en": "Chicken and sausage gumbo",
+  "arama": "Gumbo with chicken and sausage",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Brokolili çedar çorbası",
+  "ad_en": "Broccoli cheddar soup",
+  "arama": "Broccoli cheese soup",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "sut",
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Bezelye çorbası (jambonlu)",
+  "ad_en": "Split pea soup with ham",
+  "arama": "Split pea soup",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "baklagil",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Mısır çorbası (corn chowder)",
+  "ad_en": "Corn chowder",
+  "arama": "Corn chowder",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Patates çorbası (pastırmalı, peynirli)",
+  "ad_en": "Loaded potato soup",
+  "arama": "Potato soup",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "sut",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "corba",
+  "ad": "Hindi chili (fasulyeli)",
+  "ad_en": "Turkey chili with beans",
+  "arama": "Turkey chili with beans",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "baklagil"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Deviled egg (2 adet)",
+  "ad_en": "Deviled eggs (2)",
+  "arama": "Deviled egg",
+  "porsiyon_g": 60,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Beef jerky (30 g)",
+  "ad_en": "Beef jerky (30 g)",
+  "arama": "Beef jerky",
+  "porsiyon_g": 30,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Çubuk peynir (string cheese)",
+  "ad_en": "String cheese",
+  "arama": "String cheese",
+  "porsiyon_g": 28,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Trail mix (50 g)",
+  "ad_en": "Trail mix (50 g)",
+  "arama": "Trail mix",
+  "porsiyon_g": 50,
+  "alerjenler": [
+   "kuruyemis",
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Mozzarella stick (4 adet)",
+  "ad_en": "Mozzarella sticks (4)",
+  "arama": "Mozzarella sticks",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "sut",
+   "gluten",
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "us",
+  "tur": "atistirmalik",
+  "ad": "Yumuşak pretzel",
+  "ad_en": "Soft pretzel",
+  "arama": "Soft pretzel",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Chicken korma",
+  "ad_en": "Chicken korma",
+  "arama": "Chicken korma",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "sut",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Rogan josh (kuzu)",
+  "ad_en": "Lamb rogan josh",
+  "arama": "Lamb curry",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Tavuk vindaloo",
+  "ad_en": "Chicken vindaloo",
+  "arama": "Chicken curry",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Tavuk tikka (şiş)",
+  "ad_en": "Chicken tikka",
+  "arama": "Chicken tikka",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Balık körisi",
+  "ad_en": "Fish curry",
+  "arama": "Fish curry",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Yumurta körisi",
+  "ad_en": "Egg curry",
+  "arama": "Egg curry",
+  "porsiyon_g": 280,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Malai kofta",
+  "ad_en": "Malai kofta",
+  "arama": "Malai kofta",
+  "porsiyon_g": 280,
+  "alerjenler": [
+   "sut",
+   "kuruyemis"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Baingan bharta (patlıcan)",
+  "ad_en": "Baingan bharta",
+  "arama": "Eggplant curry",
+  "porsiyon_g": 250,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Bhindi masala (bamya)",
+  "ad_en": "Bhindi masala",
+  "arama": "Okra curry",
+  "porsiyon_g": 220,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Moong dal (sarı mercimek)",
+  "ad_en": "Moong dal",
+  "arama": "Lentil curry",
+  "porsiyon_g": 280,
+  "alerjenler": [
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Chole bhature",
+  "ad_en": "Chole bhature",
+  "arama": "Chickpea curry with fried bread",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "baklagil",
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Pav bhaji",
+  "ad_en": "Pav bhaji",
+  "arama": "Pav bhaji",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "kahvalti",
+  "ad": "Upma (irmik)",
+  "ad_en": "Upma",
+  "arama": "Upma",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "kahvalti",
+  "ad": "Poha (pirinç yassısı)",
+  "ad_en": "Poha",
+  "arama": "Poha",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "kuruyemis"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "kahvalti",
+  "ad": "Aloo paratha",
+  "ad_en": "Aloo paratha",
+  "arama": "Paratha, stuffed with potato",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "kahvalti",
+  "ad": "Masala omlet",
+  "ad_en": "Masala omelette",
+  "arama": "Egg omelet, with onions, peppers, tomatoes",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "atistirmalik",
+  "ad": "Sarımsaklı naan",
+  "ad_en": "Garlic naan",
+  "arama": "Naan",
+  "porsiyon_g": 90,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Sebzeli biryani",
+  "ad_en": "Vegetable biryani",
+  "arama": "Biryani, vegetable",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "in",
+  "tur": "ana",
+  "ad": "Keema (kuzu kıyma körisi)",
+  "ad_en": "Lamb keema",
+  "arama": "Ground lamb curry",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "in",
+  "tur": "kahvalti",
+  "ad": "Uttapam",
+  "ad_en": "Uttapam",
+  "arama": "Uttapam",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "kahvalti",
+  "ad": "Shakshuka (yumurtalı, Kuzey Afrika usulü)",
+  "ad_en": "Shakshuka",
+  "arama": "Eggs poached in tomato sauce",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Hummus bil lahm (etli humus)",
+  "ad_en": "Hummus with spiced lamb",
+  "arama": "Hummus with meat",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "baklagil",
+   "et",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "kahvalti",
+  "ad": "Zahterli labne (pita ile)",
+  "ad_en": "Labneh with zaatar and pita",
+  "arama": "Labneh",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "sut",
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "kahvalti",
+  "ad": "Izgara hellim",
+  "ad_en": "Grilled halloumi",
+  "arama": "Halloumi cheese, grilled",
+  "porsiyon_g": 80,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Tavuk şevarma tabağı",
+  "ad_en": "Chicken shawarma plate",
+  "arama": "Chicken shawarma",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "sut",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Kafta (Lübnan köftesi)",
+  "ad_en": "Lebanese kafta",
+  "arama": "Kofta kebab",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Şiş tavuk (shish tawook)",
+  "ad_en": "Shish tawook",
+  "arama": "Chicken kebab",
+  "porsiyon_g": 220,
+  "alerjenler": [
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Mansaf (yoğurtlu kuzu pilav)",
+  "ad_en": "Mansaf",
+  "arama": "Lamb with rice and yogurt sauce",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "et",
+   "sut",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Maklube",
+  "ad_en": "Maqluba",
+  "arama": "Rice with chicken and eggplant",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Kabsa (tavuklu)",
+  "ad_en": "Chicken kabsa",
+  "arama": "Chicken and rice",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Koshari",
+  "ad_en": "Koshari",
+  "arama": "Koshari",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Molohiya (tavuklu)",
+  "ad_en": "Molokhia with chicken",
+  "arama": "Molokhia stew",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Fatteh (nohutlu)",
+  "ad_en": "Chickpea fatteh",
+  "arama": "Fatteh",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "baklagil",
+   "sut",
+   "gluten",
+   "kuruyemis"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Musakhan (sumaklı tavuk)",
+  "ad_en": "Musakhan",
+  "arama": "Roasted chicken with onions on flatbread",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "gluten",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "atistirmalik",
+  "ad": "Sambusek (3 adet, peynirli)",
+  "ad_en": "Cheese sambousek (3)",
+  "arama": "Turnover, cheese filled",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Firikli tavuk",
+  "ad_en": "Freekeh with chicken",
+  "arama": "Freekeh with chicken",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Sayadieh (balıklı pilav)",
+  "ad_en": "Sayadieh",
+  "arama": "Fish with rice",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "balik",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "tatli",
+  "ad": "Mamul (2 adet)",
+  "ad_en": "Maamoul (2)",
+  "arama": "Date filled cookie",
+  "porsiyon_g": 60,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "me",
+  "tur": "ana",
+  "ad": "Arayes (kıymalı pide)",
+  "ad_en": "Arayes",
+  "arama": "Pita stuffed with ground meat",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "me",
+  "tur": "atistirmalik",
+  "ad": "Batata harra",
+  "ad_en": "Batata harra",
+  "arama": "Potatoes, fried, spicy",
+  "porsiyon_g": 200,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Pad woon sen",
+  "ad_en": "Pad woon sen",
+  "arama": "Glass noodles, stir fried",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "yumurta",
+   "soya",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Pad kee mao (drunken noodles)",
+  "ad_en": "Drunken noodles",
+  "arama": "Rice noodles with meat and vegetables",
+  "porsiyon_g": 320,
+  "alerjenler": [
+   "soya",
+   "et",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Kırmızı köri (tavuklu)",
+  "ad_en": "Thai red curry with chicken",
+  "arama": "Thai red curry with chicken",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Panang köri",
+  "ad_en": "Panang curry",
+  "arama": "Panang curry with beef",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "balik",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Gai yang (ızgara tavuk)",
+  "ad_en": "Gai yang",
+  "arama": "Chicken, grilled, marinated",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Moo ping (domuz şiş, yapışkan pilavla)",
+  "ad_en": "Moo ping with sticky rice",
+  "arama": "Pork skewers with rice",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Khao man gai",
+  "ad_en": "Khao man gai",
+  "arama": "Chicken and rice",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "atistirmalik",
+  "ad": "Tod mun pla (balık köftesi, 4 adet)",
+  "ad_en": "Thai fish cakes (4)",
+  "arama": "Fish cake",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "balik",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "atistirmalik",
+  "ad": "Taze spring roll (3 adet)",
+  "ad_en": "Fresh spring rolls (3)",
+  "arama": "Spring roll, fresh, shrimp",
+  "porsiyon_g": 180,
+  "alerjenler": [
+   "balik",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "salata",
+  "ad": "Yum woon sen (cam erişte salatası)",
+  "ad_en": "Glass noodle salad",
+  "arama": "Glass noodle salad with shrimp",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "kahvalti",
+  "ad": "Jok (pirinç lapası)",
+  "ad_en": "Jok",
+  "arama": "Rice porridge with pork",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "corba",
+  "ad": "Khao tom (pirinç çorbası)",
+  "ad_en": "Khao tom",
+  "arama": "Rice soup with pork",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "salata",
+  "ad": "Yum nua (dana salatası)",
+  "ad_en": "Thai beef salad",
+  "arama": "Thai beef salad",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Kajulu tavuk",
+  "ad_en": "Cashew chicken",
+  "arama": "Chicken with cashews",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "kuruyemis",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Ananaslı kızarmış pilav",
+  "ad_en": "Pineapple fried rice",
+  "arama": "Fried rice with pineapple",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "yumurta",
+   "soya",
+   "balik",
+   "kuruyemis"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Pla rad prik (soslu kızarmış balık)",
+  "ad_en": "Pla rad prik",
+  "arama": "Fish, fried, with chili sauce",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "icecek",
+  "ad": "Thai buzlu çay",
+  "ad_en": "Thai iced tea",
+  "arama": "Thai iced tea",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "th",
+  "tur": "corba",
+  "ad": "Gaeng som (ekşi köri çorbası)",
+  "ad_en": "Gaeng som",
+  "arama": "Sour curry soup with fish",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "th",
+  "tur": "ana",
+  "ad": "Pad pak ruam (sebze sote)",
+  "ad_en": "Pad pak ruam",
+  "arama": "Mixed vegetables, stir fried",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "th",
+  "tur": "tatli",
+  "ad": "Muzlu roti",
+  "ad_en": "Banana roti",
+  "arama": "Roti with banana",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Kimchi bokkeumbap (kimchili pilav)",
+  "ad_en": "Kimchi fried rice",
+  "arama": "Fried rice with kimchi",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "yumurta",
+   "soya",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Dakgalbi",
+  "ad_en": "Dakgalbi",
+  "arama": "Chicken, stir fried, spicy, Korean",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Jjajangmyeon",
+  "ad_en": "Jjajangmyeon",
+  "arama": "Noodles with black bean sauce",
+  "porsiyon_g": 450,
+  "alerjenler": [
+   "gluten",
+   "soya",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "corba",
+  "ad": "Jjamppong",
+  "ad_en": "Jjamppong",
+  "arama": "Spicy seafood noodle soup",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "gluten",
+   "balik",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "kahvalti",
+  "ad": "Gyeran-mari (rulo omlet)",
+  "ad_en": "Gyeran-mari",
+  "arama": "Egg omelet, rolled",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Haemul pajeon (deniz ürünlü gözleme)",
+  "ad_en": "Haemul pajeon",
+  "arama": "Seafood pancake, Korean",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "atistirmalik",
+  "ad": "Kimchijeon (kimchili gözleme)",
+  "ad_en": "Kimchi pancake",
+  "arama": "Kimchi pancake",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "gluten",
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Bossam (haşlanmış domuz)",
+  "ad_en": "Bossam",
+  "arama": "Pork, boiled",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Samgyeopsal",
+  "ad_en": "Samgyeopsal",
+  "arama": "Pork belly, grilled",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "corba",
+  "ad": "Galbitang (kaburga çorbası)",
+  "ad_en": "Galbitang",
+  "arama": "Beef short rib soup",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "corba",
+  "ad": "Seolleongtang (kemik suyu çorbası)",
+  "ad_en": "Seolleongtang",
+  "arama": "Beef bone soup with noodles",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "corba",
+  "ad": "Budae jjigae",
+  "ad_en": "Budae jjigae",
+  "arama": "Army stew",
+  "porsiyon_g": 450,
+  "alerjenler": [
+   "et",
+   "gluten",
+   "sut",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Kongguksu (soğuk soya sütlü erişte)",
+  "ad_en": "Kongguksu",
+  "arama": "Noodles in soy milk broth",
+  "porsiyon_g": 450,
+  "alerjenler": [
+   "soya",
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Dubu jorim (soslu tofu)",
+  "ad_en": "Dubu jorim",
+  "arama": "Tofu, braised, Korean",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "kahvalti",
+  "ad": "Gyeran-jjim (buharda yumurta)",
+  "ad_en": "Gyeran-jjim",
+  "arama": "Egg, steamed",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "kr",
+  "tur": "atistirmalik",
+  "ad": "Eomuk (balık keki şişi, 2 adet)",
+  "ad_en": "Eomuk skewers (2)",
+  "arama": "Fish cake",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "balik",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "ana",
+  "ad": "Jjimdak",
+  "ad_en": "Jjimdak",
+  "arama": "Chicken, braised, with vegetables and noodles",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "corba",
+  "ad": "Kalguksu",
+  "ad_en": "Kalguksu",
+  "arama": "Noodle soup, Korean",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "gluten",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "atistirmalik",
+  "ad": "Mandu (buharda, 5 adet)",
+  "ad_en": "Steamed mandu (5)",
+  "arama": "Dumpling, steamed, meat filled",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "kr",
+  "tur": "kahvalti",
+  "ad": "Hobak juk (balkabağı lapası)",
+  "ad_en": "Hobak juk",
+  "arama": "Pumpkin porridge",
+  "porsiyon_g": 300,
+  "alerjenler": [],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "kahvalti",
+  "ad": "Kahvaltı tacosu (yumurtalı, 2 adet)",
+  "ad_en": "Breakfast tacos (2)",
+  "arama": "Taco with egg",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "kahvalti",
+  "ad": "Huevos a la mexicana",
+  "ad_en": "Huevos a la mexicana",
+  "arama": "Egg, scrambled, with tomato and onion",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "kahvalti",
+  "ad": "Molletes",
+  "ad_en": "Molletes",
+  "arama": "Bread with refried beans and cheese",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "gluten",
+   "baklagil",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "ana",
+  "ad": "Enfrijoladas",
+  "ad_en": "Enfrijoladas",
+  "arama": "Enchilada with bean sauce",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "baklagil",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "ana",
+  "ad": "Torta de milanesa",
+  "ad_en": "Torta de milanesa",
+  "arama": "Sandwich with breaded beef",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "yumurta"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "mx",
+  "tur": "corba",
+  "ad": "Sopa de fideo",
+  "ad_en": "Sopa de fideo",
+  "arama": "Noodle soup with tomato",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "mx",
+  "tur": "corba",
+  "ad": "Caldo de pollo",
+  "ad_en": "Caldo de pollo",
+  "arama": "Chicken soup with vegetables",
+  "porsiyon_g": 450,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "mx",
+  "tur": "ana",
+  "ad": "Balık tacosu (2 adet)",
+  "ad_en": "Fish tacos (2)",
+  "arama": "Fish taco",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "balik",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "mx",
+  "tur": "ana",
+  "ad": "Carne asada tabağı",
+  "ad_en": "Carne asada plate",
+  "arama": "Beef, grilled, with rice and beans",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "et",
+   "baklagil"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "mx",
+  "tur": "ana",
+  "ad": "Tavuk tinga (tostada ile)",
+  "ad_en": "Chicken tinga",
+  "arama": "Chicken tinga",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "it",
+  "tur": "kahvalti",
+  "ad": "Frittata (sebzeli)",
+  "ad_en": "Vegetable frittata",
+  "arama": "Frittata, vegetable",
+  "porsiyon_g": 180,
+  "alerjenler": [
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "kahvalti",
+  "ad": "Cornetto",
+  "ad_en": "Cornetto",
+  "arama": "Croissant",
+  "porsiyon_g": 70,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "corba",
+  "ad": "Pasta e ceci",
+  "ad_en": "Pasta e ceci",
+  "arama": "Pasta with chickpeas",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "baklagil"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Chicken piccata",
+  "ad_en": "Chicken piccata",
+  "arama": "Chicken piccata",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "gluten",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Parmigiana di melanzane",
+  "ad_en": "Eggplant parmigiana",
+  "arama": "Eggplant parmesan",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "sut",
+   "gluten",
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Penne arrabbiata",
+  "ad_en": "Penne arrabbiata",
+  "arama": "Pasta with marinara sauce",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Spaghetti alle vongole",
+  "ad_en": "Spaghetti alle vongole",
+  "arama": "Spaghetti with clam sauce",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Calzone (peynirli)",
+  "ad_en": "Cheese calzone",
+  "arama": "Calzone, with cheese, meatless",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "sut"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "it",
+  "tur": "salata",
+  "ad": "Bresaola, roka ve parmesan",
+  "ad_en": "Bresaola with arugula and parmesan",
+  "arama": "Bresaola",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "et",
+   "sut"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "it",
+  "tur": "ana",
+  "ad": "Pollo alla cacciatora",
+  "ad_en": "Chicken cacciatore",
+  "arama": "Chicken cacciatore",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "kahvalti",
+  "ad": "Tamagoyaki",
+  "ad_en": "Tamagoyaki",
+  "arama": "Egg omelet, rolled, Japanese",
+  "porsiyon_g": 120,
+  "alerjenler": [
+   "yumurta",
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "jp",
+  "tur": "kahvalti",
+  "ad": "Tamago kake gohan (çiğ yumurtalı pilav)",
+  "ad_en": "Tamago kake gohan",
+  "arama": "Rice with raw egg and soy sauce",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "yumurta",
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Omurice",
+  "ad_en": "Omurice",
+  "arama": "Omelet with fried rice",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "yumurta",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Nikujaga (etli patates)",
+  "ad_en": "Nikujaga",
+  "arama": "Beef and potato stew, Japanese",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Saba shioyaki (tuzlu uskumru)",
+  "ad_en": "Saba shioyaki",
+  "arama": "Mackerel, grilled",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Chicken nanban",
+  "ad_en": "Chicken nanban",
+  "arama": "Chicken, fried, with tartar sauce",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "yumurta",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Hiyashi chuka (soğuk ramen)",
+  "ad_en": "Hiyashi chuka",
+  "arama": "Cold ramen noodles with vegetables",
+  "porsiyon_g": 400,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "soya",
+   "et"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "ana",
+  "ad": "Köri udon",
+  "ad_en": "Curry udon",
+  "arama": "Udon noodles in curry broth",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "gluten",
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "atistirmalik",
+  "ad": "Hiyayakko (soğuk tofu)",
+  "ad_en": "Hiyayakko",
+  "arama": "Tofu, cold, with toppings",
+  "porsiyon_g": 150,
+  "alerjenler": [
+   "soya",
+   "balik"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "jp",
+  "tur": "corba",
+  "ad": "Yosenabe (karışık güveç)",
+  "ad_en": "Yosenabe",
+  "arama": "Hot pot, Japanese, with seafood and vegetables",
+  "porsiyon_g": 500,
+  "alerjenler": [
+   "balik",
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "cn",
+  "tur": "kahvalti",
+  "ad": "Youtiao ve soya sütü",
+  "ad_en": "Youtiao with soy milk",
+  "arama": "Fried dough stick",
+  "porsiyon_g": 350,
+  "alerjenler": [
+   "gluten",
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "kahvalti",
+  "ad": "Jianbing",
+  "ad_en": "Jianbing",
+  "arama": "Crepe with egg, Chinese",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "gluten",
+   "yumurta",
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "atistirmalik",
+  "ad": "Çay yumurtası (2 adet)",
+  "ad_en": "Tea eggs (2)",
+  "arama": "Egg, hard boiled",
+  "porsiyon_g": 100,
+  "alerjenler": [
+   "yumurta",
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Domatesli yumurta sote",
+  "ad_en": "Tomato egg stir-fry",
+  "arama": "Egg, scrambled, with tomato",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "yumurta"
+  ],
+  "diyet": [
+   "vejetaryen"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Aslan başı köftesi (2 adet)",
+  "ad_en": "Lion's head meatballs (2)",
+  "arama": "Meatballs, pork, braised",
+  "porsiyon_g": 250,
+  "alerjenler": [
+   "et",
+   "soya",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Moo shu domuz",
+  "ad_en": "Moo shu pork",
+  "arama": "Moo shu pork",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "yumurta",
+   "soya",
+   "gluten"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Sarımsaklı bok choy",
+  "ad_en": "Garlic bok choy",
+  "arama": "Bok choy, stir fried",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Soğuk susamlı erişte",
+  "ad_en": "Cold sesame noodles",
+  "arama": "Noodles with sesame sauce",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "gluten",
+   "soya",
+   "kuruyemis"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ },
+ {
+  "mutfak": "cn",
+  "tur": "ana",
+  "ad": "Karabiberli dana",
+  "ad_en": "Black pepper beef",
+  "arama": "Beef, stir fried, with peppers",
+  "porsiyon_g": 300,
+  "alerjenler": [
+   "et",
+   "soya"
+  ],
+  "diyet": []
+ },
+ {
+  "mutfak": "cn",
+  "tur": "salata",
+  "ad": "Ezme salatalık salatası (pai huang gua)",
+  "ad_en": "Smashed cucumber salad",
+  "arama": "Cucumber salad",
+  "porsiyon_g": 200,
+  "alerjenler": [
+   "soya"
+  ],
+  "diyet": [
+   "vejetaryen",
+   "vegan"
+  ]
+ }
+]
