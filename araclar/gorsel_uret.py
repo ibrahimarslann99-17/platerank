@@ -109,6 +109,8 @@ def main():
     if len(anahtar) < 20:
         print(f'Anahtar okunamadı ({len(anahtar)} karakter). Tekrar çalıştırıp yapıştır.'); return
     print(f'Anahtar okundu: {anahtar[:4]}… ({len(anahtar)} karakter)')
+    if not anahtar.startswith('AIza'):
+        print('Uyarı: Gemini anahtarları genelde "AIza" ile başlar. Yanlış anahtarı (ör. USDA) yapıştırmış olabilirsin.')
 
     yol, basarili, hatalar = 'gc', 0, []
     for i, x in enumerate(sec, 1):
@@ -118,7 +120,7 @@ def main():
             print('   İlk biçim kabul edilmedi, diğer API biçimine geçiyorum')
             yol = 'ia'
             sonuc, hata = uret(x['prompt'], anahtar, yol)
-        if hata and ('401' in hata or '403' in hata):
+        if hata and ('401' in hata or '403' in hata or 'API_KEY_INVALID' in hata):
             print('   Yetki hatası: anahtar ya da faturalandırma sorunu. Duruyorum.\n   ' + hata); break
         if hata and '402' in hata:
             print('   Kredi bitti (402). Duruyorum; AI Studio > Billing üzerinden kredi ekleyip aynı komutla devam et.'); break
