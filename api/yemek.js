@@ -2,7 +2,7 @@
 // /yemek/:slug    → tek yemek sayfası: kalori, doyuruculuk puanı, tok tutar mı, daha tok alternatifler
 // HTML sunucuda üretilir ki Google içeriği JavaScript çalıştırmadan okusun.
 
-const { veri, esc, kaloriKarsiligi, siviTur, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
+const { veri, yakinSlug, esc, kaloriKarsiligi, siviTur, saatYaz, dkYaz, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE } = require('./_veri.js');
 const ICERIK = require('./_icerik.js');
 
 const { satir, sayfa, yanit, surgu } = require('./_sablon.js');
@@ -262,7 +262,11 @@ module.exports = {
     const s = (url.searchParams.get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
     if (!s) return yanit(dizinSayfasi(d));
     const y = d.slugIle.get(s);
-    if (!y) return yanit(bulunamadi(d), 404, 'public, max-age=0, s-maxage=600');
+    if (!y) {
+      const yakin = yakinSlug(s, d.slugIle);
+      if (yakin) return new Response(null, { status: 301, headers: { location: `/yemek/${yakin}`, 'cache-control': 'public, max-age=0, s-maxage=86400' } });
+      return yanit(bulunamadi(d), 404, 'public, max-age=0, s-maxage=600');
+    }
     return yanit(yemekSayfasi(y, d));
   },
   // test için

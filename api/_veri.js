@@ -184,4 +184,19 @@ function kaloriKarsiligi(liste, kcal) {
   return en;
 }
 
-module.exports = { hamSaat, kaloriKarsiligi, siviTur, SICAK_KCAL, veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };
+// Bulunamayan slug için en yakın yayındaki slug: yeniden adlandırma ("hamburger" → "hamburger-restoran-tipi")
+// ya da ek düşmesi ("pilav-2" → "pilav"). Eşleşme yoksa null; sayfa o zaman 404 döner.
+function yakinSlug(s, slugIle) {
+  if (!s || s.length < 4) return null;
+  let en = null, fark = Infinity;
+  for (const k of slugIle.keys()) {
+    if (k.length < 4) continue;
+    if (k.startsWith(s + '-') || s.startsWith(k + '-')) {
+      const f = Math.abs(k.length - s.length);
+      if (f < fark || (f === fark && k < en)) { en = k; fark = f; }
+    }
+  }
+  return en;
+}
+
+module.exports = { yakinSlug, hamSaat, kaloriKarsiligi, siviTur, SICAK_KCAL, veri, hazirla, slugla, esc, lig, tokSaat, ayniSaat, AYNI_KCAL, saatYaz, dkYaz, HALK_ESIK, MUTFAKLAR, MUTFAK, LIG_BILGI, LIG_RENK, SITE };

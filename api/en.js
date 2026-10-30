@@ -8,7 +8,7 @@
 //   /sitemap-en.xml     → p=sitemap
 // HTML sunucuda üretilir; tasarım ve CSS Türkçe sayfalarla aynı.
 
-const { veri, esc, LIG_RENK, SITE, HALK_ESIK, kaloriKarsiligi, siviTur } = require('./_veri.js');
+const { veri, yakinSlug, esc, LIG_RENK, SITE, HALK_ESIK, kaloriKarsiligi, siviTur } = require('./_veri.js');
 const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
@@ -401,7 +401,7 @@ ${digerleri.length ? `<h2>More comparisons</h2><ul class="liste">${digerleri.map
       },
     ],
   };
-  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: k.gorsel, robots: listede ? null : 'noindex,follow' });
+  return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: k.gorsel, robots: null });
 }
 
 // ---------- dizin, ana sayfa, yöntem ----------
@@ -572,7 +572,8 @@ function ciftCoz(s, e) {
   // "a-vs-b": slug'larda da "-vs-" geçebilir, her bölme noktasını dene
   let i = s.indexOf('-vs-');
   while (i > 0) {
-    const a = e.slugIle.get(s.slice(0, i)), b = e.slugIle.get(s.slice(i + 4));
+    const bul = (x) => e.slugIle.get(x) || e.slugIle.get(yakinSlug(x, e.slugIle));
+    const a = bul(s.slice(0, i)), b = bul(s.slice(i + 4));
     if (a && b && a !== b) return [a, b];
     i = s.indexOf('-vs-', i + 1);
   }
@@ -605,7 +606,11 @@ module.exports = {
     if (p === 'food') {
       if (!s) return yanit(dizinSayfasi(e));
       const y = e.slugIle.get(s);
-      if (!y) return yanit(bulunamadi(e, 'food'), 404, 'public, max-age=0, s-maxage=600');
+      if (!y) {
+        const yakin = yakinSlug(s, e.slugIle);
+        if (yakin) return yonlendir(`/en/food/${yakin}`);
+        return yanit(bulunamadi(e, 'food'), 404, 'public, max-age=0, s-maxage=600');
+      }
       return yanit(yemekSayfasi(y, e));
     }
     if (p === 'vs') {
