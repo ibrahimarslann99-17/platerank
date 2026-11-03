@@ -91,7 +91,8 @@
   function gununKayitlari(gun){ return kayit.filter(function(x){ return gunAnahtari(x.yendi) === gun; }).sort(function(a, b){ return new Date(a.yendi) - new Date(b.yendi); }); }
   function ogunler(gun){
     var m = new Map();
-    gununKayitlari(gun).forEach(function(x){ if(!m.has(x.ogun_id)) m.set(x.ogun_id, []); m.get(x.ogun_id).push(x); });
+    // Bu dilde karşılığı olmayan yemekler (ör. İngilizce sitede Zincir/Market) gösterilmez; boş öğün de çıkmaz
+    gununKayitlari(gun).filter(function(x){ return !TUM || yemek(x.yemek_id); }).forEach(function(x){ if(!m.has(x.ogun_id)) m.set(x.ogun_id, []); m.get(x.ogun_id).push(x); });
     return Array.from(m.entries()).map(function(e){ return { id: e[0], kalemler: e[1], bas: e[1][0].yendi }; }).sort(function(a, b){ return new Date(a.bas) - new Date(b.bas); });
   }
   function ogunAdi(bas){ var h = new Date(bas).getHours(); return h >= 5 && h < 11 ? T.kahvalti : h < 15 ? T.ogle : h < 18 ? T.ara_ogun : h < 23 ? T.aksam : T.gece; }
@@ -232,8 +233,10 @@
       return son.length ? '<div class="bg-cips"><span>' + T.son + '</span>' + son.map(function(f){ return '<button data-bgekle="' + f.id + '">+ ' + esc(f.ad) + '</button>'; }).join('') + '</div>' : '';
     }
     if(!TUM) return '<p class="note">' + T.yukleniyor + '</p>';
-    var bul = TUM.filter(function(f){ return trNorm(f.ad).indexOf(s) >= 0; })
-      .sort(function(a, b){ return trNorm(a.ad).indexOf(s) - trNorm(b.ad).indexOf(s) || b.doyuruculuk - a.doyuruculuk; }).slice(0, 8);
+    // Kelime başında eşleşen önce ("kola" yazınca çikolata değil kola gelsin)
+    var sira = function(f){ var n = trNorm(f.ad), i = n.indexOf(s); return i < 0 ? -1 : (i === 0 ? 0 : (/[^a-z0-9]/.test(n.charAt(i-1)) ? 1 : 2)); };
+    var bul = TUM.filter(function(f){ return sira(f) >= 0; })
+      .sort(function(a, b){ return sira(a) - sira(b) || trNorm(a.ad).length - trNorm(b.ad).length; }).slice(0, 8);
     return '<div class="m-sonuc bg-sonuc">' + bul.map(function(f){ return '<button class="m-sn" data-bgekle="' + f.id + '"><span class="ad">' + esc(f.ad) + '<small>' + f.kcal + ' kcal</small></span><span class="lg" style="color:var(--teal)">+</span></button>'; }).join('') + '</div>';
   }
   function gecmisHtml(){
