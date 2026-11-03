@@ -746,7 +746,9 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .bk-giris{display:flex;gap:8px;flex-wrap:wrap;}
 .bk-giris input{flex:1 1 180px;min-width:0;margin:0;border:none;border-radius:999px;padding:12px 16px;font-size:16px;font-family:'Figtree',system-ui,sans-serif;}
 .bk .btn{background:var(--lime);color:var(--forest);border-color:var(--lime);}
-.bk .btn:disabled{opacity:.45;}
+.bk .btn:disabled,.bk .btn[aria-disabled="true"]{opacity:.45;}
+.bk-saat.uyar button{animation:bkUyar .45s ease 2;}
+@keyframes bkUyar{50%{border-color:var(--lime);box-shadow:0 0 0 3px rgba(213,236,98,.4);}}
 .bk .link-btn{color:rgba(255,255,255,.8);}
 .bk-teklif{border-top:1px solid rgba(255,255,255,.16);margin:14px 0 2px;padding-top:12px;}
 .bk-teklif .bk-p{margin:0 0 10px;}
@@ -2103,7 +2105,7 @@ function bildirimFormHtml(){
     <div class="bk-rz">${ELLE_ROZET.map(k=>{ const on = bildirim.rozet.includes(k);
       return `<button class="${on?'on':''}" data-bkr="${k}" aria-pressed="${on}">${rozetSvg(k,26)}<span>${ROZETLER[k].ad}</span><small>${esc(ROZETLER[k].acik)}</small></button>`; }).join('')}</div>`
     : `<p class="bk-p bk-rznot">Rozet basmak üyelere açık. Profil'den e-postanla giriş yapabilirsin.</p>`}
-    <div class="bk-btns"><button class="btn" id="bk-bildir" ${si==null?'disabled':''}>${eski!=null?'Güncelle':'Bildir'}</button><button class="link-btn" id="bk-vazgec">Vazgeç</button></div>
+    <div class="bk-btns"><button class="btn" id="bk-bildir" ${si==null?'aria-disabled="true"':''}>${eski!=null?'Güncelle':'Bildir'}</button><button class="link-btn" id="bk-vazgec">Vazgeç</button></div>
   </div>`;
 }
 
@@ -2334,7 +2336,7 @@ function meclisBagla(){
     if(!bildirim) return;
     bildirim.saat = +b.dataset.bks; buzz(8);
     document.querySelectorAll('[data-bks]').forEach(x=>{ const on = x===b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
-    const g = document.getElementById('bk-bildir'); if(g) g.disabled = false;
+    const g = document.getElementById('bk-bildir'); if(g) g.removeAttribute('aria-disabled');
   }; });
   document.querySelectorAll('[data-bkr]').forEach(b=>{ b.onclick = ()=>{
     if(!bildirim) return;
@@ -2394,7 +2396,14 @@ async function saatKaydet(id, saat_dk){
 }
 
 async function bildirimGonder(){
-  if(!bildirim || bildirim.saat==null || !votingOpen) return;
+  if(bildirim && bildirim.saat==null){
+    // saat seçilmeden basıldı: sessiz kalma, saate yönlendir
+    toast('Önce kaç saat tok tuttuğunu seç'); buzz([10,40,10]);
+    const kutu = document.querySelector('#bk .bk-saat');
+    if(kutu){ kutu.classList.remove('uyar'); void kutu.offsetWidth; kutu.classList.add('uyar'); }
+    return;
+  }
+  if(!bildirim || !votingOpen) return;
   const f = mYemek(bildirim.id);
   const g = document.getElementById('bk-bildir');
   if(g){ g.disabled = true; g.textContent = 'Gönderiliyor…'; }
