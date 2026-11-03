@@ -211,7 +211,7 @@
   function kalemHtml(x){
     var f = yemek(x.yemek_id); if(!f) return '';
     return '<div class="bg-kalem"><span class="bg-ad">' + esc(f.ad) + '<small>' + Math.round(f.kcal * x.porsiyon) + ' kcal' + (f.protein != null ? ' · ' + Math.round(f.protein * x.porsiyon) + ' ' + T.protein : '') + '</small></span>' +
-      '<button class="bg-pors" data-bgpors="' + x.id + '">' + (x.porsiyon === 1 ? '1' : sayi(x.porsiyon)) + '×</button><button class="bg-sil" data-bgsil="' + x.id + '" aria-label="' + T.sil + '">×</button></div>';
+      '<span class="bo-adim bg-adim"><button data-bgeksi="' + x.id + '" aria-label="−">−</button><b>' + sayi(x.porsiyon) + '</b><button data-bgarti="' + x.id + '" aria-label="+">+</button></span><button class="bg-sil" data-bgsil="' + x.id + '" aria-label="' + T.sil + '">×</button></div>';
   }
   function ogunHtml(o){
     var h = hesap(o.kalemler), cevap = tokluk[o.id];
@@ -294,9 +294,9 @@
       var t;
       if((t = e.target.closest('[data-bgekle]'))){ window.bgEkle(t.dataset.bgekle); aramaMetni = ''; render(); return; }
       if((t = e.target.closest('[data-bgsil]'))){ var id = t.dataset.bgsil; kayit = kayit.filter(function(x){ return x.id !== id; }); lokalKaydet(); uyeSil(id); buzz(6); render(); return; }
-      if((t = e.target.closest('[data-bgpors]'))){
-        var x = kayit.find(function(k){ return k.id === t.dataset.bgpors; }); if(!x) return;
-        var adim = [0.5, 1, 1.5, 2]; x.porsiyon = adim[(adim.indexOf(x.porsiyon) + 1) % adim.length] || 1;
+      if((t = e.target.closest('[data-bgarti],[data-bgeksi]'))){
+        var pid = t.dataset.bgarti || t.dataset.bgeksi, x = kayit.find(function(k){ return k.id === pid; }); if(!x) return;
+        x.porsiyon = t.dataset.bgarti ? Math.min(10, x.porsiyon + (x.porsiyon < 1 ? 0.5 : 1)) : Math.max(0.5, x.porsiyon - (x.porsiyon <= 1 ? 0.5 : 1));
         lokalKaydet(); uyeGuncelle(x); buzz(6); render(); return;
       }
       if((t = e.target.closest('[data-bgcevap]'))){
@@ -357,4 +357,177 @@
     '.bg-etki{margin:8px 0 0;font-size:13px;font-weight:600}.bg-etki.kotu{color:#B3261E}.bg-etki.iyi{color:#2F8F5B}' +
     '.bg-gunler{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.bg-gunler button{flex:0 0 auto;border:1.5px solid var(--line,#D2D1C4);background:var(--card,#fff);border-radius:14px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;color:inherit;text-align:center}.bg-gunler button.on{border-color:var(--teal,#227A54)}.bg-gunler small{display:block;font-size:11px;color:var(--ink-muted,#6B7079)}';
   document.head.appendChild(st);
+  // =========================================================
+  // Meclis "Tokluk bildir": tek yemek yerine öğün. Yemek seçilir, yanına başkaları eklenir,
+  // her birinin porsiyonu girilir (3 porsiyon lahmacun = 3 adet), soru öğünün tamamı için sorulur.
+  // index.html'deki bildirim kartı bu fonksiyonlara devreder (bildirim / bildirimSonuc global'leri).
+  // - Tek yemek + 1 porsiyon: eski yol (saatKaydet), girişsiz de çalışır.
+  // - Birden çok yemek ya da porsiyon 1 değilse: öğün bildirimi, sadece üyeler (ogun_tokluk);
+  //   öğünün baskın yemeği (tek porsiyon, kalorinin %70'i+) ayrıca Meclis'e o yemeğin saati olarak gider.
+  // =========================================================
+  var M = EN ? {
+    ust: 'Report fullness · meal', soru: 'How long did this meal keep you full?', yanina: 'Add something else from the meal…',
+    porsiyon: 'servings', hesap: 'The math says ~', bildir: 'Report', vazgec: 'Cancel', girisGerek: 'Reporting a full meal is for members. No password: we email you a code.',
+    rozet: 'Badges', rozetAlt: 'optional · 2 max · for ', sen: 'You', halk: 'Crowd', hesapK: 'Math', kaydedildi: 'Saved ✓', baska: 'Report another meal', duzelt: 'Edit',
+    saatSec: 'First pick how many hours it kept you full', katiYok: 'Add at least one food that isn’t a drink', gonderiliyor: 'Sending…', hata: 'Couldn’t save, try again in a moment'
+  } : {
+    ust: 'Tokluk bildir · öğün', soru: 'Bu öğün seni kaç saat tok tuttu?', yanina: 'Yanında başka ne vardı? Ekle…',
+    porsiyon: 'porsiyon', hesap: 'Hesap ~', bildir: 'Bildir', vazgec: 'Vazgeç', girisGerek: 'Öğün bildirmek üyelere açık. Şifre yok, e-postana kod gelir.',
+    rozet: 'Rozet', rozetAlt: 'isteğe bağlı · en fazla 2 · ', sen: 'Sen', halk: 'Halk', hesapK: 'Hesap', kaydedildi: 'Kaydedildi ✓', baska: 'Başka öğün bildir', duzelt: 'Düzelt',
+    saatSec: 'Önce kaç saat tok tuttuğunu seç', katiYok: 'İçecek dışında en az bir yemek ekle', gonderiliyor: 'Gönderiliyor…', hata: 'Kaydedilemedi, birazdan tekrar dene'
+  };
+  var oAra = '';
+  function oYemek(id){ return (typeof mYemek === 'function' && mYemek(id)) || yemek(id); }
+  function oKalemler(){ return (bildirim && bildirim.kalemler) || []; }
+  function oHesap(){
+    var kT = 0, kS = 0, pK = 0, prot = 0;
+    oKalemler().forEach(function(x){
+      var f = oYemek(x.id); if(!f) return;
+      var k = (f.kcal || 0) * x.p; kT += k; prot += (f.protein || 0) * x.p; pK += k * (f.doyuruculuk || 0);
+      if(f.tur !== 'icecek') kS += k;
+    });
+    var puan = kT ? pK / kT : 0;
+    return { kcal: Math.round(kT), protein: Math.round(prot), sure: kS >= 50 ? Math.max(0.5, Math.min(6, tabanSaat(kS) * verimKatsayi(puan))) : null };
+  }
+  function oBaskin(){
+    var h = oHesap(), l = oKalemler();
+    return l.filter(function(k){ var f = oYemek(k.id); return f && k.p === 1 && f.tur !== 'icecek' && !f.sadece_malzeme && f.kcal >= BASKIN * h.kcal; })[0] || null;
+  }
+  function oTek(){ var l = oKalemler(); return l.length === 1 && l[0].p === 1; }
+
+  // Kartı aç ya da açık karta yemek ekle
+  window.bgOyAc = function(id){
+    var f = oYemek(id); if(!f) return false;
+    if(!(bildirim && bildirim.kalemler) && (f.tur === 'icecek' || f.sadece_malzeme)) return false;
+    if(typeof mYemekKaydet === 'function') mYemekKaydet([f]);
+    if(bildirim && bildirim.kalemler){
+      var var_ = bildirim.kalemler.find(function(k){ return k.id === id; });
+      if(var_) var_.p = Math.min(10, var_.p + 1); else bildirim.kalemler.push({ id: id, p: 1 });
+    } else {
+      var eskiDk = benimBildirim.get(id), si = eskiDk != null ? SAAT_ADIM.indexOf(eskiDk) : -1;
+      bildirim = { id: id, kalemler: [{ id: id, p: 1 }], saat: si >= 0 ? si : null, rozet: (benimRozet.get(id) || []).slice() };
+    }
+    oAra = ''; mArama = ''; mSonuclar = null; bildirimSonuc = null;
+    if(currentMode !== 'comm'){ currentMode = 'comm'; selectedFood = null; }
+    render();
+    requestAnimationFrame(function(){ var k = document.getElementById('bk'); if(k) k.scrollIntoView({ behavior: azHareket() ? 'auto' : 'smooth', block: 'center' }); });
+    return true;
+  };
+
+  function oAramaHtml(){
+    var s = trNorm(oAra.trim()); if(s.length < 2) return '';
+    if(!TUM){ tumYemekYukle(); return ''; }
+    var sira = function(f){ var n = trNorm(f.ad), i = n.indexOf(s); return i < 0 ? -1 : (i === 0 ? 0 : (/[^a-z0-9]/.test(n.charAt(i-1)) ? 1 : 2)); };
+    var bul = TUM.filter(function(f){ return sira(f) >= 0; }).sort(function(a, b){ return sira(a) - sira(b) || trNorm(a.ad).length - trNorm(b.ad).length; }).slice(0, 6);
+    return bul.map(function(f){ return '<button class="m-sn" data-boekle="' + f.id + '"><span class="ad">' + esc(f.ad) + '<small>' + f.kcal + ' kcal</small></span><span class="lg" style="color:var(--teal)">+</span></button>'; }).join('');
+  }
+
+  window.bgOgunFormHtml = function(){
+    var l = oKalemler(), h = oHesap(), si = bildirim.saat, b = oBaskin() || l[0];
+    var bf = b ? oYemek(b.id) : null;
+    var kalem = l.map(function(k){
+      var f = oYemek(k.id); if(!f) return '';
+      return '<div class="bo-kalem"><span class="bo-ad">' + esc(f.ad) + '<small>' + Math.round(f.kcal * k.p) + ' kcal</small></span>' +
+        '<span class="bo-adim"><button data-boeksi="' + k.id + '" aria-label="−">−</button><b>' + sayi(k.p) + '</b><button data-boarti="' + k.id + '" aria-label="+">+</button></span>' +
+        '<button class="bo-sil" data-bosil="' + k.id + '" aria-label="×">×</button></div>';
+    }).join('');
+    var rozet = currentUser && bf ? '<div class="bk-soru">' + M.rozet + ' <span>' + M.rozetAlt + esc(bf.ad) + '</span></div><div class="bk-rz">' + ELLE_ROZET.map(function(k){
+      var on = bildirim.rozet.indexOf(k) >= 0;
+      return '<button class="' + (on ? 'on' : '') + '" data-bkr="' + k + '" aria-pressed="' + on + '">' + rozetSvg(k, 26) + '<span>' + ROZETLER[k].ad + '</span><small>' + esc(ROZETLER[k].acik) + '</small></button>';
+    }).join('') + '</div>' : '';
+    var uyeGerek = !currentUser && !oTek();
+    return '<div class="bk" id="bk"><div class="bk-ust">' + M.ust + '</div>' + kalem +
+      '<div class="m-ara bo-ara"><input type="text" id="bo-ara" autocomplete="off" placeholder="' + esc(M.yanina) + '" value="' + esc(oAra) + '"><div class="m-sonuc" id="bo-sonuc">' + oAramaHtml() + '</div></div>' +
+      '<div class="bk-meta">' + h.kcal + ' kcal · ' + h.protein + ' ' + T.protein + (h.sure != null ? ' · ' + M.hesap + sayi(yarim(h.sure)) + ' ' + T.sa : '') + '</div>' +
+      '<div class="bk-soru">' + M.soru + '</div>' +
+      '<div class="bk-saat">' + SAAT_AD.map(function(a, i){ return '<button class="' + (si === i ? 'on' : '') + '" data-bos="' + i + '" aria-pressed="' + (si === i) + '">' + a + '</button>'; }).join('') + '</div>' +
+      rozet +
+      (uyeGerek ? '<div class="bk-teklif"><p class="bk-p">' + esc(M.girisGerek) + '</p>' + girisFormHtml('m') + '</div>' : '') +
+      '<div class="bk-btns">' + (uyeGerek ? '' : '<button class="btn" id="bo-bildir"' + (si == null ? ' aria-disabled="true"' : '') + '>' + M.bildir + '</button>') + '<button class="link-btn" id="bo-vazgec">' + M.vazgec + '</button></div></div>';
+  };
+
+  window.bgOgunSonucHtml = function(){
+    var s = bildirimSonuc;
+    var hal = '';
+    if(s.yemek){ var o = meclis.ozet.get(s.yemek); hal = '<span>' + M.halk + (o && o.medyan_dk != null ? '<b>' + saatYaz(o.medyan_dk) + '</b>' : '<b>?</b>') + '</span>'; }
+    return '<div class="bk" id="bk"><div class="bk-ust">' + M.kaydedildi + '</div><div class="bk-ad">' + esc(s.adlar) + '</div>' +
+      '<div class="bk-sat"><span>' + M.sen + '<b>' + saatYaz(s.saat_dk) + '</b></span>' + hal + (s.hesap != null ? '<span>' + M.hesapK + '<b>~' + sayi(yarim(s.hesap)) + ' ' + T.sa + '</b></span>' : '') + '</div>' +
+      '<div class="bk-btns"><button class="btn" id="bo-baska">' + M.baska + '</button></div></div>';
+  };
+
+  async function oGonder(btn){
+    if(!bildirim || !votingOpen) return;
+    if(bildirim.saat == null){ toast(M.saatSec); buzz([10,40,10]); var k = document.querySelector('#bk .bk-saat'); if(k){ k.classList.remove('uyar'); void k.offsetWidth; k.classList.add('uyar'); } return; }
+    var h = oHesap(); if(h.sure == null){ toast(M.katiYok); return; }
+    var dk = SAAT_ADIM[bildirim.saat], l = oKalemler().slice(), rozetler = bildirim.rozet.slice();
+    if(btn){ btn.disabled = true; btn.textContent = M.gonderiliyor; }
+    var b = oBaskin(), hedef = b ? b.id : null, oTekMi = oTek();
+    // eski yol: tek yemek, tek porsiyon
+    if(oTekMi){
+      if(!(await saatKaydet(l[0].id, dk))){ if(btn){ btn.disabled = false; btn.textContent = M.bildir; } return; }
+      hedef = l[0].id;
+    } else {
+      if(!currentUser) return;
+      var oid = uuid();
+      var r = await sb.from('ogun_tokluk').insert({ ogun_id: oid, baslangic: new Date(Date.now() - dk*60000).toISOString(), sure_dk: dk, aclik: 'evet', toplam_kcal: h.kcal,
+        kalemler: l.map(function(k){ return { yemek_id: k.id, porsiyon: k.p }; }) });
+      if(r.error){ console.error('ogun_tokluk', r.error); toast(M.hata); if(btn){ btn.disabled = false; btn.textContent = M.bildir; } return; }
+      if(hedef){ var o = await sb.from('oylar').insert({ yemek_id: hedef, saat_dk: dk, ogun_id: oid }); if(o.error) console.error('oylar', o.error); else benimBildirim.set(hedef, dk); }
+    }
+    // rozetler: baskın (ya da ilk) yemeğe
+    var ry = hedef || l[0].id;
+    if(currentUser){
+      var eski = benimRozet.get(ry) || [];
+      var degis = eski.filter(function(k){ return rozetler.indexOf(k) < 0; }).map(function(k){ return { rozet: k, aktif: false }; })
+        .concat(rozetler.filter(function(k){ return eski.indexOf(k) < 0; }).map(function(k){ return { rozet: k, aktif: true }; }));
+      for(var i = 0; i < degis.length; i++){ var e2 = await sb.from('rozet_oylar').insert({ yemek_id: ry, rozet: degis[i].rozet, aktif: degis[i].aktif }); if(e2.error) console.error('rozet', e2.error); }
+      if(rozetler.length) benimRozet.set(ry, rozetler); else benimRozet.delete(ry);
+    }
+    bildirimSonuc = oTekMi ? { id: hedef, saat_dk: dk } : { ogun: true, yemek: hedef, saat_dk: dk, hesap: h.sure, adlar: l.map(function(k){ var f = oYemek(k.id); return f ? (k.p !== 1 ? sayi(k.p) + '× ' : '') + f.ad : ''; }).filter(Boolean).join(' + ') };
+    bildirim = null;
+    buzz([14,40,22]);
+    await meclisYukle(true);
+    requestAnimationFrame(function(){ var k = document.getElementById('bk'); if(k) k.scrollIntoView({ behavior: azHareket() ? 'auto' : 'smooth', block: 'center' }); });
+  }
+
+  window.bgOgunBagla = function(){
+    if(currentMode !== 'comm' || !bildirim || !bildirim.kalemler) return;
+    var kok = document.getElementById('bk'); if(!kok) return;
+    var a = document.getElementById('bo-ara');
+    if(a) a.oninput = function(){ oAra = a.value; var el = document.getElementById('bo-sonuc'); if(el) el.innerHTML = oAramaHtml(); };
+    kok.onclick = async function(e){
+      var t = e.target.closest ? e.target.closest('button') : null; if(!t) return;
+      var x;
+      if(t.dataset.boekle){ e.stopPropagation(); buzz(8); window.bgOyAc(t.dataset.boekle); return; }
+      if((x = t.dataset.boarti || t.dataset.boeksi)){
+        var k = bildirim.kalemler.find(function(y){ return y.id === x; }); if(!k) return;
+        k.p = t.dataset.boarti ? Math.min(10, k.p + (k.p < 1 ? 0.5 : 1)) : Math.max(0.5, k.p - (k.p <= 1 ? 0.5 : 1));
+        buzz(6); render(); return;
+      }
+      if(t.dataset.bosil){
+        bildirim.kalemler = bildirim.kalemler.filter(function(y){ return y.id !== t.dataset.bosil; });
+        if(!bildirim.kalemler.length) bildirim = null; else bildirim.id = bildirim.kalemler[0].id;
+        buzz(6); render(); return;
+      }
+      if(t.dataset.bos != null){
+        bildirim.saat = Number(t.dataset.bos); buzz(8);
+        kok.querySelectorAll('[data-bos]').forEach(function(y){ var on = y === t; y.classList.toggle('on', on); y.setAttribute('aria-pressed', on); });
+        var g = document.getElementById('bo-bildir'); if(g) g.removeAttribute('aria-disabled'); return;
+      }
+      if(t.id === 'bo-bildir'){ oGonder(t); return; }
+      if(t.id === 'bo-vazgec'){ bildirim = null; oAra = ''; render(); return; }
+    };
+  };
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('#bo-baska'); if(!t) return;
+    bildirimSonuc = null; bildirim = null; render();
+    requestAnimationFrame(function(){ var q2 = document.getElementById('mq'); if(q2){ q2.scrollIntoView({ block: 'center' }); q2.focus(); } });
+  });
+  var st2 = document.createElement('style');
+  st2.textContent = '.bo-kalem{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.14)}.bo-ad{flex:1;min-width:0;font-weight:600}.bo-ad small{display:block;font-weight:400;opacity:.75;font-size:12px}' +
+    '.bo-adim{display:inline-flex;align-items:center;gap:6px}.bo-adim button,.bo-sil{width:32px;height:32px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:inherit;font:inherit;font-size:16px;cursor:pointer}.bo-adim b{min-width:26px;text-align:center}' +
+    '.bo-ara{margin:10px 0 6px}.bo-ara input{width:100%}';
+  document.head.appendChild(st2);
+
+
 })();
