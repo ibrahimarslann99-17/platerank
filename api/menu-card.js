@@ -71,7 +71,7 @@ function itemRow(item, i) {
   };
 }
 
-function buildTree(items, toplamKcal, toplamProtein) {
+function buildTree(items, toplamKcal, toplamProtein, en) {
   return {
     type: 'div',
     props: {
@@ -90,7 +90,7 @@ function buildTree(items, toplamKcal, toplamProtein) {
           type: 'div',
           props: {
             style: { fontSize: 20, letterSpacing: 4, textTransform: 'uppercase', color: '#1E5A3D', fontWeight: 700, display: 'flex' },
-            children: 'PLATERANK · MENÜM',
+            children: en ? 'PLATERANK · MY MENU' : 'PLATERANK · MENÜM',
           },
         },
         {
@@ -115,7 +115,7 @@ function buildTree(items, toplamKcal, toplamProtein) {
                 type: 'div',
                 props: {
                   style: { fontSize: 30, fontWeight: 700, color: '#15171B', display: 'flex' },
-                  children: `Toplam: ${toplamKcal} kcal · ${toplamProtein} g protein`,
+                  children: `${en ? 'Total' : 'Toplam'}: ${toplamKcal} kcal · ${toplamProtein} g protein`,
                 },
               },
               {
@@ -124,7 +124,7 @@ function buildTree(items, toplamKcal, toplamProtein) {
                   style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
                   children: [
                     { type: 'div', props: { style: { fontSize: 22, fontWeight: 700, color: '#15171B', display: 'flex' }, children: 'platerank.dev' } },
-                    { type: 'div', props: { style: { fontSize: 14, color: '#6B7079', display: 'flex' }, children: 'Kalori sayan çok, tokluk soran yok.' } },
+                    { type: 'div', props: { style: { fontSize: 14, color: '#6B7079', display: 'flex' }, children: en ? 'Everyone counts calories. Nobody asks about fullness.' : 'Kalori sayan çok, tokluk soran yok.' } },
                   ],
                 },
               },
@@ -141,6 +141,7 @@ module.exports = {
     try {
       const { searchParams } = new URL(request.url);
       const raw = searchParams.get('i') || '';
+      const en = searchParams.get('l') === 'en';
       let items = [];
       try {
         const json = Buffer.from(decodeURIComponent(raw), 'base64').toString('utf8');
@@ -154,7 +155,7 @@ module.exports = {
       items = items
         .slice(0, 6)
         .map((it) => ({
-          a: String(it.a || '').replace(/[^\p{L}\p{N} .,()İıĞğÜüŞşÖöÇç-]/gu, '').slice(0, 60) || 'Yemek',
+          a: String(it.a || '').replace(/[^\p{L}\p{N} .,()İıĞğÜüŞşÖöÇç-]/gu, '').slice(0, 60) || (en ? 'Food' : 'Yemek'),
           k: Math.max(0, Math.min(5000, Math.round(Number(it.k) || 0))),
           p: it.p == null ? null : Math.max(0, Math.min(200, Math.round(Number(it.p)))),
         }));
@@ -164,11 +165,11 @@ module.exports = {
 
       const metinToplam = items.map((it) => (it.p != null ? `${it.a} ${it.k} kcal ${it.p} g protein` : `${it.a} ${it.k} kcal`)).join(' ');
       const ALL_TEXT =
-        'PLATERANK · MENÜM Toplam: kcal g protein platerank.dev Kalori sayan çok, tokluk soran yok. 0123456789 · ' + metinToplam;
+        'PLATERANK · MENÜM MY MENU Toplam: Total: kcal g protein platerank.dev Kalori sayan çok, tokluk soran yok. Everyone counts calories. Nobody asks about fullness. Food 0123456789 · ' + metinToplam;
 
       const fontData = await getFont(ALL_TEXT);
 
-      const svg = await satori(buildTree(items, toplamKcal, toplamProtein), {
+      const svg = await satori(buildTree(items, toplamKcal, toplamProtein, en), {
         width: 1200,
         height: 630,
         fonts: [{ name: 'Figtree', data: fontData, weight: 700, style: 'normal' }],

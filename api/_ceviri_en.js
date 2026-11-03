@@ -6,6 +6,9 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  ['const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;', 'const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + "&l=en";', 'kod'],
+  ["await fetch('/api/menu-card?i=' + encodeURIComponent(b64));", "await fetch('/api/menu-card?i=' + encodeURIComponent(b64) + '&l=en');", 'kod'],
+  ["a.download = 'platerank-menum.png';", "a.download = 'platerank-my-menu.png';", 'kod'],
   ['<span class="nl-k">Besinler</span>', '<span class="nl-k">Foods</span>', 'kod'],
   ['<span class="nl-k">Meclis</span>', '<span class="nl-k">Senate</span>', 'kod'],
   ['placeholder="e-postadaki kod"', 'placeholder="code from the email"', 'kod'],

@@ -7,6 +7,15 @@ const DURUM = {
   iyilesme: 'iyileşme sürecinde',
 };
 
+const DURUM_EN = {
+  asgari: 'just to avoid falling short',
+  saglik: 'to stay healthy and energetic',
+  spor: 'while training regularly',
+  diyet: 'while losing weight',
+  yasli: 'for people over 65',
+  iyilesme: 'while recovering',
+};
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -16,18 +25,21 @@ module.exports = {
     const url = new URL(request.url);
     let p = (url.searchParams.get('p') || '').replace(/[^0-9]/g, '');
     const d = url.searchParams.get('d') || 'saglik';
-    const durumMetin = DURUM[d] || DURUM.saglik;
+    const en = url.searchParams.get('l') === 'en';
+    const durumMetin = en ? (DURUM_EN[d] || DURUM_EN.saglik) : (DURUM[d] || DURUM.saglik);
 
-    const baslik = p ? `Günlük protein hedefim: ${p} g` : "PlateRank · protein hesabım";
-    const aciklama = p
-      ? `${p} gram, ${durumMetin} günlük hedefim. Seninki kaç? PlateRank'te kilonu gir, 5 saniyede öğren.`
-      : 'Günlük protein ihtiyacını 5 saniyede öğren.';
+    const baslik = en
+      ? (p ? `My daily protein target: ${p} g` : 'PlateRank · my protein math')
+      : (p ? `Günlük protein hedefim: ${p} g` : "PlateRank · protein hesabım");
+    const aciklama = en
+      ? (p ? `${p} grams a day, ${durumMetin}. What’s yours? Enter your weight on PlateRank and find out in 5 seconds.` : 'Find your daily protein need in 5 seconds.')
+      : (p ? `${p} gram, ${durumMetin} günlük hedefim. Seninki kaç? PlateRank'te kilonu gir, 5 saniyede öğren.` : 'Günlük protein ihtiyacını 5 saniyede öğren.');
 
     const ogImgUrl = `${url.origin}/api/og?${url.searchParams.toString()}`;
-    const siteUrl = 'https://platerank.dev/';
+    const siteUrl = en ? 'https://platerank.dev/en' : 'https://platerank.dev/';
 
     const html = `<!doctype html>
-<html lang="tr">
+<html lang="${en ? 'en' : 'tr'}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,7 +71,7 @@ module.exports = {
     <img src="${esc(ogImgUrl)}" alt="${esc(baslik)}">
     <h1>${esc(baslik)}</h1>
     <p>${esc(aciklama)}</p>
-    <a class="btn" href="${esc(siteUrl)}">Kendi hedefini hesapla →</a>
+    <a class="btn" href="${esc(siteUrl)}">${en ? 'Work out your own target →' : 'Kendi hedefini hesapla →'}</a>
   </div>
 </body>
 </html>`;

@@ -10,9 +10,23 @@ const DURUM = {
   iyilesme: 'iyileşme sürecinde',
 };
 
+// İngilizce kart (?l=en): /en'den gelen paylaşımlar
+const DURUM_EN = {
+  asgari: 'just to avoid falling short',
+  saglik: 'to stay healthy and energetic',
+  spor: 'while training regularly',
+  diyet: 'while losing weight',
+  yasli: 'for people over 65',
+  iyilesme: 'while recovering',
+};
+const METIN = {
+  tr: { ust: 'PLATERANK · PROTEİN HEDEFİ', alt: (d) => `Günde ${d}`, slogan: 'Kalori sayan çok, tokluk soran yok.' },
+  en: { ust: 'PLATERANK · PROTEIN TARGET', alt: (d) => `a day, ${d}`, slogan: 'Everyone counts calories. Nobody asks about fullness.' },
+};
+
 const ALL_TEXT =
-  Object.values(DURUM).join(' ') +
-  ' PLATERANK · PROTEİN HEDEFİ platerank.dev Kalori sayan çok, tokluk soran yok. Günde 0123456789 g';
+  Object.values(DURUM).join(' ') + ' ' + Object.values(DURUM_EN).join(' ') +
+  ' PLATERANK · PROTEİN HEDEFİ PROTEIN TARGET platerank.dev Kalori sayan çok, tokluk soran yok. Everyone counts calories. Nobody asks about fullness. Günde a day, 0123456789 g';
 
 let fontPromise = null;
 async function getFont() {
@@ -40,7 +54,7 @@ async function getFont() {
   return fontPromise;
 }
 
-function buildTree(p, durumMetin) {
+function buildTree(p, durumMetin, M) {
   return {
     type: 'div',
     props: {
@@ -65,7 +79,7 @@ function buildTree(p, durumMetin) {
               color: '#1E5A3D',
               fontWeight: 700,
             },
-            children: 'PLATERANK · PROTEİN HEDEFİ',
+            children: M.ust,
           },
         },
         {
@@ -84,7 +98,7 @@ function buildTree(p, durumMetin) {
                 type: 'div',
                 props: {
                   style: { fontSize: 32, color: '#3A3F47', display: 'flex' },
-                  children: `Günde ${durumMetin}`,
+                  children: M.alt(durumMetin),
                 },
               },
             ],
@@ -107,7 +121,7 @@ function buildTree(p, durumMetin) {
               },
               {
                 type: 'div',
-                props: { style: { fontSize: 18, color: '#6B7079', display: 'flex' }, children: 'Kalori sayan çok, tokluk soran yok.' },
+                props: { style: { fontSize: 18, color: '#6B7079', display: 'flex' }, children: M.slogan },
               },
             ],
           },
@@ -124,11 +138,12 @@ module.exports = {
       let p = (searchParams.get('p') || '100').replace(/[^0-9]/g, '');
       if (!p || p.length > 4) p = '100';
       const d = searchParams.get('d') || 'saglik';
-      const durumMetin = DURUM[d] || DURUM.saglik;
+      const en = searchParams.get('l') === 'en';
+      const durumMetin = en ? (DURUM_EN[d] || DURUM_EN.saglik) : (DURUM[d] || DURUM.saglik);
 
       const fontData = await getFont();
 
-      const svg = await satori(buildTree(p, durumMetin), {
+      const svg = await satori(buildTree(p, durumMetin, en ? METIN.en : METIN.tr), {
         width: 1200,
         height: 630,
         fonts: [{ name: 'Figtree', data: fontData, weight: 700, style: 'normal' }],
