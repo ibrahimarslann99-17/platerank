@@ -480,6 +480,7 @@ body:not(.ev) #stickybar{animation:fadeUp .3s ease both;}
 .hero-btn:hover{background:rgba(255,255,255,.22);}
 .hero-btn:active{transform:scale(0.97);}
 .hero-bos{padding:90px 26px;}
+.hero-plan{display:block;margin:14px auto 0;max-width:340px;text-align:center;background:var(--forest,#0E2217);color:var(--lime,#D5EC62);font-weight:700;padding:13px 18px;border-radius:999px;text-decoration:none}.plan-kart .hero-plan{margin:10px 0 0;max-width:none}
 .hero-ipucu{text-align:center;font-size:12.5px;color:var(--ink-muted);margin:16px 0 0;}
 #seo{margin-top:40px;}
 
@@ -1672,13 +1673,14 @@ function heroHtml(){
     ${ayniKaloriSuresi(f)!=null?`<div class="hero-tok">${tsureHtml(ayniKaloriSuresi(f))}<div class="ht-alt">aynı 300 kaloride tok tutma süresi · porsiyonu (${f.kcal} kcal) ~${saatStr(t)} sa</div></div>`:''}
     <button class="hero-btn" id="hero-btn" data-id="${f.id}" data-m="${f.mutfak}">Listede gör</button>
   </div>
+  <a class="hero-plan" href="/tok-plan">Seni tok tutan yemek planını al →</a>
   <p class="hero-ipucu">Alttaki menüden bir bölüm seç ↓</p>`;
 }
 function renderBilgi(){
   const gk = gunlukKalori();
   const kilo = parseFloat(pKilo());
   const dd = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
-  let h = '<div class="card"><div class="p-baslik">Hesap</div><p class="p-alt">Giriş yaparsan favorilerin ve menün bütün cihazlarında seninle gelir.</p><div class="authbar" id="authbar"></div></div>';
+  let h = '<div class="card plan-kart"><div class="p-baslik">Tok Plan</div><p class="p-alt">Seni tok tutmaya göre kurulmuş haftalık yemek planı: her öğün için kalori ve protein hedefi. Zaten abone misin? Aynı e-postayla giriş yapınca planın burada açılır.</p><a class="hero-plan" href="/tok-plan">Planımı kur →</a></div><div class="card"><div class="p-baslik">Hesap</div><p class="p-alt">Giriş yaparsan favorilerin ve menün bütün cihazlarında seninle gelir.</p><div class="authbar" id="authbar"></div></div>';
   h += '<div class="card pbox"><div><div class="p-baslik">Bilgilerim</div><p class="p-alt" style="margin:0">Ne yesem ve protein hesabı bunları kullanır. Sadece bu cihazda kalır.</p></div>';
   h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
   h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';

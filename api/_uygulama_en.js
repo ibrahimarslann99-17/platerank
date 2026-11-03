@@ -46,9 +46,7 @@ const DAVRANIS = [
   ['function listeSeridi(mod){', "function listeSeridi(mod){ return '';"],
   ["  {sec:'.lseridi', lab:'Ready-made lists', b:'Ready-made lists',\n   m:'High-protein breakfasts, filling foods under 100 calories, the most filling soups… Ready-ranked lists, tap to open.'}\n", ''],
   // plana giden kapılar: ana ekran ve Profil
-  ['<p class="hero-ipucu">Pick a section from the menu below ↓</p>', '<a class="hero-plan" href="/en/plan">Get a meal plan that keeps you full →</a><p class="hero-ipucu">Pick a section from the menu below ↓</p>'],
-  ["let h = '<div class=\"card\"><div class=\"p-baslik\">Account</div>", "let h = '<div class=\"card plan-kart\"><div class=\"p-baslik\">Stay Full Plan</div><p class=\"p-alt\">A week of meals built around staying full, with calorie and protein targets for every meal. Already subscribed? Your plan opens here once you sign in with the same email.</p><a class=\"hero-plan\" href=\"/en/plan\">Build my plan →</a></div><div class=\"card\"><div class=\"p-baslik\">Account</div>"],
-  ['</head>', '<style>.hero-plan{display:block;margin:14px auto 0;max-width:340px;text-align:center;background:var(--forest,#0E2217);color:var(--lime,#D5EC62);font-weight:700;padding:13px 18px;border-radius:999px;text-decoration:none}.plan-kart .hero-plan{margin:10px 0 0;max-width:none}.m-oneri{display:none!important}</style></head>'],
+  ['</head>', '<style>.m-oneri{display:none!important}</style></head>'],
   // Supabase istemcisi oluşur oluşmaz İngilizce veri kancası takılır
   ["const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'pkce' } });",
     "const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'pkce' } }); prEnKanca(sb);"],

@@ -13,6 +13,7 @@ const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
 const { uygulamaEn } = require('./_uygulama_en.js');
+const { tokJsTr, tokPlanSayfasiTr, kabukTr } = require('./_tokplan_tr.js');
 
 const EK_CSS = `
 .sivi{background:#E4E9F2;border-left:4px solid var(--teal,#1B2A4A);border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
@@ -590,6 +591,12 @@ module.exports = {
     const url = new URL(request.url);
     const p = url.searchParams.get('p') || 'home';
     const s = (url.searchParams.get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    // Türkçe Tok Plan (/tok-plan, /tok-plan.js): İngilizce planın çevirisi, fonksiyon sayısı sınırlı olduğu için burada
+    if (p === 'tokjs') return new Response(tokJsTr(), { headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'public, max-age=0, s-maxage=600' } });
+    if (p === 'tokplan') {
+      const t = tokPlanSayfasiTr();
+      return yanit(kabukTr(sayfa({ baslik: t.baslik, aciklama: t.aciklama, kanonik: t.kanonik, govde: `<style>${t.css}</style>${t.govde}`, alternatlar: [{ dil: 'tr', href: t.kanonik }, { dil: 'en', href: 'https://platerank.dev/en/plan' }] })), 200, 'public, max-age=0, s-maxage=600');
+    }
     if (p === 'plan') {
       const t = tokPlanSayfasi();
       return yanit(sayfa({ baslik: t.baslik, aciklama: t.aciklama, kanonik: t.kanonik, govde: `<style>${t.css}</style>${t.govde}` }), 200, 'public, max-age=0, s-maxage=600');

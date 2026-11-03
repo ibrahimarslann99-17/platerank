@@ -6,6 +6,8 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  ['<a class="hero-plan" href="/tok-plan">Seni tok tutan yemek planını al →</a>', '<a class="hero-plan" href="/en/plan">Get a meal plan that keeps you full →</a>', 'kod'],
+  ['<div class="card plan-kart"><div class="p-baslik">Tok Plan</div><p class="p-alt">Seni tok tutmaya göre kurulmuş haftalık yemek planı: her öğün için kalori ve protein hedefi. Zaten abone misin? Aynı e-postayla giriş yapınca planın burada açılır.</p><a class="hero-plan" href="/tok-plan">Planımı kur →</a></div>', '<div class="card plan-kart"><div class="p-baslik">Stay Full Plan</div><p class="p-alt">A week of meals built around staying full, with calorie and protein targets for every meal. Already subscribed? Your plan opens here once you sign in with the same email.</p><a class="hero-plan" href="/en/plan">Build my plan →</a></div>', 'kod'],
   ['const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;', 'const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + "&l=en";', 'kod'],
   ["await fetch('/api/menu-card?i=' + encodeURIComponent(b64));", "await fetch('/api/menu-card?i=' + encodeURIComponent(b64) + '&l=en');", 'kod'],
   ["a.download = 'platerank-menum.png';", "a.download = 'platerank-my-menu.png';", 'kod'],

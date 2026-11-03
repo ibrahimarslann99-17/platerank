@@ -7,7 +7,7 @@
       "includeFiles": "node_modules/**"
     },
     "api/en.js": {
-      "includeFiles": "index.html"
+      "includeFiles": "{index.html,tokplan.js}"
     }
   },
   "rewrites": [
@@ -122,6 +122,14 @@
     {
       "source": "/en/plan",
       "destination": "/api/en?p=plan"
+    },
+    {
+      "source": "/tok-plan",
+      "destination": "/api/en?p=tokplan"
+    },
+    {
+      "source": "/tok-plan.js",
+      "destination": "/api/en?p=tokjs"
     },
     {
       "source": "/sitemap-en.xml",
