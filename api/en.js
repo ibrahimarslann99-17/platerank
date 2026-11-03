@@ -1,5 +1,5 @@
 // İngilizce site. Tek fonksiyon, ?p= ile yönlenir (Vercel fonksiyon sayısı sınırlı):
-//   /en                 → p=home     ana sayfa: arama, en uzun/en kısa tok tutanlar, öne çıkan karşılaştırmalar
+//   /en                 → p=app      Türkçe uygulamanın İngilizcesi (api/_uygulama_en.js); eski vitrin p=home'da duruyor
 //   /en/food            → p=food     mutfak mutfak tüm yemekler
 //   /en/food/:slug      → p=food&s=  tek yemek: kaç saat tok tutar, kalori, alternatifler
 //   /en/vs/:a-vs-:b     → p=vs&s=    iki yemek: hangisi daha uzun tok tutar
@@ -12,6 +12,7 @@ const { veri, yakinSlug, esc, LIG_RENK, SITE, HALK_ESIK, kaloriKarsiligi, siviTu
 const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
+const { uygulamaEn } = require('./_uygulama_en.js');
 
 const EK_CSS = `
 .sivi{background:#E4E9F2;border-left:4px solid var(--teal,#1B2A4A);border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
@@ -90,7 +91,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
 <div class="wrap">
 <header class="top"><a class="logo" href="/en">Plate<i>Rank</i></a><a class="btn" href="/en/food">All foods</a></header>
 ${govde}
-<footer><a href="/en/food">All foods</a> · <a href="/en/method">Method</a> · <a href="/en">PlateRank home</a> · <a href="/" hreflang="tr" lang="tr">Türkçe</a> · iletisim@platerank.dev</footer>
+<footer><a href="/en/food">All foods</a> · <a href="/en/method">Method</a> · <a href="/en">PlateRank home</a> · <a href="/" hreflang="tr" lang="tr" onclick="document.cookie='pr_dil=tr;path=/;max-age=31536000'">Türkçe</a> · iletisim@platerank.dev</footer>
 </div>
 </body>
 </html>`;
@@ -602,6 +603,7 @@ module.exports = {
     if (p === 'sitemap') {
       return new Response(sitemap(d, e), { headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': ONBELLEK } });
     }
+    if (p === 'app') return yanit(uygulamaEn(e), 200, 'public, max-age=0, s-maxage=600');
     if (p === 'method') return yanit(yontemSayfasi(e));
     if (p === 'food') {
       if (!s) return yanit(dizinSayfasi(e));

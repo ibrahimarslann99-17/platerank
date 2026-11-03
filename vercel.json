@@ -5,6 +5,9 @@
     },
     "api/menu-card.js": {
       "includeFiles": "node_modules/**"
+    },
+    "api/en.js": {
+      "includeFiles": "index.html"
     }
   },
   "rewrites": [
@@ -98,7 +101,7 @@
     },
     {
       "source": "/en",
-      "destination": "/api/en?p=home"
+      "destination": "/api/en?p=app"
     },
     {
       "source": "/en/food",
@@ -126,6 +129,43 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "cookie",
+          "key": "pr_dil",
+          "value": "en"
+        }
+      ],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "pr_dil"
+        },
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": {
+            "re": "(^|[ ,])tr([-;,]|$)"
+          }
+        },
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": {
+            "re": "([Bb]ot|[Cc]rawl|[Ss]pider|[Ss]lurp|facebookexternalhit|Pinterest|WhatsApp|Telegram|Discord|Lighthouse|Headless|Embedly|Google-|Yandex)"
+          }
+        }
+      ],
+      "destination": "/en",
+      "permanent": false
+    },
     {
       "source": "/yemek/baklava",
       "destination": "/yemek/baklava-2-dilim",
