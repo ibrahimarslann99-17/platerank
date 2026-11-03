@@ -135,7 +135,7 @@ const SAYFA = [
   ['data-basla>Build my plan</button>', 'data-basla>Planımı kur</button>'],
   ['<p class="tp-not">Your daily targets are free. The full plan is $5/month or $30/year, cancel anytime.</p>', '<p class="tp-not">Günlük hedeflerin ücretsiz. Tam plan aylık 5 $ ya da yıllık 30 $, istediğin zaman iptal.</p>'],
   ['<h2>How it works</h2>', '<h2>Nasıl çalışıyor?</h2>'],
-  ['<div>Answer 10 short questions: your goal, body, schedule, diet and what you usually eat for breakfast.</div>', '<div>10 kısa soruyu cevapla: hedefin, vücudun, günün, beslenmen ve kahvaltıda genelde ne yediğin.</div>'],
+  ['<div>Answer 11 short questions: your goal, body, schedule, diet and what you usually eat for breakfast.</div>', '<div>11 kısa soruyu cevapla: hedefin, vücudun, günün, beslenmen ve kahvaltıda genelde ne yediğin.</div>'],
   ['<div>See your daily calories and protein, and how long your current breakfast actually keeps you full.</div>', '<div>Günlük kalori ve proteinini, şu anki kahvaltının seni gerçekte ne kadar tok tuttuğunu gör.</div>'],
   ['<div>Unlock a 7-day plan: what to eat, how much and when, with the hours each meal keeps you full.</div>', '<div>7 günlük planı aç: ne, ne kadar ve ne zaman yiyeceğin, her öğünün seni kaç saat tok tuttuğuyla birlikte.</div>'],
   ['<h2>Questions</h2>', '<h2>Sorular</h2>'],

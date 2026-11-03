@@ -62,7 +62,7 @@ function govde() {
 
   <div class="tp-kutu">
     <h2>How it works</h2>
-    <div class="tp-adim"><b>1</b><div>Answer 10 short questions: your goal, body, schedule, diet and what you usually eat for breakfast.</div></div>
+    <div class="tp-adim"><b>1</b><div>Answer 11 short questions: your goal, body, schedule, diet and what you usually eat for breakfast.</div></div>
     <div class="tp-adim"><b>2</b><div>See your daily calories and protein, and how long your current breakfast actually keeps you full.</div></div>
     <div class="tp-adim"><b>3</b><div>Unlock a 7-day plan: what to eat, how much and when, with the hours each meal keeps you full.</div></div>
   </div>
