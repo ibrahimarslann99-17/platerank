@@ -218,7 +218,8 @@
       '<div class="tp-hedefler"><div><b>' + s.gunluk.kcal.toLocaleString('en-US') + '</b><span>kcal a day</span></div><div><b>' + s.gunluk.protein + ' g</b><span>protein</span></div><div><b>' + s.ogunSayisi + '</b><span>meals</span></div></div>' +
       '<p class="tp-acik">Fat ' + s.gunluk.yag + ' g · Carbs ' + s.gunluk.karbonhidrat + ' g · Fiber ' + s.gunluk.lif + ' g</p>' +
       '<div class="tp-kilit"><div class="bulanik">' + liste + '</div><div class="ust">7-day plan, meal by meal</div></div>' +
-      '<button type="button" class="tp-cta" data-ode="' + id + '">Unlock my plan · $5/month</button>' +
+      '<button type="button" class="tp-cta" data-ode="' + id + '" data-donem="ay">Unlock my plan · $5/month</button>' +
+      (s.yillik ? '<button type="button" class="tp-cta tp-cta-yil" data-ode="' + id + '" data-donem="yil">Yearly · $30 <small>($2.50/month)</small></button>' : '') +
       '<p class="tp-not">Cancel anytime · Refund within 14 days · Secure checkout by Polar</p>' +
       '<div class="tp-hata" role="alert"></div></div>';
     goster(sonuc);
@@ -226,16 +227,18 @@
 
   sonuc.addEventListener('click', function (e) {
     var t = e.target.closest('[data-ode]'); if (!t) return;
+    var donem = t.dataset.donem === 'yil' ? 'yil' : 'ay';
+    var etiket = t.innerHTML;
     t.disabled = true; t.textContent = 'Opening checkout…';
-    izle('tp_odeme');
-    fetch('/api/plan?islem=odeme', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_id: t.dataset.ode }) })
+    izle('tp_odeme', { donem: donem });
+    fetch('/api/plan?islem=odeme', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_id: t.dataset.ode, donem: donem }) })
       .then(function (r) { return r.json(); })
       .then(function (s) {
         if (s.url) { location.href = s.url; return; }
-        t.disabled = false; t.textContent = 'Unlock my plan · $5/month';
+        t.disabled = false; t.innerHTML = etiket;
         $('.tp-hata', sonuc).textContent = s.hata === 'odeme_kapali' ? 'Checkout opens soon. Your targets are saved to this link.' : 'Couldn\u2019t open checkout. Try again.';
       })
-      .catch(function () { t.disabled = false; t.textContent = 'Unlock my plan · $5/month'; $('.tp-hata', sonuc).textContent = 'Couldn\u2019t reach the server. Try again.'; });
+      .catch(function () { t.disabled = false; t.innerHTML = etiket; $('.tp-hata', sonuc).textContent = 'Couldn\u2019t reach the server. Try again.'; });
   });
 
   // ---------- plan gorunumu ----------

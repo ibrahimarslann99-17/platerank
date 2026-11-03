@@ -1,7 +1,7 @@
 # Yasal sayfalari (TR + EN) tek sablondan uretir. Metni degistirince yeniden calistir: python3 araclar/yasal_uret.py
 import os
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TARIH = {'tr': '21 Ekim 2026', 'en': 'October 21, 2026'}
+TARIH = {'tr': '3 Kasım 2026', 'en': 'November 3, 2026'}
 MAIL = 'iletisim@platerank.dev'
 ALT = {
  'tr': [('/kosullar', 'Kullanım koşulları'), ('/gizlilik', 'Gizlilik'), ('/iade', 'İade ve iptal'), ('/', 'Ana sayfa')],
@@ -46,16 +46,16 @@ S['kosullar'] = ('tr', '/kosullar', '/en/terms', 'Kullanım koşulları',
   <p>Bu koşullar platerank.dev sitesini ve ücretli <strong>Tok Plan</strong> aboneliğini kullanman için geçerlidir. Siteyi kullanarak ya da abone olarak bu koşulları kabul etmiş olursun.</p>
 
   <h2>Hizmet</h2>
-  <p>PlateRank yemeklerin ne kadar tok tuttuğunu puanlayan ücretsiz bir sitedir. Tok Plan, verdiğin bilgilere göre günlük kalori, protein, yağ, lif ve karbonhidrat hedefini, öğün sayısını, öğün bazında makro dağılımını ve haftalık yemek planını hesaplayan aylık bir aboneliktir.</p>
+  <p>PlateRank yemeklerin ne kadar tok tuttuğunu puanlayan ücretsiz bir sitedir. Tok Plan, verdiğin bilgilere göre günlük kalori, protein, yağ, lif ve karbonhidrat hedefini, öğün sayısını, öğün bazında makro dağılımını ve haftalık yemek planını hesaplayan aylık ya da yıllık bir aboneliktir.</p>
 
   <h2>Tıbbi tavsiye değildir</h2>
   <p>Puanlar ve planlar hesaplamadır, ölçüm değildir. Genel olarak sağlıklı yetişkinler için tasarlanmıştır ve doktor ya da diyetisyen tavsiyesinin yerini tutmaz. 18 yaşından küçüksen, hamileysen veya emziriyorsan, kronik bir hastalığın varsa ya da düzenli ilaç kullanıyorsan plan oluşturmadan önce doktoruna danış. Sistem bu durumlarda plan üretmez. Planı uygularken kendini kötü hissedersen bırak ve bir uzmana başvur.</p>
 
   <h2>Abonelik ve ödeme</h2>
   <ul>
-    <li>Tok Plan aylık 5 ABD dolarıdır. Bulunduğun ülkeye göre vergi eklenebilir; ödeme ekranında son tutarı görürsün.</li>
+    <li>Tok Plan aylık 5 ABD doları ya da yıllık 30 ABD dolarıdır. Bulunduğun ülkeye göre vergi eklenebilir; ödeme ekranında son tutarı görürsün.</li>
     <li>Ödemeler, satıcı sıfatıyla (merchant of record) <a href="https://polar.sh">Polar</a> tarafından alınır ve faturalanır. Kart bilgilerin PlateRank'e ulaşmaz.</li>
-    <li>Abonelik sen iptal edene kadar her ay otomatik yenilenir.</li>
+    <li>Abonelik sen iptal edene kadar seçtiğin dönemin sonunda (aylık ya da yıllık) otomatik yenilenir.</li>
     <li>İstediğin zaman, ödeme e-postandaki bağlantıdan, Polar müşteri portalından ya da bize yazarak iptal edebilirsin. İptalden sonra ödediğin dönemin sonuna kadar erişimin sürer.</li>
     <li>Fiyat değişirse en az 30 gün önce e-postayla haber veririz; yeni fiyat bir sonraki yenilemeden itibaren geçerli olur.</li>
     <li>İade koşulları için <a href="/iade">iade ve iptal</a> sayfasına bak.</li>
@@ -127,7 +127,7 @@ S['iade'] = ('tr', '/iade', '/en/refund', 'İade ve iptal',
   <h2>İade</h2>
   <ul>
     <li><strong>İlk ödeme:</strong> ödemeden sonraki 14 gün içinde iade isteyebilirsin. Gerekçe sormayız.</li>
-    <li><strong>Yenileme ödemeleri:</strong> iptal etmeyi unuttuysan, yenilemeden sonraki 7 gün içinde yazarsan o ayın ücretini iade ederiz.</li>
+    <li><strong>Yenileme ödemeleri:</strong> iptal etmeyi unuttuysan, yenilemeden sonraki 7 gün içinde yazarsan o yenilemenin ücretini iade ederiz.</li>
     <li>Hizmet bizim kaynaklı bir sorun yüzünden çalışmadıysa, süreye bakmadan etkilenen dönemi iade ederiz.</li>
   </ul>
 
@@ -146,16 +146,16 @@ S['en-terms'] = ('en', '/en/terms', '/kosullar', 'Terms of service',
   <p>These terms apply to your use of platerank.dev and the paid <strong>Stay Full Plan</strong> subscription. By using the site or subscribing you agree to them.</p>
 
   <h2>The service</h2>
-  <p>PlateRank is a free site that scores how filling foods are. The Stay Full Plan is a monthly subscription that uses the details you provide to calculate your daily calorie, protein, fat, fiber and carbohydrate targets, your number of meals, a per-meal macro split and a weekly meal plan.</p>
+  <p>PlateRank is a free site that scores how filling foods are. The Stay Full Plan is a monthly or yearly subscription that uses the details you provide to calculate your daily calorie, protein, fat, fiber and carbohydrate targets, your number of meals, a per-meal macro split and a weekly meal plan.</p>
 
   <h2>Not medical advice</h2>
   <p>Scores and plans are calculations, not measurements. They are designed for generally healthy adults and do not replace advice from a doctor or dietitian. If you are under 18, pregnant or breastfeeding, have a chronic condition or take regular medication, talk to your doctor before creating a plan. The system does not generate plans in these cases. If you feel unwell while following a plan, stop and see a professional.</p>
 
   <h2>Subscription and payment</h2>
   <ul>
-    <li>The Stay Full Plan costs USD 5 per month. Tax may be added depending on your country; you will see the final amount at checkout.</li>
+    <li>The Stay Full Plan costs USD 5 per month or USD 30 per year. Tax may be added depending on your country; you will see the final amount at checkout.</li>
     <li>Payments are collected and invoiced by <a href="https://polar.sh">Polar</a> as merchant of record. Your card details never reach PlateRank.</li>
-    <li>The subscription renews automatically every month until you cancel.</li>
+    <li>The subscription renews automatically at the end of each billing period (monthly or yearly) until you cancel.</li>
     <li>You can cancel at any time via the link in your payment email, the Polar customer portal, or by emailing us. After cancelling you keep access until the end of the period you paid for.</li>
     <li>If the price changes we will email you at least 30 days in advance; the new price applies from the next renewal.</li>
     <li>See <a href="/en/refund">refunds and cancellation</a> for refund terms.</li>
@@ -227,7 +227,7 @@ S['en-refund'] = ('en', '/en/refund', '/iade', 'Refunds and cancellation',
   <h2>Refunds</h2>
   <ul>
     <li><strong>First payment:</strong> you can request a refund within 14 days of paying. No questions asked.</li>
-    <li><strong>Renewals:</strong> if you forgot to cancel, write to us within 7 days of the renewal and we will refund that month.</li>
+    <li><strong>Renewals:</strong> if you forgot to cancel, write to us within 7 days of the renewal and we will refund that renewal.</li>
     <li>If the service did not work because of a problem on our side, we refund the affected period regardless of timing.</li>
   </ul>
 

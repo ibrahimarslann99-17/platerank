@@ -20,8 +20,10 @@ try { GORSELLER = new Set(require('../img/yemek/liste.json')); } catch (e) { /* 
 
 const SITE = 'https://platerank.dev';
 const POLAR = process.env.POLAR_API || 'https://api.polar.sh/v1';
-// Stay Full Plan urunu ($5/ay). Gizli degil; erisim anahtari ayrica POLAR_ACCESS_TOKEN ortam degiskeninde.
+// Stay Full Plan urunleri: aylik $5, yillik $30. Gizli degil; erisim anahtari ayrica POLAR_ACCESS_TOKEN ortam degiskeninde.
+// Yillik urun Polar'da ayri urun olarak acilir; ID'si POLAR_PRODUCT_ID_YIL'a yazilmazsa yillik secenek gizlenir.
 const URUN = process.env.POLAR_PRODUCT_ID || '6295304f-b7d7-4848-8209-69b486131d0d';
+const URUN_YIL = process.env.POLAR_PRODUCT_ID_YIL || '';
 
 const ZORUNLU = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'email'];
 // Veritabanina yalnizca bunlar yazilir. Saglik kapisi cevaplari (hamile, kronikHastalik) asla saklanmaz.
@@ -182,15 +184,17 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'POST' && req.query.islem === 'odeme') {
       if (!process.env.POLAR_ACCESS_TOKEN) return res.status(503).json({ hata: 'odeme_kapali' });
-      const id = String(govde(req).plan_id || '');
+      const gg = govde(req);
+      const id = String(gg.plan_id || '');
       if (!UUID.test(id)) return res.status(400).json({ hata: 'id' });
+      const urun = gg.donem === 'yil' && URUN_YIL ? URUN_YIL : URUN;
       const [kayit] = await sorgu(`planlar?id=eq.${id}&select=id,email,dil`);
       if (!kayit) return res.status(404).json({ hata: 'yok' });
       const sayfa = kayit.dil === 'en' ? '/en/plan' : '/tok-plan';
       const c = await polar('/checkouts/', {
         method: 'POST',
         body: {
-          products: [URUN],
+          products: [urun],
           customer_email: kayit.email,
           metadata: { plan_id: id },
           success_url: `${SITE}${sayfa}?id=${id}&checkout_id={CHECKOUT_ID}`,
@@ -215,7 +219,7 @@ module.exports = async function handler(req, res) {
       });
       let on = null;
       try { on = await onizleme(kayit); } catch (e) { console.error('onizleme', e); }
-      return res.status(200).json({ plan_id: kayit.id, ...ucretsiz(h), onizleme: on });
+      return res.status(200).json({ plan_id: kayit.id, ...ucretsiz(h), onizleme: on, yillik: !!URUN_YIL });
     }
 
     if (req.method === 'GET') {

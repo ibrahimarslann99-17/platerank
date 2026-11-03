@@ -8,6 +8,7 @@ const CSS = `
 .tp-mad{list-style:none;padding:0;margin:0 0 20px}.tp-mad li{padding:6px 0 6px 28px;position:relative}.tp-mad li:before{content:'';position:absolute;left:4px;top:13px;width:12px;height:12px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px var(--forest)}
 .tp-cta{display:block;width:100%;border:0;background:var(--forest);color:var(--lime);font:600 18px Figtree,system-ui,sans-serif;padding:16px;border-radius:999px;cursor:pointer;text-align:center;text-decoration:none}
 .tp-cta[disabled]{opacity:.6;cursor:wait}
+.tp-cta-yil{margin-top:10px;background:var(--card);color:var(--forest);box-shadow:inset 0 0 0 2px var(--forest)}.tp-cta-yil small{font-weight:500;opacity:.75}
 .tp-not{text-align:center;color:var(--muted);font-size:14px;margin:8px 0 0}
 .tp-kutu{background:var(--card);border-radius:22px;padding:20px;margin:16px 0;box-shadow:0 1px 2px rgba(14,34,23,.05),0 10px 24px -14px rgba(14,34,23,.2)}
 .tp-kutu h2{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;margin:0 0 10px;color:var(--forest)}
@@ -57,7 +58,7 @@ function govde() {
     <li>A new plan every week, with two swaps for every meal</li>
   </ul>
   <button class="tp-cta" type="button" data-basla>Build my plan</button>
-  <p class="tp-not">Your daily targets are free. The full plan is $5/month, cancel anytime.</p>
+  <p class="tp-not">Your daily targets are free. The full plan is $5/month or $30/year, cancel anytime.</p>
 
   <div class="tp-kutu">
     <h2>How it works</h2>
@@ -85,7 +86,7 @@ function govde() {
 function tokPlanSayfasi() {
   return {
     baslik: 'Stay Full Plan: a weekly meal plan that keeps you full | PlateRank',
-    aciklama: 'A personalized weekly meal plan with calorie and protein targets for every meal, timed to your day so each meal keeps you full until the next. Free daily targets, full plan $5/month.',
+    aciklama: 'A personalized weekly meal plan with calorie and protein targets for every meal, timed to your day so each meal keeps you full until the next. Free daily targets, full plan $5/month or $30/year.',
     kanonik: 'https://platerank.dev/en/plan',
     css: CSS,
     govde: govde(),
