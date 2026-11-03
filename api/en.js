@@ -562,7 +562,8 @@ function sitemap(d, e) {
   const enGec = (...l) => l.map(gun).filter(Boolean).sort().pop() || son;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${url(ADRES.home, son)}
+${url(ADRES.home, son > '2026-11-03' ? son : '2026-11-03')}
+${url(`${SITE}/en/plan`, '2026-11-03')}
 ${url(ADRES.food, son)}
 ${url(ADRES.method, son)}
 ${yemekler.map((y) => url(`${SITE}/en/food/${y.slug}`, enGec(y.updated_at || y.created_at, '2026-10-17'))).join('\n')}
@@ -599,7 +600,7 @@ module.exports = {
     }
     if (p === 'plan') {
       const t = tokPlanSayfasi();
-      return yanit(sayfa({ baslik: t.baslik, aciklama: t.aciklama, kanonik: t.kanonik, govde: `<style>${t.css}</style>${t.govde}` }), 200, 'public, max-age=0, s-maxage=600');
+      return yanit(sayfa({ baslik: t.baslik, aciklama: t.aciklama, kanonik: t.kanonik, govde: `<style>${t.css}</style>${t.govde}`, alternatlar: [{ dil: 'en', href: t.kanonik }, { dil: 'tr', href: 'https://platerank.dev/tok-plan' }] }), 200, 'public, max-age=0, s-maxage=600');
     }
     let d;
     try { d = await veri(); } catch (err) {
