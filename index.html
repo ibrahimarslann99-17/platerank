@@ -1685,6 +1685,10 @@ function renderBilgi(){
   const kilo = parseFloat(pKilo());
   const dd = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
   let h = '<div class="card plan-kart"><div class="p-baslik">Tok Plan</div><p class="p-alt">Seni tok tutmaya göre kurulmuş haftalık yemek planı: her öğün için kalori ve protein hedefi. Zaten abone misin? Aynı e-postayla giriş yapınca planın burada açılır.</p><a class="hero-plan" href="/tok-plan">Planımı kur →</a></div><div class="card"><div class="p-baslik">Hesap</div><p class="p-alt">Giriş yaparsan favorilerin ve menün bütün cihazlarında seninle gelir.</p><div class="authbar" id="authbar"></div></div>';
+  if(!currentUser && typeof bgUyeKartBas==='function'){
+    const m = h.match(/^(<div class="card plan-kart">[\s\S]*?<\/a><\/div>)<div class="card"><div class="p-baslik">[^<]*<\/div><p class="p-alt">[^<]*<\/p>(<div class="authbar" id="authbar"><\/div><\/div>)$/);
+    if(m) h = '<div class="card bg-uye">' + bgUyeKartBas() + m[2] + m[1].replace('class="card plan-kart"', 'class="card plan-kart bg-ucretli"').replace('<div class="p-baslik">', bgUcretliEtiket() + '<div class="p-baslik">');
+  }
   h += '<div class="card pbox"><div><div class="p-baslik">Bilgilerim</div><p class="p-alt" style="margin:0">Ne yesem ve protein hesabı bunları kullanır. Sadece bu cihazda kalır.</p></div>';
   h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
   h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
