@@ -15,7 +15,7 @@
     kisa: 'cut this meal by ~', uzun: 'stretched this meal by ~', soruBas: 'After ', soruOrta: ', were you hungry around ', soruSon: '?',
     evet: 'Yes', once: 'Earlier', degil: 'Not hungry, it was just time', saatSor: 'Around what time did you get hungry?', kaydet: 'Save',
     kaydedildi: 'Saved', meclise: 'Saved · sent to the Stomach Senate', girisSoru: 'Sign in to record how long this meal really kept you full.', girisYap: 'Sign in',
-    girisUyari: 'Your log is only on this device. Without signing in it may be deleted after a week.', gecmis: 'Past days', gecmisUye: 'Sign in to see your past days.',
+    girisUyari: 'Your log is only on this device. Sign up free so it stays.', gecmis: 'Past days', gecmisUye: 'Sign in to see your past days.',
     menuTasi: function(n){ return 'Your old menu has ' + n + ' foods. Add them to today?'; }, gerekYok: 'No thanks', kopya: 'Copy as text', kart: 'Download as card',
     kopyalandi: 'Copied ✓', kopyalanamadi: 'Couldn’t copy', hazirlaniyor: 'Getting ready…', kartHata: 'Couldn’t create the card, try again', kartIndi: 'Card downloaded ✓',
     sil: 'Remove', bugune: 'Back to today', yukleniyor: 'Loading the food list…', saat: 'Time', baslik: 'PlateRank · Today', toplamYazi: 'Total', l: '&l=en', dosya: 'platerank-today.png'
@@ -27,7 +27,7 @@
     kisa: 'bu öğünü ~', uzun: 'bu öğünü ~', soruBas: '', soruOrta: ' sonrası ', soruSon: ' civarı mı acıktın?',
     evet: 'Evet', once: 'Daha önce', degil: 'Aç değildim, saati geldi', saatSor: 'Saat kaç civarı acıktın?', kaydet: 'Kaydet',
     kaydedildi: 'Kaydedildi', meclise: 'Kaydedildi · Meclis-i Mide’ye de gitti', girisSoru: 'Bu öğünün seni gerçekte ne kadar tuttuğunu kaydetmek için giriş yap.', girisYap: 'Giriş yap',
-    girisUyari: 'Kayıtların sadece bu cihazda. Giriş yapmazsan bir hafta sonra silinebilir.', gecmis: 'Geçmiş günler', gecmisUye: 'Geçmiş günlerini görmek için giriş yap.',
+    girisUyari: 'Kayıtların sadece bu cihazda. Ücretsiz üye ol, kaybolmasın.', gecmis: 'Geçmiş günler', gecmisUye: 'Geçmiş günlerini görmek için giriş yap.',
     menuTasi: function(n){ return 'Eski menünde ' + n + ' yemek var. Bugüne ekleyeyim mi?'; }, gerekYok: 'Gerek yok', kopya: 'Metin olarak kopyala', kart: 'Kart olarak indir',
     kopyalandi: 'Kopyalandı ✓', kopyalanamadi: 'Kopyalanamadı', hazirlaniyor: 'Hazırlanıyor…', kartHata: 'Kart oluşturulamadı, tekrar dene', kartIndi: 'Kart indirildi ✓',
     sil: 'Çıkar', bugune: 'Bugüne dön', yukleniyor: 'Yemek listesi yükleniyor…', saat: 'Saat', baslik: 'PlateRank · Bugün', toplamYazi: 'Toplam', l: '', dosya: 'platerank-bugun.png'
@@ -329,7 +329,7 @@
       '<div class="pshare"><button class="btn ikincil" id="bg-kopya">' + T.kopya + '</button><button class="btn" id="bg-kart">' + T.kart + '</button></div></div>';
     h += l.map(ogunHtml).join('');
     var ogunSay = new Set(kayit.map(function(x){ return x.ogun_id; })).size;
-    if(!currentUser && ogunSay >= 3) h += '<div class="card bg-soru"><p>' + esc(T.girisUyari) + '</p><button class="btn" data-bggiris>' + T.girisYap + '</button></div>';
+    if(!currentUser && ogunSay >= 3) h += '<div class="card bg-soru"><p>' + esc(T.girisUyari) + '</p><button class="btn" data-bggiris>' + (EN ? 'Sign up free' : 'Ücretsiz üye ol') + '</button></div>';
     return h + gecmisHtml();
   };
 
@@ -704,9 +704,9 @@
     var safari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
     var bas = EN ? (nd ? (nd === 1 ? 'Yesterday’s meal is' : 'Yesterday’s ' + nd + ' meals are') : (ne === 1 ? 'Your past meal is' : 'Your past ' + ne + ' meals are')) + ' only on this device.'
                  : (nd ? 'Dünkü ' + nd : 'Önceki ' + ne) + ' öğünün sadece bu cihazda.';
-    var neden = EN ? (safari ? 'Safari deletes data for sites you don’t open for 7 days.' : 'Clearing your browser data deletes it.')
+    var neden = EN ? (safari ? 'Safari deletes data for sites you don’t open for 7 days.' : 'Clearing your browser data deletes ' + ((nd || ne) === 1 ? 'it.' : 'them.'))
                    : (safari ? 'Safari, 7 gün girmediğin sitelerin kayıtlarını siler.' : 'Tarayıcı verilerini temizlersen silinir.');
-    return '<div class="bga-not"><p><b>' + bas + '</b> ' + neden + ' ' + (EN ? 'Sign up free so it stays.' : 'Ücretsiz üye ol, kaybolmasın.') + '</p>' +
+    return '<div class="bga-not"><p><b>' + bas + '</b> ' + neden + ' ' + (EN ? 'Sign up free so ' + ((nd || ne) === 1 ? 'it stays.' : 'they stay.') : 'Ücretsiz üye ol, kaybolmasın.') + '</p>' +
       '<div class="bga-not-sat"><button type="button" class="bga-uye" data-bguye>' + (EN ? 'Sign up free' : 'Ücretsiz üye ol') + '</button><button type="button" class="link-btn" data-bgsus>' + (EN ? 'Not now' : 'Şimdi değil') + '</button></div></div>';
   }
   document.addEventListener('click', function(e){
