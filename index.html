@@ -1613,7 +1613,7 @@ function render(){
   }
   else if(currentMode==='bilgi' || currentMode==='fav' || currentMode==='menu'){
     profilAlt = currentMode;
-    content.innerHTML = segHtml([['bilgi','Bilgilerim'],['menu','📅 Bugün'],['fav','★ Favoriler']], currentMode) +
+    content.innerHTML = segHtml([['bilgi','Bilgilerim'],['menu','🍽️ Bugün'],['fav','★ Favoriler']], currentMode) +
       (currentMode==='fav' ? renderFav() : currentMode==='menu' ? renderMenu() : renderBilgi());
   }
   else { currentMode = 'comm'; content.innerHTML = renderComm(); }

@@ -43,6 +43,10 @@
   function uuid(){ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){ var r = Math.random()*16|0; return (c === 'x' ? r : (r&3|8)).toString(16); }); }
   function gunAnahtari(d){ d = new Date(d); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function hhmm(d){ d = new Date(d); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }
+  // Türkçe saat eki: 14:57'ye, 14:30'a, 15:00'e / 14:57'den, 14:40'tan
+  var EK_E = { 0:'a', 1:'e', 2:'ye', 3:'e', 4:'e', 5:'e', 6:'ya', 7:'ye', 8:'e', 9:'a', 10:'a', 20:'ye', 30:'a', 40:'a', 50:'ye' };
+  var EK_DEN = { 0:'dan', 1:'den', 2:'den', 3:'ten', 4:'ten', 5:'ten', 6:'dan', 7:'den', 8:'den', 9:'dan', 10:'dan', 20:'den', 30:'dan', 40:'tan', 50:'den' };
+  function saatEk(d, tablo){ d = new Date(d); var m = d.getMinutes(), n = m === 0 ? d.getHours() : m; var k = n === 0 ? 0 : (n % 10 ? n % 10 : n % 100 >= 10 ? (n % 100) - (n % 100) % 10 : 10); return hhmm(d) + '’' + (tablo[k] || tablo[n % 10] || 'e'); }
   function dkFark(a, b){ return Math.round((new Date(b) - new Date(a)) / 60000); }
   function yarim(x){ return Math.round(x*2)/2; }
   function sayi(x){ return EN ? String(x) : String(x).replace('.', ','); }
@@ -184,19 +188,22 @@
     var BAS = 6*60, SON = 24*60, gen = SON - BAS;
     var pos = function(d){ var t = new Date(d); var m = t.getHours()*60 + t.getMinutes(); return Math.max(0, Math.min(100, (m - BAS) / gen * 100)); };
     var bugun = gun === gunAnahtari(new Date());
-    var html = '';
+    var html = '', satir = '', simdi = new Date();
     l.forEach(function(o, i){
       var h = hesap(o.kalemler); if(h.sure == null) return;
       var cevap = tokluk[o.id];
       var bitis = new Date(new Date(o.bas).getTime() + (cevap && cevap.sure_dk ? cevap.sure_dk : h.sure*60) * 60000);
       var a = pos(o.bas), b = pos(bitis);
+      var durum = '';
+      if(bugun && !l[i+1]) durum = simdi < bitis ? (EN ? ' · hungry again around ' + hhmm(bitis) : ' · ~' + hhmm(bitis) + ' gibi acıkırsın') : (EN ? ' · hungry since ' + hhmm(bitis) : ' · ' + saatEk(bitis, EK_DEN) + ' beri açsın');
+      satir += '<li><b>' + esc(ogunAdi(o.bas)) + '</b> ' + hhmm(o.bas) + ' → ' + (EN ? 'full until ~' + hhmm(bitis) : '~' + saatEk(bitis, EK_E) + ' kadar tok') + durum + '</li>';
       html += '<i class="bg-tok" style="left:' + a + '%;width:' + Math.max(1, b - a) + '%"></i>';
       var sonraki = l[i+1] ? new Date(l[i+1].bas) : (bugun ? new Date() : null);
       if(sonraki && sonraki > bitis){ var c = pos(sonraki); html += '<i class="bg-ac" style="left:' + b + '%;width:' + Math.max(0, c - b) + '%"></i>'; }
     });
     if(bugun) html += '<i class="bg-simdi" style="left:' + pos(new Date()) + '%"></i>';
     return '<div class="bg-cizgi"><div class="bg-ray">' + html + '</div><div class="bg-eksen"><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>' +
-      '<div class="bg-lej"><span><i class="bg-tok"></i>' + T.tok + '</span><span><i class="bg-ac"></i>' + T.ac + '</span></div></div>';
+      '<div class="bg-lej"><span><i class="bg-tok"></i>' + T.tok + '</span><span><i class="bg-ac"></i>' + T.ac + '</span></div>' + (satir ? '<ul class="bg-saatler">' + satir + '</ul>' : '') + '</div>';
   }
   function soruHtml(s){
     if(!currentUser) return '<div class="card bg-soru"><p>' + esc(T.girisSoru) + '</p><button class="btn" data-bggiris>' + T.girisYap + '</button></div>';
@@ -349,7 +356,7 @@
     '.bg-cips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}.bg-cips span{font-size:12px;color:var(--ink-muted,#6B7079);width:100%}.bg-cips button{border:1.5px solid var(--line,#D2D1C4);background:var(--card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer;color:inherit}' +
     '.bg-sonuc{margin-top:8px}.bg-soru p{margin:0 0 10px}.bg-satir{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.bg-satir input{font:inherit;font-size:16px;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line,#D2D1C4)}' +
     '.bg-cizgi{margin:12px 0 6px}.bg-ray{position:relative;height:16px;border-radius:8px;background:var(--line,#E4E4DC);overflow:hidden}.bg-ray i{position:absolute;top:0;bottom:0}.bg-tok{background:#2F8F5B}.bg-ac{background:#E9A79F}.bg-simdi{width:2px;background:var(--ink,#15171B)}' +
-    '.bg-eksen{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-muted,#6B7079);margin-top:4px}.bg-lej{display:flex;gap:14px;font-size:12px;color:var(--ink-muted,#6B7079);margin-top:4px}.bg-lej i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}' +
+    '.bg-eksen{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-muted,#6B7079);margin-top:4px}.bg-lej{display:flex;gap:14px;font-size:12px;color:var(--ink-muted,#6B7079);margin-top:4px}.bg-lej i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}.bg-saatler{list-style:none;margin:10px 0 0;padding:0;font-size:14px;line-height:1.6}.bg-saatler b{font-weight:600}' +
     '.bg-ogun .bg-ust{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.bg-ogun .bg-ust b{font-size:16px}.bg-saat{font:inherit;font-size:14px;border:1px solid var(--line,#D2D1C4);border-radius:10px;padding:4px 8px;background:transparent;color:inherit}' +
     '.bg-kalem{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line,#E4E4DC)}.bg-ad{flex:1;min-width:0}.bg-ad small{display:block;font-size:12px;color:var(--ink-muted,#6B7079)}' +
     '.bg-pors,.bg-sil{border:1px solid var(--line,#D2D1C4);background:transparent;border-radius:999px;min-width:38px;height:32px;font:inherit;font-size:14px;cursor:pointer;color:inherit}.bg-sil{min-width:32px}' +

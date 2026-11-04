@@ -6,7 +6,7 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
-  ["['menu','📅 Bugün']", "['menu','📅 Today']", 'kod'],
+  ["['menu','🍽️ Bugün']", "['menu','🍽️ Today']", 'kod'],
   ['title="Bugüne ekle" aria-label="Bugüne ekle">', 'title="Add to today" aria-label="Add to today">', 'kod'],
   ['data-seg="menu">Ne yedin? Bugün’e ekle →</button>', 'data-seg="menu">What did you eat? Add it to today →</button>', 'kod'],
   ['<a class="hero-plan" href="/tok-plan">Seni tok tutan yemek planını al →</a>', '<a class="hero-plan" href="/en/plan">Get a meal plan that keeps you full →</a>', 'kod'],
