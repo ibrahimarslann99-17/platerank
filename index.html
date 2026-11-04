@@ -1661,6 +1661,7 @@ function heroHtml(){
   const f = heroSecim();
   if(!f) return '<div class="hero hero-bos"><div class="hero-harf">S</div><div class="hero-alt">'+(Object.keys(foodCache).length ? 'Alttaki menüden bir bölüm seç.' : 'Mutfak ısınıyor…')+'</div></div>';
   const t = acikmaSuresi(f);
+  const bgKart = typeof bgAnaKartHtml==='function' ? bgAnaKartHtml() : '';
   const ic = p=>'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
   return `<div class="hero">
     <div class="hero-harf">S</div>
@@ -1674,8 +1675,9 @@ function heroHtml(){
     ${ayniKaloriSuresi(f)!=null?`<div class="hero-tok">${tsureHtml(ayniKaloriSuresi(f))}<div class="ht-alt">aynı 300 kaloride tok tutma süresi · porsiyonu (${f.kcal} kcal) ~${saatStr(t)} sa</div></div>`:''}
     <button class="hero-btn" id="hero-btn" data-id="${f.id}" data-m="${f.mutfak}">Listede gör</button>
   </div>
+  ${bgKart}
   <a class="hero-plan" href="/tok-plan">Seni tok tutan yemek planını al →</a>
-  <button class="link-btn hero-bugun" data-seg="menu">Ne yedin? Bugün’e ekle →</button>
+  ${bgKart ? '' : '<button class="link-btn hero-bugun" data-seg="menu">Ne yedin? Bugün’e ekle →</button>'}
   <p class="hero-ipucu">Alttaki menüden bir bölüm seç ↓</p>`;
 }
 function renderBilgi(){
@@ -2812,16 +2814,17 @@ function neYesem(){
   const yedim = P_YEDIM.find(x=>x.id===pg("yedim","normal")) || P_YEDIM[2];
   const aclik = P_ACLIK.find(x=>x.id===pg("aclik","orta")) || P_ACLIK[1];
   const tat = pg("tat","farketmez");
+  const bgk = typeof bgBugunKcal==='function' ? bgBugunKcal() : null;
   h += '<div class="card pbox">';
-  h += '<div><label>Bugün şimdiye kadar ne kadar yedin?</label>'+secGrup("yedim", P_YEDIM, yedim.id)+'</div>';
+  h += bgk!=null ? bgYesemUst(bgk) : '<div><label>Bugün şimdiye kadar ne kadar yedin?</label>'+secGrup("yedim", P_YEDIM, yedim.id)+'</div>';
   h += '<div><label>Şu an ne kadar açsın?</label>'+secGrup("aclik", P_ACLIK, aclik.id)+'</div>';
   h += '<div><label>Canın ne çekiyor?</label>'+secGrup("tat", P_TAT, tat)+'</div>';
   h += '</div>';
-  const alinan = Math.round(gk * yedim.o);
+  const alinan = bgk!=null ? bgk : Math.round(gk * yedim.o);
   const kalan = Math.max(150, gk - alinan);
   const porsiyon = Math.round(kalan * aclik.p);
   h += '<div class="card psonuc"><div class="butce"><span class="bs">~'+porsiyon+'</span><span class="bl">kalorilik bir şey</span></div>';
-  h += '<div class="aciklama">Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.</div></div>';
+  h += '<div class="aciklama">'+(bgk!=null ? bgYesemAciklama(gk, alinan, kalan) : 'Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.')+'</div></div>';
   // oneriler
   var havuz = (foodCache[currentCuisine]||[]).filter(function(f){
     if(f.sadece_malzeme) return false;
@@ -2853,7 +2856,7 @@ function neYesem(){
       const g = sekerSoku(f); const t = acikmaSuresi(f);
       h += '<div class="oner"><span class="os lig-'+lig+'">'+lig+'</span><span class="oi"><span class="on">'+esc(f.ad)+'</span>';
       h += '<span class="od">'+f.kcal+' kcal'+(f.protein!=null?' · '+f.protein+' g protein':'')+(g?' · şeker şoku: '+g.ad.toLocaleLowerCase("tr"):'')+'</span></span>';
-      h += '<span class="ok2">'+(t?'⏱ '+saatStr(t)+' sa':'')+'</span></div>';
+      h += '<span class="ok2">'+(t?'⏱ '+saatStr(t)+' sa':'')+'</span>'+(typeof bgYedimBtn==='function'?bgYedimBtn(f.id):'')+'</div>';
     });
     h += '</div>';
     // bunun yerine

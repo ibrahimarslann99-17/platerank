@@ -91,7 +91,12 @@
   function uyeSil(id){ if(currentUser) sb.from('gunluk').delete().eq('id', id).then(function(r){ if(r.error) console.error('gunluk', r.error); }); }
 
   // ---------- veri ----------
-  function yemek(id){ if(!TUM){ tumYemekYukle(); return null; } return TUM.find(function(f){ return f.id === id; }) || null; }
+  function yemek(id){
+    if(TUM) return TUM.find(function(f){ return f.id === id; }) || null;
+    tumYemekYukle();
+    try{ var l = Object.values(foodCache || {}); for(var i = 0; i < l.length; i++){ var f = (l[i] || []).find && l[i].find(function(y){ return y.id === id; }); if(f) return f; } }catch(e){}
+    return (typeof mYemek === 'function' && mYemek(id)) || null;
+  }
   function gununKayitlari(gun){ return kayit.filter(function(x){ return gunAnahtari(x.yendi) === gun; }).sort(function(a, b){ return new Date(a.yendi) - new Date(b.yendi); }); }
   function ogunler(gun){
     var m = new Map();
@@ -136,12 +141,6 @@
     kayit.push(x); lokalKaydet(); uyeEkle(x);
     return x;
   }
-  window.bgEkle = function(fid){
-    secGun = null;
-    var x = ekle(fid);
-    buzz(8);
-    toast(T.eklendi + ' · ' + ogunAdi(x.yendi) + ' ' + hhmm(x.yendi));
-  };
   window.bgBugunIdleri = function(){ return gununKayitlari(gunAnahtari(new Date())).map(function(x){ return x.yemek_id; }); };
 
   // ---------- "acıktın mı" sorusu ----------
@@ -184,7 +183,7 @@
   }
 
   // ---------- çizim ----------
-  function cizgi(gun, l){
+  function cizgi(gun, l, mini){
     var BAS = 6*60, SON = 24*60, gen = SON - BAS;
     var pos = function(d){ var t = new Date(d); var m = t.getHours()*60 + t.getMinutes(); return Math.max(0, Math.min(100, (m - BAS) / gen * 100)); };
     var bugun = gun === gunAnahtari(new Date());
@@ -203,7 +202,7 @@
     });
     if(bugun) html += '<i class="bg-simdi" style="left:' + pos(new Date()) + '%"></i>';
     return '<div class="bg-cizgi"><div class="bg-ray">' + html + '</div><div class="bg-eksen"><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>' +
-      '<div class="bg-lej"><span><i class="bg-tok"></i>' + T.tok + '</span><span><i class="bg-ac"></i>' + T.ac + '</span></div>' + (satir ? '<ul class="bg-saatler">' + satir + '</ul>' : '') + '</div>';
+      (mini ? '' : '<div class="bg-lej"><span><i class="bg-tok"></i>' + T.tok + '</span><span><i class="bg-ac"></i>' + T.ac + '</span></div>' + (satir ? '<ul class="bg-saatler">' + satir + '</ul>' : '')) + '</div>';
   }
   function soruHtml(s){
     if(!currentUser) return '<div class="card bg-soru"><p>' + esc(T.girisSoru) + '</p><button class="btn" data-bggiris>' + T.girisYap + '</button></div>';
@@ -535,6 +534,137 @@
     '.bo-adim{display:inline-flex;align-items:center;gap:6px}.bo-adim button,.bo-sil{width:32px;height:32px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:inherit;font:inherit;font-size:16px;cursor:pointer}.bo-adim b{min-width:26px;text-align:center}' +
     '.bo-ara{margin:10px 0 6px}.bo-ara input{width:100%}';
   document.head.appendChild(st2);
+
+
+  // =========================================================
+  // Dış kapılar: ana sayfa kartı (Bugün'e en az bir kez ekleyene), Ne yesem'de "Bunu yedim",
+  // eklemede "~16:05'e kadar toksun" bildirimi.
+  // =========================================================
+  var K = EN ? {
+    eklendi: 'added', toksun: 'Full until ~', gor: 'See Today →', yedim: 'I ate this', tamam: '✓ Added',
+    ust: 'TODAY', neYedin: 'What did you eat?', bosAlt: 'Add it and we’ll tell you how long you’ll stay full.', ara: '🔍 eggs, oatmeal, burger…',
+    ekle: '+ What did you eat? Add…', daha: ' left', ac: 'Probably hungry by now', acAlt: 'hungry since ', bugunden: 'from Today ✓',
+    yesemUst: function(k){ return 'So far today: <b>' + k + ' kcal</b>'; },
+    yesemAcik: function(gk, al, ka){ return 'You need about ' + gk + ' kcal a day. From what you added to Today, you’ve had ' + al + ' kcal, which leaves ' + ka + ' kcal for the rest of the day. A portion that fits your hunger right now is around this.'; }
+  } : {
+    eklendi: 'eklendi', toksun: '', gor: 'Bugün’de gör →', yedim: 'Bunu yedim', tamam: '✓ Eklendi',
+    ust: 'BUGÜN', neYedin: 'Ne yedin?', bosAlt: 'Ekle, ne zamana kadar tok kalacağını söyleyelim.', ara: '🔍 menemen, simit, lahmacun…',
+    ekle: '+ Ne yedin? Ekle…', daha: ' daha', ac: 'Acıkmış olmalısın', acAlt: '', bugunden: 'Bugün’den ✓',
+    yesemUst: function(k){ return 'Bugün şimdiye kadar <b>' + k + ' kcal</b> yedin'; },
+    yesemAcik: function(gk, al, ka){ return 'Günlük ihtiyacın ' + gk + ' kcal. Bugün’e girdiklerine göre şimdiye kadar ' + al + ' kcal almışsın; günün kalanına ' + ka + ' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.'; }
+  };
+  function ogunSonu(o){
+    var h = hesap(o.kalemler); if(h.sure == null) return null;
+    var c = tokluk[o.id];
+    return new Date(new Date(o.bas).getTime() + (c && c.sure_dk ? c.sure_dk : h.sure * 60) * 60000);
+  }
+  function tokYazi(b){ return EN ? K.toksun + hhmm(b) : '~' + saatEk(b, EK_E) + ' kadar toksun'; }
+  function kalanYazi(dk){ var s = Math.floor(dk / 60), d = dk % 60; return (s ? s + ' ' + T.sa + ' ' : '') + d + ' ' + T.dk + K.daha; }
+
+  // zengin bildirim: başlık + alt satır + "Bugün'de gör"
+  var bt = document.createElement('div'); bt.id = 'bg-toast'; bt.setAttribute('role', 'status');
+  document.body.appendChild(bt);
+  var btZaman = null;
+  function bgToast(baslik, alt){
+    var git = currentMode !== 'menu';
+    bt.innerHTML = '<div><b>' + esc(baslik) + '</b>' + (alt ? esc(alt) : '') + '</div>' + (git ? '<button type="button" data-bggit>' + K.gor + '</button>' : '');
+    bt.classList.add('goster'); clearTimeout(btZaman);
+    btZaman = setTimeout(function(){ bt.classList.remove('goster'); }, 4500);
+  }
+  bt.addEventListener('click', function(e){
+    if(!e.target.closest('[data-bggit]')) return;
+    bt.classList.remove('goster'); buzz(8); if(typeof modAc === 'function') modAc('menu');
+  });
+
+  window.bgEkle = function(fid){
+    secGun = null;
+    var x = ekle(fid), f = yemek(fid);
+    buzz(8);
+    var o = ogunler(gunAnahtari(x.yendi)).filter(function(y){ return y.id === x.ogun_id; })[0];
+    var b = o ? ogunSonu(o) : null;
+    bgToast(f ? f.ad + ' ' + K.eklendi : T.eklendi, b ? tokYazi(b) : '');
+    return x;
+  };
+  window.bgSil = function(fid){
+    var l = gununKayitlari(gunAnahtari(new Date())).filter(function(x){ return x.yemek_id === fid; });
+    var x = l[l.length - 1]; if(!x) return;
+    kayit = kayit.filter(function(k){ return k.id !== x.id; }); lokalKaydet(); uyeSil(x.id); buzz(6);
+    bgToast(T.cikti, '');
+  };
+
+  // Ne yesem
+  window.bgBugunKcal = function(){
+    var l = gununKayitlari(gunAnahtari(new Date())); if(!l.length) return null;
+    return Math.round(l.reduce(function(s, x){ var f = yemek(x.yemek_id); return s + (f ? (f.kcal || 0) * x.porsiyon : 0); }, 0));
+  };
+  window.bgYesemUst = function(k){ return '<div class="bgden"><span>' + K.yesemUst(k) + '</span><small>' + K.bugunden + '</small></div>'; };
+  window.bgYesemAciklama = function(gk, al, ka){ return K.yesemAcik(gk, al, ka); };
+  window.bgYedimBtn = function(id){
+    var on = window.bgBugunIdleri().indexOf(id) >= 0;
+    return '<button type="button" class="yedim' + (on ? ' on' : '') + '" data-yedim="' + id + '">' + (on ? K.tamam : K.yedim) + '</button>';
+  };
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('[data-yedim]'); if(!t) return;
+    e.stopPropagation();
+    var id = t.dataset.yedim, on = t.classList.contains('on');
+    if(on) window.bgSil(id); else window.bgEkle(id);
+    t.classList.toggle('on', !on); t.textContent = on ? K.yedim : K.tamam;
+    var r = t.closest('.oner'); if(r) r.classList.toggle('secili', !on);
+  }, true);
+
+  // Ana sayfa kartı: sadece Bugün'e daha önce bir şey eklemiş olana
+  window.bgAnaKartHtml = function(){
+    if(!kayit.length) return '';
+    if(!TUM){ tumYemekYukle(); return ''; }
+    var simdi = new Date(), gun = gunAnahtari(simdi), l = ogunler(gun);
+    var gunAd = simdi.toLocaleDateString(EN ? 'en-US' : 'tr-TR', { weekday: 'long' });
+    if(!l.length){
+      var say = {}; kayit.filter(function(x){ return Date.now() - new Date(x.yendi).getTime() < 14*864e5; }).forEach(function(x){ say[x.yemek_id] = (say[x.yemek_id] || 0) + 1; });
+      var son = Object.keys(say).sort(function(a, b){ return say[b] - say[a]; }).slice(0, 4).map(yemek).filter(Boolean);
+      return '<div class="bga" id="bga"><div class="bga-ust">' + K.ust + '<span>' + esc(gunAd) + '</span></div>' +
+        '<div class="bga-b">' + K.neYedin + '</div><p class="bga-alt">' + K.bosAlt + '</p>' +
+        '<button type="button" class="bga-ara" data-seg="menu">' + K.ara + '</button>' +
+        (son.length ? '<div class="bga-cips">' + son.map(function(f){ return '<button type="button" data-bgekle="' + f.id + '">+ ' + esc(f.ad) + '</button>'; }).join('') + '</div>' : '') + '</div>';
+    }
+    var o = l[l.length - 1], h = hesap(o.kalemler), b = ogunSonu(o);
+    var top = l.reduce(function(s, y){ var hh = hesap(y.kalemler); s.k += hh.kcal; s.p += hh.protein; return s; }, { k: 0, p: 0 });
+    var baslik, alt;
+    if(b && simdi < b){
+      baslik = EN ? 'Full until <em>~' + hhmm(b) + '</em>' : '~' + saatEk(b, EK_E) + ' kadar <em>toksun</em>';
+      alt = kalanYazi(Math.round((b - simdi) / 60000)) + ' · ' + esc(ogunAdi(o.bas).toLocaleLowerCase(EN ? 'en' : 'tr')) + ' ' + hhmm(o.bas);
+    } else if(b){
+      baslik = K.ac;
+      alt = EN ? K.acAlt + hhmm(b) : saatEk(b, EK_DEN) + ' beri açsın';
+    } else {
+      baslik = esc(ogunAdi(o.bas)) + ' ' + hhmm(o.bas); alt = T.hesapYok;
+    }
+    var adlar = o.kalemler.map(function(x){ var f = yemek(x.yemek_id); return f ? esc(f.ad) + (x.porsiyon !== 1 ? ' ×' + sayi(x.porsiyon) : '') : ''; }).filter(Boolean).join(' + ');
+    return '<div class="bga" id="bga"><div class="bga-ust">' + K.ust + '<span>' + top.k + ' kcal · ' + top.p + ' ' + T.protein + '</span></div>' +
+      '<div class="bga-b">' + baslik + '</div><div class="bga-alt">' + alt + '</div>' + cizgi(gun, l, true) +
+      '<div class="bga-kalem"><span>' + adlar + '</span><span>' + h.kcal + ' kcal</span></div>' +
+      '<button type="button" class="bga-ara" data-seg="menu">' + K.ekle + '</button></div>';
+  };
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('#bga [data-bgekle]'); if(!t) return;
+    e.stopPropagation(); window.bgEkle(t.dataset.bgekle); render();
+  }, true);
+
+  var st3 = document.createElement('style');
+  st3.textContent =
+    '#bg-toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(30px);width:calc(100% - 32px);max-width:420px;background:var(--forest,#0E2217);color:#fff;border-radius:18px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13px;line-height:1.35;opacity:0;pointer-events:none;transition:transform .25s ease,opacity .2s ease;z-index:60}' +
+    '#bg-toast.goster{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}#bg-toast b{display:block;font-size:14.5px}' +
+    '#bg-toast button{background:none;border:none;color:var(--lime,#D5EC62);font:inherit;font-weight:700;white-space:nowrap;cursor:pointer;padding:6px 0}' +
+    '.yedim{flex:0 0 auto;border:1.5px solid var(--teal,#1F5C3B);color:var(--teal-dark,#15432A);background:#fff;border-radius:999px;font:inherit;font-size:12px;font-weight:700;padding:7px 11px;cursor:pointer;white-space:nowrap}' +
+    '.yedim.on{background:var(--teal,#1F5C3B);color:#fff}.oner.secili{background:var(--teal-wash,#E1EEE4);margin:0 -14px;padding-left:14px;padding-right:14px}' +
+    '.bgden{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--teal-wash,#E1EEE4);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}.bgden b{color:var(--teal-dark,#15432A)}.bgden small{font-size:11px;font-weight:600;color:var(--teal,#1F5C3B);white-space:nowrap}' +
+    '.bga{max-width:520px;margin:14px auto 0;background:var(--card,#fff);border-radius:var(--r-md,24px);padding:16px 16px 14px;box-shadow:var(--shadow,0 6px 20px rgba(0,0,0,.08));text-align:left}' +
+    '.bga-ust{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--teal,#1F5C3B)}.bga-ust span{letter-spacing:0;font-weight:500;font-size:12px;color:var(--ink-muted,#5B6B60)}' +
+    '.bga-b{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:23px;line-height:1.2;color:var(--ink,#0F1A13);margin:8px 0 2px}.bga-b em{font-style:normal;color:var(--teal,#1F5C3B)}' +
+    '.bga-alt{font-size:13px;color:var(--ink-muted,#5B6B60);margin:0}.bga .bg-cizgi{margin:12px 0 2px}' +
+    '.bga-kalem{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line,#D6E3D9)}.bga-kalem span:last-child{color:var(--ink-muted,#5B6B60);white-space:nowrap}' +
+    '.bga-ara{display:block;width:100%;margin-top:12px;border:1.5px solid var(--line-strong,#C4D4C8);background:transparent;border-radius:999px;padding:11px 14px;font:inherit;font-size:14px;color:var(--ink-muted,#5B6B60);text-align:left;cursor:pointer}' +
+    '.bga-cips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.bga-cips button{border:1.5px solid var(--line-strong,#C4D4C8);background:transparent;border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;color:var(--ink,#0F1A13);cursor:pointer}';
+  document.head.appendChild(st3);
 
 
 })();
