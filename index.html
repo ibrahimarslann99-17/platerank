@@ -2831,14 +2831,14 @@ function neYesem(){
   h += '<div class="aciklama">'+(bgk!=null ? bgYesemAciklama(gk, alinan, kalan) : 'Günlük ihtiyacın '+gk+' kcal. \"'+yedim.ad.toLocaleLowerCase("tr")+'\" dediğine göre bugün yaklaşık '+alinan+' kcal almışsın; günün kalanına '+kalan+' kcal kalıyor. Şu anki açlığına uygun porsiyon bu civarda.')+'</div></div>';
   // oneriler
   var havuz = (foodCache[currentCuisine]||[]).filter(function(f){
-    if(f.sadece_malzeme) return false;
+    if(f.sadece_malzeme || f.tur==='icecek') return false;
     if(f.kcal > porsiyon*1.35 || f.kcal < porsiyon*0.55) return false;
     if(!tatUyar(f, tat)) return false;
     return true;
   });
   if(havuz.length < 4){
     havuz = (foodCache[currentCuisine]||[]).filter(function(f){
-      if(f.sadece_malzeme) return false;
+      if(f.sadece_malzeme || f.tur==='icecek') return false;
       if(f.kcal > porsiyon*1.7 || f.kcal < porsiyon*0.35) return false;
       if(!tatUyar(f, tat)) return false;
       return true;
