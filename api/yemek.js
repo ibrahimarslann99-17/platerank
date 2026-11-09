@@ -8,6 +8,7 @@ const ICERIK = require('./_icerik.js');
 const { satir, sayfa, yanit, surgu } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
 const { enAdres } = require('./_en_veri.js');
+const { tarifCek, tarifHtml, tarifLd } = require('./_tarif.js');
 
 // Türkçe sayfanın İngilizce karşılığı varsa hreflang üçlüsü (x-default İngilizce)
 function dilAlternatif(tr, en) {
@@ -107,7 +108,7 @@ function siviKutu(y, d) {
   return `<div class="sivi${sicak ? ' sicak' : ''}"><b>${sicak ? `${y.kcal} kcal, sıfır tokluk.` : 'Neden tok tutma süresi yok?'}</b><p>${metin}${k ? ` Aynı kaloriyle <a href="/yemek/${k.slug}">${esc(k.ad)}</a> seni yaklaşık ${saatYaz(k.saat)} saat tutar.` : ''}</p></div>`;
 }
 
-function yemekSayfasi(y, d) {
+function yemekSayfasi(y, d, t) {
   const { kok, porsiyon } = adParcala(y.ad);
   const m = MUTFAK[y.mutfak] || { ad: 'Diğer', ic: '🍽️', id: y.mutfak };
   const L = LIG_BILGI[y.lig];
@@ -164,6 +165,8 @@ ${y.tur === 'icecek' || y.sadece_malzeme ? '' : `<div class="halk"><b>Seni kaç 
       ? `Hesap ${S} saat diyor, ${y.halkN} kişi ${dkYaz(y.halkDk)} dedi. Sen ne diyorsun? Tek dokunuş, giriş şart değil.`
       : `Hesap ${S} saat diyor. Yiyenlerin bildirdiği saatler Meclis-i Mide'de toplanıyor; 3 kişi bildirince ${esc(kok)} için halkın saati oturur.`}</p><a class="btn" href="/?bildir=${y.slug}" rel="nofollow">Saatini bildir</a></div>`}
 
+${tarifHtml(t, kok, y.kcal, 'tr')}
+
 ${ic ? `<h2>${esc(kok)} nasıl daha tok tutar?</h2>
 <ul class="sebep">${ic.dahaTok.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
 <h2>Porsiyon ve hazırlanış farkı</h2>
@@ -212,6 +215,8 @@ ${ic && ic.sss.length ? `<h2>Sık sorulanlar</h2>${ic.sss.map((q) => `<h3>${esc(
   };
 
   const alternatlar = y.kanonikSlug ? undefined : dilAlternatif(kanonik, enAdres(d, y.slug));
+  const ld = tarifLd(t, { ad: kok, kcal: y.kcal, mutfak: m.ad, gorsel: y.gorsel, url: kanonik, dil: 'tr' });
+  if (ld) jsonld['@graph'].push(ld);
   return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel, ekCss: TOK_CSS, alternatlar });
 }
 
@@ -267,7 +272,7 @@ module.exports = {
       if (yakin) return new Response(null, { status: 301, headers: { location: `/yemek/${yakin}`, 'cache-control': 'public, max-age=0, s-maxage=86400' } });
       return yanit(bulunamadi(d), 404, 'public, max-age=0, s-maxage=600');
     }
-    return yanit(yemekSayfasi(y, d));
+    return yanit(yemekSayfasi(y, d, await tarifCek(y.id, 'tr')));
   },
   // test için
   _ic: { yemekSayfasi, dizinSayfasi, bulunamadi },

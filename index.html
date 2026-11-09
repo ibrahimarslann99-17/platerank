@@ -870,7 +870,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .seo-list a,#seo p a{color:inherit;text-decoration-color:var(--line-strong);text-underline-offset:3px}
 .arow .athumb{flex:none;width:48px;height:36px;border-radius:8px;object-fit:cover;background:var(--paper);display:block;}
 .arow .detay .adfoto{display:block;width:100%;max-width:420px;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:12px;margin:2px 0 8px;background:var(--paper);}
-.arow .detay .asayfa{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);}
+.arow .detay .asayfa{display:inline-block;margin-top:6px;font-weight:600;color:var(--teal);}.arow .detay .asayfa + .asayfa{margin-left:14px;}
 .lseridi{margin:22px 0 8px;}
 .lseridi .ls-bas{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
 .lseridi .ls-tumu{font-weight:600;font-size:14px;color:var(--teal);text-decoration:none;}
@@ -988,6 +988,9 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 const SUPABASE_URL = 'https://hpxnektzsrdhqzwwkfau.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'pkce' } });
+// Tarifi olan yemekler: ayrıntıda "Nasıl yapılır" bağlantısı için (iki dilde aynı yemekler)
+let TARIFLI = new Set();
+sb.from('tarifler').select('yemek_id').eq('dil','tr').then(function(r){ if(r && r.data){ TARIFLI = new Set(r.data.map(function(x){ return x.yemek_id; })); if(currentMode) render(); } });
 
 // ---------- hesap / senkron ----------
 // Misafir modu varsayılan: her şey localStorage'da kalır. Giriş yapılırsa
@@ -1770,7 +1773,8 @@ function arowHtml(f,i,max,favs,menuSet){
     const kucukGorsel = gs ? `<img class="athumb" src="/img/yemek/k/${gs}.webp" alt="" width="48" height="36" loading="lazy" decoding="async">` : `<span class="athumb bos"></span>`;
     const ust = gs ? `<img class="adfoto" src="/img/yemek/${gs}.webp" alt="${esc(f.ad)}" width="1200" height="900" loading="lazy" decoding="async">` : '';
     const bildirLink = saatsiz(f) || !votingOpen ? '' : hizliBildirHtml(f.id);
-    const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` : '<br>') + bildirLink;
+    const tarifLink = slug && TARIFLI.has(f.id) ? ` <a class="asayfa" href="/yemek/${slug}#tarif">Nasıl yapılır →</a>` : '';
+    const sayfaLink = (slug ? `<br><a class="asayfa" href="/yemek/${slug}">Yemeğin sayfası →</a>` + tarifLink : '<br>') + bildirLink;
     return `<div class="arow${acikSatirlar.has(f.id)?' acik':''}" style="--i:${Math.min(i,12)}" data-exp="${f.id}">
       ${kucukGorsel}<div class="info"><div class="name">${esc(f.ad)}${g?`<span class="gdot d${g.seviye}" title="Şeker şoku: ${g.ad}"></span>`:''}</div>${ayniKaloriSuresi(f)==null && !saatsiz(f)?`<div class="barwrap"><div class="bar" data-w="${pct}"></div></div>`:''}
       </div>

@@ -13,6 +13,7 @@ const { CSS, ONBELLEK, yanit, surgu } = require('./_sablon.js');
 const { enHazirla, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER } = require('./_en_veri.js');
 const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
 const { uygulamaEn } = require('./_uygulama_en.js');
+const { tarifCek, tarifHtml, tarifLd } = require('./_tarif.js');
 const { tokJsTr, tokPlanSayfasiTr, kabukTr } = require('./_tokplan_tr.js');
 
 const EK_CSS = `
@@ -189,7 +190,7 @@ function siviKutu(y, e) {
   return `<div class="sivi${sicak ? ' sicak' : ''}"><b>${sicak ? `${y.kcal} kcal, zero fullness.` : 'Why no fullness time?'}</b><p>${metin}${k ? ` For the same calories, <a href="${ADRES.yemek(k)}">${esc(k.tam)}</a> keeps you full for about ${saatEk(k.saat)}.` : ''}</p></div>`;
 }
 
-function yemekSayfasi(y, e) {
+function yemekSayfasi(y, e, t) {
   const m = mutfakAdi(y);
   const L = TIER[y.lig];
   const kanonik = ADRES.yemek(y);
@@ -242,6 +243,8 @@ ${saatli ? `<div class="tokcevap"><div class="ts"><small>about</small><b>${saatY
 <p class="cevap"><b>${hukum(y)}</b></p>
 ${sb.length ? `<ul class="sebep">${sb.map((s) => `<li>${s}</li>`).join('')}</ul>` : ''}
 
+${tarifHtml(t, y.ad, y.kcal, 'en')}
+
 ${ciftler.length ? `<h2>${esc(y.ad)} vs other foods</h2><ul class="liste">${ciftler.map((c) => ciftSatiri(c, y)).join('')}</ul>` : ''}
 
 <h2>More filling foods with similar calories</h2>
@@ -287,6 +290,8 @@ ${komsu.length ? `<h2>Nearby in the ${esc(m.ad)} ranking</h2><ul class="liste">$
     { dil: 'x-default', href: kanonik },
   ] : null;
 
+  const ld = tarifLd(t, { ad: y.ad, kcal: y.kcal, mutfak: m.ad, gorsel: y.gorsel, url: kanonik, dil: 'en' });
+  if (ld) jsonld['@graph'].push(ld);
   return sayfa({ baslik, aciklama, kanonik, govde, jsonld, ogGorsel: y.gorsel, alternatlar });
 }
 
@@ -621,7 +626,7 @@ module.exports = {
         if (yakin) return yonlendir(`/en/food/${yakin}`);
         return yanit(bulunamadi(e, 'food'), 404, 'public, max-age=0, s-maxage=600');
       }
-      return yanit(yemekSayfasi(y, e));
+      return yanit(yemekSayfasi(y, e, await tarifCek(y.id, 'en')));
     }
     if (p === 'vs') {
       const ab = ciftCoz(s, e);
