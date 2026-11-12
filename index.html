@@ -2968,7 +2968,7 @@ function renderProtein(){
       '<li><b>Su ve lif.</b> Gün boyu su iç, lifi yavaş yavaş artır; kabızlık sık görülür.</li>'+
       '<li><b>Ağırlık çalış.</b> Haftada en az 3 gün kuvvet antrenmanı yap; kası protein tek başına korumaz.</li>'+
       '<li><b>Alkolü en aza indir.</b> Mide zaten hassas.</li>'+
-      '</ul><p class="note" style="margin:8px 0 0">Kaynak: Amerikan yaşam tarzı tıbbı, beslenme ve obezite derneklerinin 2025 ortak tavsiyesi (ACLM, ASN, OMA, TOS).</p></div>';
+      '</ul>'+'<p class="note" style="margin:8px 0 0"><a href="/zayiflama-ignesi">İğnede beslenme rehberinin tamamı →</a></p>'+'<p class="note" style="margin:8px 0 0">Kaynak: Amerikan yaşam tarzı tıbbı, beslenme ve obezite derneklerinin 2025 ortak tavsiyesi (ACLM, ASN, OMA, TOS).</p></div>';
   }
   // verimlilik listesi
   html += '<div class="section-title">100 kalori başına en çok protein</div>';
@@ -3401,6 +3401,9 @@ function tnIlkZiyaret(){
   updateFade(); renderAuthBar();
   const ilkBildir = new URLSearchParams(location.search).get('bildir');
   if(ilkBildir){ history.replaceState(null, '', location.pathname); bildirSlugAc(ilkBildir.toLowerCase().replace(/[^a-z0-9-]/g,'')); return; }
+  // Derin bağlantı: /?durum=igne → Protein sekmesi o durum seçili açılır (rehber sayfaları ve kartlar buraya gönderir)
+  const ilkDurum = new URLSearchParams(location.search).get('durum');
+  if(ilkDurum && P_DURUM.some(function(x){ return x.id===ilkDurum; })){ try{ localStorage.setItem('pr_durum', ilkDurum); }catch(e){} await modAc('protein'); return; }
   setTimeout(tnIlkZiyaret, 900);
 })();
 </script>

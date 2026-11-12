@@ -22,6 +22,9 @@ const EKLER = {
 };
 
 const KATLAR = [0.75, 1, 1.25, 1.5];
+const ISLENMIS = /protein bar|protein puding|proteinli puding|proteinli gofret|protein shake|whey/i;
+// Turkce planda (secenek.yerel) et yiyen kullaniciya Turkiye'de zor bulunan bitkisel protein urunleri gelmez
+const YABANCI_BITKISEL = /tofu|edamame|tvp|seitan|quorn|natto|tempeh|spirulina/i;
 const KCAL_TOL = 0.10;      // kalori +-%10
 const PROTEIN_ALT = 0.90;   // proteinin en az %90'i
 const TEKRAR_GUN = 3;       // ayni ana tabak 3 gun icinde tekrar etmez
@@ -114,6 +117,8 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
           // Igne: tokluk sorun degil, ilac zaten doyuruyor. Aranan, az hacimde cok protein ve az yag
           // (yagli tabak bulantiyi artirir). Hedefin altinda kalmak ustune cikmaktan kotu: risk az yemek.
           const pPay = (t.protein * 4) / Math.max(t.kcal, 1), yPay = (t.yag * 9) / Math.max(t.kcal, 1);
+          // Tavsiye az islenmis gida diyor: protein bar/puding/shake ara sira gelsin, her gun degil
+          const islenmis = ps.filter((x) => ISLENMIS.test(x.ad)).length;
           const iskor = pPay * 5
             - Math.max(0, yPay - 0.30) * 10
             - Math.abs(sapma) * 2
@@ -121,8 +126,10 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
             - Math.max(0, t.protein / hedef.protein - 1.1) * 6   // 2 g/kg ustune uzun sure cikilmasin
             - (kat === 1 ? 0 : 0.15)
             - (ps.length - 1) * 0.15
-            - (es ? es[2] : 0)
-            - bCeza
+            // tanidiklik ve mutfak cezalari tok-saat olcegine gore ayarli; igne skoru daha genis, o yuzden iki kat
+            - (es ? es[2] : 0) * 2
+            - islenmis * 0.7
+            - bCeza * 2
             + jitter;
           sonuc.push({ parcalar: ps, toplam: t, skor: iskor, tabanId: b.id });
           continue;
@@ -194,7 +201,8 @@ function planUret(hedef, yemekler, secenek = {}) {
   // Et yiyen kullaniciya ozel urunler (TVP, Quorn, natto vb.) daha seyrek gelsin
   if (!s.diyet && s.mutfakAgirlik.veg === undefined) s.mutfakAgirlik = { ...s.mutfakAgirlik, veg: 0.6 };
   const rnd = tohumla(s.tohum);
-  const liste = yemekler.filter((y) => uygun(y, s) && y.tur !== 'tatli' && y.tur !== 'icecek' || (EKLER[y.id.slice(0, 8)] && uygun(y, s)));
+  const liste = yemekler.filter((y) => uygun(y, s) && y.tur !== 'tatli' && y.tur !== 'icecek' || (EKLER[y.id.slice(0, 8)] && uygun(y, s)))
+    .filter((y) => !(s.yerel && !s.diyet && YABANCI_BITKISEL.test(y.ad)));
   const ekIdler = new Set(Object.keys(EKLER));
   const ekY = liste.filter((y) => ekIdler.has(y.id.slice(0, 8)));
   const yanlar = liste.filter((y) => (y.tur === 'salata' || y.tur === 'corba') && y.kcal <= 300);

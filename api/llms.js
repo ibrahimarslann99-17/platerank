@@ -19,6 +19,10 @@ function metin(d) {
 
 - [PlateRank nasıl hesaplıyor?](${SITE}/yontem): puan ve tokluk süresi formülü, yiyenlerin bildirimlerinin nasıl sayıldığı, kaynaklar ve sınırlar
 
+## Rehberler
+
+- [Zayıflama iğnesi kullanırken ne yemeli?](${SITE}/zayiflama-ignesi): Ozempic, Wegovy, Mounjaro gibi GLP-1 iğnelerinde günlük protein (boya göre tablo, 1,2-1,6 g/kg), 3-4 saatte bir küçük öğün, kalori alt sınırı, yan etkilere göre beslenme; ACLM/ASN/OMA/TOS 2025 ortak tavsiyesine dayanır
+
 ## Listeler
 
 ${LISTELER.map((t) => { const l = listeKalemleri(t, d); return `- [${t.baslik}](${SITE}/liste/${t.slug}): ${l.length} yemek; ilk sıralar ${l.slice(0, 3).map((y) => y.ad.split(' (')[0]).join(', ')}`; }).join('\n')}

@@ -2,6 +2,7 @@
 const { veri, SITE } = require('./_veri.js');
 const { LISTELER } = require('./_listeler.js');
 const ICERIK = require('./_icerik.js');
+const { IGNE_SLUG, IGNE_GUNCELLEME } = require('./_igne_sayfa.js');
 const ICERIK_TARIHI = '2026-10-13'; // elle yazılmış içerik eklenen sayfaların lastmod'u; içerik değişince güncelle
 
 module.exports = {
@@ -22,6 +23,7 @@ ${url(`${SITE}/yemek`, sonGuncelleme)}
 ${url(`${SITE}/liste`, sonGuncelleme)}
 ${url(`${SITE}/yontem`, sonGuncelleme)}
 ${url(`${SITE}/tokluk-endeksi`, sonGuncelleme)}
+${url(`${SITE}/${IGNE_SLUG}`, IGNE_GUNCELLEME)}
 ${LISTELER.map((t) => url(`${SITE}/liste/${t.slug}`, sonGuncelleme)).join('\n')}
 ${d.sirali.filter((y) => !y.kanonikSlug).map((y) => { const t = gun(y.updated_at || y.created_at); return url(`${SITE}/yemek/${y.slug}`, ICERIK[y.slug] && (!t || t < ICERIK_TARIHI) ? ICERIK_TARIHI : t); }).join('\n')}
 </urlset>`;

@@ -64,6 +64,10 @@
       "destination": "/api/yontem?p=endeks"
     },
     {
+      "source": "/zayiflama-ignesi",
+      "destination": "/api/yontem?p=igne"
+    },
+    {
       "source": "/tokluk-endeksi.csv",
       "destination": "/api/yontem?p=csv"
     },

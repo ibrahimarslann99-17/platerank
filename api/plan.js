@@ -10,6 +10,7 @@
 
 const crypto = require('crypto');
 const { hedefHesapla } = require('./_hedef');
+const { domuzlu } = require('./_domuz');
 const { planUret, tabakSaat } = require('./_motor');
 const { sorgu, kullanici, aboneMi } = require('./_supa');
 const { slugla } = require('./_veri');
@@ -99,6 +100,8 @@ async function yemekleriCek(dil) {
   const liste = await sorgu(`yemekler?select=${kolon}&${f}&order=id.asc&limit=5000`);
   const sonuc = [];
   for (const y of liste) {
+    // Türkçe planda domuz ürünlü yemek yok (DOMUZ_AD 'sosis' de yakalar; dana sosisli Türk yemeği eklenirse listeye istisna gerekir)
+    if (dil !== 'en' && domuzlu(y)) continue;
     const slug = slugla(y.ad);
     const z = { ...y, slug, gorsel: GORSELLER.has(slug) };
     if (dil === 'en') {
@@ -112,13 +115,17 @@ async function yemekleriCek(dil) {
   return sonuc;
 }
 
+// Türkçe plan: tanıdık yemek önce. Türk mutfağı ve temel gıdalar tam ağırlık, Ortadoğu ve Akdeniz yakın, uzak mutfaklar seyrek.
+const TR_AGIRLIK = { tr: 1, temel: 1, me: 0.85, it: 0.65, us: 0.5, veg: 0.5, in: 0.3, mx: 0.2, cn: 0.1, jp: 0.1, kr: 0, th: 0 };
+
 function secenekler(kayit, hafta, ek = {}) {
   const g = kayit.girdi || {};
   return {
     diyet: g.diyet || null,
     alerjen: g.alerjen || [],
     mutfakHaric: g.mutfakHaric || [],
-    mutfakAgirlik: kayit.dil === 'en' ? { tr: 0.7 } : {},
+    mutfakAgirlik: kayit.dil === 'en' ? { tr: 0.7 } : TR_AGIRLIK,
+    yerel: kayit.dil !== 'en',
     kalkis: g.kalkis,
     yatis: g.yatis,
     tohum: `${kayit.id}:${hafta}`,
