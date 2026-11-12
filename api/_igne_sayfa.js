@@ -140,7 +140,8 @@ Kaynak: Mozaffarian D. ve ark., <a href="${KAYNAK_URL}" rel="nofollow">Nutrition
     baslik: 'Zayıflama iğnesi kullanırken ne yemeli? Protein ve öğün rehberi · PlateRank',
     aciklama: 'Ozempic, Wegovy, Mounjaro gibi zayıflama iğnelerinde günlük protein ihtiyacı (boya göre tablo), öğün düzeni, bulantı ve kabızlık için beslenme, az kaloriyle çok protein veren yemekler.',
     kanonik: `${SITE}/${SLUG}`, govde, jsonld,
-    ekCss: '.tablo{width:100%;border-collapse:collapse;font-size:15px}.tablo th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}.tablo td{padding:6px 8px;border-bottom:1px solid var(--line)}.tablo tr:last-child td{border-bottom:0}',
+    alternatlar: [{ dil: 'tr', href: `${SITE}/${SLUG}` }, { dil: 'en', href: `${SITE}/en/glp1-diet` }, { dil: 'x-default', href: `${SITE}/en/glp1-diet` }],
+    ekCss: '.tablo{width:100%;border-collapse:collapse;font-size:15px;white-space:nowrap}.tablo th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}.tablo td{padding:6px 8px;border-bottom:1px solid var(--line)}.tablo tr:last-child td{border-bottom:0}',
   });
 }
 

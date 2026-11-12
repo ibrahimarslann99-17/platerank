@@ -48,6 +48,7 @@ PlateRank also has an English edition with the same scores and estimated hours f
 - [All foods](${SITE}/en/food): every food ranked, cuisine by cuisine (/en/food/<name>)
 - [Food vs food](${SITE}/en/vs/boiled-potatoes-vs-kumpir): head-to-head pages, which keeps you full longer (/en/vs/<a>-vs-<b>)
 - [Method](${SITE}/en/method): the satiety score and hours formula
+- [What to eat on Ozempic and other GLP-1s](${SITE}/en/glp1-diet): daily protein on a GLP-1 (table by height, 1.2-1.6 g/kg), small meals every 3-4 hours, calorie floor, eating around nausea and constipation; based on the 2025 ACLM/ASN/OMA/TOS joint advisory
 - [English sitemap](${SITE}/sitemap-en.xml)
 `;
 }

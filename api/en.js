@@ -15,6 +15,7 @@ const { tokPlanSayfasi } = require('./_tokplan_sayfa.js');
 const { uygulamaEn } = require('./_uygulama_en.js');
 const { tarifCek, tarifHtml, tarifLd } = require('./_tarif.js');
 const { tokJsTr, tokPlanSayfasiTr, kabukTr } = require('./_tokplan_tr.js');
+const { glp1Sayfasi, GLP1_URL, GLP1_GUNCELLEME } = require('./_glp1_en.js');
 
 const EK_CSS = `
 .sivi{background:#E4E9F2;border-left:4px solid var(--teal,#1B2A4A);border-radius:18px;padding:14px 16px;margin:0 0 16px}.sivi.sicak{background:#FBE6E4;border-color:#BF3B38}.sivi b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}.sivi p{margin:0;line-height:1.5}
@@ -571,6 +572,7 @@ ${url(ADRES.home, son > '2026-11-03' ? son : '2026-11-03')}
 ${url(`${SITE}/en/plan`, '2026-11-03')}
 ${url(ADRES.food, son)}
 ${url(ADRES.method, son)}
+${url(GLP1_URL, GLP1_GUNCELLEME)}
 ${yemekler.map((y) => url(`${SITE}/en/food/${y.slug}`, enGec(y.updated_at || y.created_at, '2026-10-17'))).join('\n')}
 ${ciftler.map((c) => url(ADRES.cift(c.slug), enGec(c.a.updated_at || c.a.created_at, c.b.updated_at || c.b.created_at, '2026-10-17'))).join('\n')}
 </urlset>`;
@@ -618,6 +620,7 @@ module.exports = {
     }
     if (p === 'app') return yanit(uygulamaEn(e), 200, 'public, max-age=0, s-maxage=600');
     if (p === 'method') return yanit(yontemSayfasi(e));
+    if (p === 'glp1') return yanit(glp1Sayfasi(e, sayfa, satir));
     if (p === 'food') {
       if (!s) return yanit(dizinSayfasi(e));
       const y = e.slugIle.get(s);

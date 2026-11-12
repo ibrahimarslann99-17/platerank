@@ -120,6 +120,10 @@
       "destination": "/api/en?p=vs&s=:slug"
     },
     {
+      "source": "/en/glp1-diet",
+      "destination": "/api/en?p=glp1"
+    },
+    {
       "source": "/en/method",
       "destination": "/api/en?p=method"
     },

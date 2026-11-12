@@ -118,13 +118,16 @@ async function yemekleriCek(dil) {
 // Türkçe plan: tanıdık yemek önce. Türk mutfağı ve temel gıdalar tam ağırlık, Ortadoğu ve Akdeniz yakın, uzak mutfaklar seyrek.
 const TR_AGIRLIK = { tr: 1, temel: 1, me: 0.85, it: 0.65, us: 0.5, veg: 0.5, in: 0.3, mx: 0.2, cn: 0.1, jp: 0.1, kr: 0, th: 0 };
 
+// İngilizce plan (çoğunlukla ABD): Amerikan sofrası önce; İtalyan, Meksika, Çin, Japon ABD'de gündelik; Kore ve Tay seyrek.
+const EN_AGIRLIK = { us: 1, temel: 1, it: 0.8, mx: 0.8, veg: 0.6, me: 0.6, cn: 0.55, jp: 0.5, in: 0.45, tr: 0.45, kr: 0.2, th: 0.2 };
+
 function secenekler(kayit, hafta, ek = {}) {
   const g = kayit.girdi || {};
   return {
     diyet: g.diyet || null,
     alerjen: g.alerjen || [],
     mutfakHaric: g.mutfakHaric || [],
-    mutfakAgirlik: kayit.dil === 'en' ? { tr: 0.7 } : TR_AGIRLIK,
+    mutfakAgirlik: kayit.dil === 'en' ? EN_AGIRLIK : TR_AGIRLIK,
     yerel: kayit.dil !== 'en',
     kalkis: g.kalkis,
     yatis: g.yatis,

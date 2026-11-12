@@ -17,7 +17,7 @@ module.exports = [
   ["rk+' kg × 1,5 = '+ham", "rk+' kg × 1.5 = '+ham", 'kod'],
   ["'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>'",
     "'. Appetite is low on the shot, so split it into 5 small meals: about '+Math.round(hedef/5)+' g per meal. Eat the protein first at every meal.</div>'", 'kod'],
-  ["'<p class=\"note\" style=\"margin:8px 0 0\"><a href=\"/zayiflama-ignesi\">İğnede beslenme rehberinin tamamı →</a></p>'", "''", 'kod'],
+  ["'<p class=\"note\" style=\"margin:8px 0 0\"><a href=\"/zayiflama-ignesi\">İğnede beslenme rehberinin tamamı →</a></p>'", "'<p class=\"note\" style=\"margin:8px 0 0\"><a href=\"/en/glp1-diet\">The full GLP-1 eating guide →</a></p>'", 'kod'],
   ['<div class="section-title">İğne kullanırken</div>', '<div class="section-title">On a weight-loss shot</div>', 'kod'],
   ["'<li><b>Önce protein.</b> Tabağa proteinden başla; iştah çabuk biter, kasını koruyan o.</li>'", "'<li><b>Protein first.</b> Start your plate with the protein; appetite runs out fast, and protein is what protects your muscle.</li>'", 'kod'],
   ["'<li><b>Küçük ve yağsız öğün.</b> Büyük ya da yağlı tabak bulantıyı artırır; 3-4 saatte bir küçük öğün daha iyi gider.</li>'", "'<li><b>Small, lean meals.</b> Big or fatty plates make nausea worse; a small meal every 3 to 4 hours sits better.</li>'", 'kod'],
