@@ -49,7 +49,7 @@ function glp1Sayfasi(e, sayfa, satir) {
 
 <p class="cevap">On a GLP-1 the real risk is eating too little. Appetite drops, weight comes off, but without enough protein some of that weight is muscle. In short: 1.2 to 1.6 grams of protein per kilogram a day, a small low-fat meal every 3 to 4 hours, protein first at every meal, plenty of water, and strength training at least 3 times a week.</p>
 
-<div class="cta" style="margin:18px 0 8px"><a class="btn" href="/en/plan">Get a GLP-1 meal plan</a></div>
+<div class="cta" style="margin:18px 0 8px"><a class="btn" href="/en/plan">Get a GLP-1 meal plan</a><p style="margin:10px 0 0;font-size:15px"><a href="/en?durum=igne">Or just calculate your daily protein →</a></p></div>
 
 <h2>Why nutrition matters more on a GLP-1</h2>
 <p>GLP-1 medications cut appetite and slow down how fast the stomach empties. They work for weight loss; the open question is how much of the lost weight is fat and how much is muscle. Eating little raises the risk of muscle and bone loss and of vitamin and mineral shortfalls. Many people also stop the medication within the first two years, and what keeps the weight off afterwards is the way of eating built while on it.</p>

@@ -314,6 +314,8 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 .psec button:hover{border-color:var(--teal);transform:translateY(-1px);}
 .psec button.sec{background:var(--teal);color:#FFFFFF;border-color:var(--teal);font-weight:600;}
 .pf2{display:flex;gap:10px;}
+.birimsec{margin:0 0 10px}.birimsec .psec button{min-width:0;padding:7px 8px;font-size:12.5px}
+.pf2>.pf-boy{flex:1.35}.ftin{display:flex;gap:6px}.ftin input{min-width:0;width:50%}
 .pf2>div{flex:1;}
 .oner{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px dashed var(--line);}
 .oner:last-child{border-bottom:none;}
@@ -1694,9 +1696,7 @@ function renderBilgi(){
     if(m) h = '<div class="card bg-uye">' + bgUyeKartBas() + m[2] + m[1].replace('class="card plan-kart"', 'class="card plan-kart bg-ucretli"').replace('<div class="p-baslik">', bgUcretliEtiket() + '<div class="p-baslik">');
   }
   h += '<div class="card pbox"><div><div class="p-baslik">Bilgilerim</div><p class="p-alt" style="margin:0">Ne yesem ve protein hesabı bunları kullanır. Sadece bu cihazda kalır.</p></div>';
-  h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
-  h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
-  h += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+  h += bedenAlanlari();
   h += '<div><label>Cinsiyet</label>'+secGrup("cins", [{id:"e",ad:"Erkek"},{id:"k",ad:"Kadın"}], pg("cins","e"))+'</div>';
   h += '<div><label>Ne kadar hareketlisin?</label>'+secGrup("akt", P_AKTIVITE, pg("akt","hafif"))+'</div>';
   if(gk || (kilo>=25 && kilo<=250)){
@@ -2787,6 +2787,31 @@ const P_VERIM = [
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
 function pKilo(){ return pg("kilo",""); }
+// Birim: veri her zaman kg ve cm olarak saklanır. Türkçe sürüm hep metrik; İngilizce sürüm (api/_uygulama_en.js)
+// BIRIM_SECIMI'ni açar, ABD ziyaretçisine lb ve ft-in ile başlar, kullanıcı kg-cm'ye geçebilir.
+const BIRIM_SECIMI = false;
+const BIRIM_VARSAYILAN = "metrik";
+const LB = 0.45359237;
+function imperial(){ return BIRIM_SECIMI && pg("birim", BIRIM_VARSAYILAN) === "imperial"; }
+function kgYaz(kg){
+  if(!imperial()) return kg+' kg';
+  return Math.round(kg/LB)+' lb ('+(Math.round(kg*10)/10)+' kg)';
+}
+function bedenAlaniMi(el){ return !!(el && el.id && /^p-(kilo|boy|yas)/.test(el.id)); }
+function bedenAlanlari(){
+  let h = '';
+  if(BIRIM_SECIMI) h += '<div class="birimsec">'+secGrup("birim", [{id:"imperial",ad:"lb, ft"},{id:"metrik",ad:"kg, cm"}], imperial()?"imperial":"metrik")+'</div>';
+  if(imperial()){
+    const kg = parseFloat(pKilo()), cm = parseFloat(pg("boy","")), inc = cm ? Math.round(cm/2.54) : null;
+    h += '<div class="pf2"><div class="pfield"><label>Weight (lb)</label><input type="number" inputmode="decimal" id="p-kilo-lb" min="55" max="550" placeholder="160" value="'+(kg?Math.round(kg/LB):'')+'"></div>';
+    h += '<div class="pfield pf-boy"><label>Height (ft, in)</label><div class="ftin"><input type="number" inputmode="numeric" id="p-boy-ft" min="4" max="7" placeholder="5" value="'+(inc?Math.floor(inc/12):'')+'"><input type="number" inputmode="numeric" id="p-boy-in" min="0" max="11" placeholder="9" value="'+(inc?inc%12:'')+'"></div></div>';
+  } else {
+    h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
+    h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
+  }
+  h += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+  return h;
+}
 // Zayıflama iğnesi (GLP-1): Tok Plan ile aynı hesap. BKİ 25 üstündeyse boyun için BKİ 25 kilosu esas alınır
 // (gerçek kiloyla ihtiyaç şişer), 1,5 g/kg, günde en çok 120 g. Kaynak: ACLM/ASN/OMA/TOS ortak tavsiyesi, 2025.
 function pRefKilo(kilo){
@@ -2815,9 +2840,7 @@ function renderYesem(){
   if(!gk){
     h += '<div class="card pbox">';
     h += '<p class="note" style="margin:0 0 4px">Önce seni tanıyalım, bu bilgiler sadece bu cihazda kalır.</p>';
-    h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
-    h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
-    h += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+    h += bedenAlanlari();
     h += '<div><label>Cinsiyet</label>'+secGrup("cins", [{id:"e",ad:"Erkek"},{id:"k",ad:"Kadın"}], pg("cins","e"))+'</div>';
     h += '<div><label>Ne kadar hareketlisin?</label>'+secGrup("akt", P_AKTIVITE, pg("akt","hafif"))+'</div>';
     h += '</div>';
@@ -2902,9 +2925,7 @@ function renderProtein(){
   const dd = P_DURUM.find(x=>x.id===dsec) || P_DURUM[1];
   let html = '<p class="note">Günde kaç gram protein? Kilonu gir, durumunu seç. Hesap basit: kilo × katsayı. Katsayılar beslenme kılavuzlarının yaygın kullandığı aralıklardır.</p>';
   html += '<div class="card pbox">';
-  html += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
-  html += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
-  html += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+  html += bedenAlanlari();
   html += '<div><label>Cinsiyet</label>'+secGrup("cins", [{id:"e",ad:"Erkek"},{id:"k",ad:"Kadın"}], pg("cins","e"))+'</div>';
   html += '<div><label>Ne kadar hareketlisin?</label>'+secGrup("akt", P_AKTIVITE, pg("akt","hafif"))+'</div>';
   html += '<div class="pdurum">' + P_DURUM.map(x=>
@@ -2919,9 +2940,9 @@ function renderProtein(){
     if(dd.id==='igne'){
       const rk = pRefKilo(kilo), ham = Math.round(rk*dd.k);
       html += '<div class="birim" style="margin-top:6px">'+'Alt sınır: günde '+(pg("cins","e")==="k"?'1.200':'1.800')+' kcal. Bunun altında vitamin ve mineral eksikliği olasılığı artar.</div>';
-      html += '<div class="aciklama">'+(rk<kilo?'Boyuna göre sağlıklı kilonun üst sınırı '+rk+' kg; protein buna göre hesaplanır, yoksa ihtiyaç olduğundan yüksek çıkar. ':'')+rk+' kg × 1,5 = '+ham+' g'+(ham>hedef?', üst sınır '+hedef+' g':'')+'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>';
+      html += '<div class="aciklama">'+(rk<kilo?'Boyuna göre sağlıklı kilonun üst sınırı '+kgYaz(rk)+'; protein buna göre hesaplanır, yoksa ihtiyaç olduğundan yüksek çıkar. ':'')+kgYaz(rk)+' × 1,5 = '+ham+' g'+(ham>hedef?', üst sınır '+hedef+' g':'')+'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>';
     } else
-    html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
+    html += '<div class="aciklama">'+kgYaz(kilo)+' × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
     html += '<div class="pshare"><button class="btn" id="p-share">Sonucumu paylaş</button><button class="btn ikincil" id="p-copy">Bağlantıyı kopyala</button></div>';
     html += '</div>';
     // ornek tabak
@@ -3050,7 +3071,24 @@ function wireUp(){
   const pcp = document.getElementById("p-copy");
   if(pcp){ pcp.onclick = async ()=>{ buzz(10); try{ await navigator.clipboard.writeText("https://platerank.dev"); toast("Bağlantı kopyalandı ✓"); }catch(e){ toast("Kopyalanamadı"); } }; }
   // Enter: klavyeyi kapatıp hesabı hemen yap (render sadece alandan çıkınca tetikleniyor)
-  document.querySelectorAll('#p-kilo,#p-boy,#p-yas').forEach(function(el){
+  const plb = document.getElementById('p-kilo-lb');
+  if(plb){
+    let t;
+    const kaydet = function(){ const v = parseFloat(plb.value); ps('kilo', v ? String(Math.round(v*LB*10)/10) : ''); };
+    plb.oninput = function(){ clearTimeout(t); t = setTimeout(kaydet, 400); };
+    // Odak beden alanlarından birine geçiyorsa yeniden çizme (yazılanı ve odağı kaybettirir); hesap son alandan çıkınca yenilenir
+    plb.onblur = function(e){ clearTimeout(t); kaydet(); if(!bedenAlaniMi(e.relatedTarget)) render(); };
+  }
+  const pft = document.getElementById('p-boy-ft'), pin = document.getElementById('p-boy-in');
+  if(pft && pin){
+    let t;
+    const kaydet = function(){ const f = parseFloat(pft.value), i = parseFloat(pin.value) || 0; ps('boy', f ? String(Math.round((f*12 + i)*2.54)) : ''); };
+    [pft, pin].forEach(function(el){
+      el.oninput = function(){ clearTimeout(t); t = setTimeout(kaydet, 400); };
+      el.onblur = function(e){ clearTimeout(t); kaydet(); if(!bedenAlaniMi(e.relatedTarget)) render(); };
+    });
+  }
+  document.querySelectorAll('#p-kilo,#p-boy,#p-yas,#p-kilo-lb,#p-boy-ft,#p-boy-in').forEach(function(el){
     el.onkeydown = function(e){ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } };
   });
   ['boy','yas'].forEach(function(alan){

@@ -42,6 +42,9 @@ const DAVRANIS = [
   ['href="/yemek/${slug}">Food page →</a>', 'href="/en/food/${(window.PR_EN[f.id]||[])[1]||\'\'}">Food page →</a>'],
   ["emailRedirectTo: 'https://platerank.dev' }", "emailRedirectTo: 'https://platerank.dev/en' }"],
   ["let currentCuisine = 'tr';", "let currentCuisine = 'us';"],
+  // lb ve ft-in: ABD'den gelen ziyaretçi imperial başlar, diğerleri kg-cm; seçim cihazda kalır
+  ['const BIRIM_SECIMI = false;', 'const BIRIM_SECIMI = true;'],
+  ['const BIRIM_VARSAYILAN = "metrik";', 'const BIRIM_VARSAYILAN = (/^en-US/i.test(navigator.language||"") || /^America\\//.test((Intl.DateTimeFormat().resolvedOptions().timeZone||""))) ? "imperial" : "metrik";'],
   // Türkçe hazır listeler (/liste) İngilizcede yok
   ['function listeSeridi(mod){', "function listeSeridi(mod){ return '';"],
   ["  {sec:'.lseridi', lab:'Ready-made lists', b:'Ready-made lists',\n   m:'High-protein breakfasts, filling foods under 100 calories, the most filling soups… Ready-ranked lists, tap to open.'}\n", ''],
