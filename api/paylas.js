@@ -5,6 +5,7 @@ const DURUM = {
   diyet: 'kilo verirken',
   yasli: '65 yaş üstü için',
   iyilesme: 'iyileşme sürecinde',
+  igne: 'zayıflama iğnesi kullanırken',
 };
 
 const DURUM_EN = {
@@ -14,6 +15,7 @@ const DURUM_EN = {
   diyet: 'while losing weight',
   yasli: 'for people over 65',
   iyilesme: 'while recovering',
+  igne: 'while on a weight-loss shot',
 };
 
 function esc(s) {

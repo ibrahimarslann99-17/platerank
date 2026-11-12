@@ -66,7 +66,7 @@ function dogrula(g) {
   if (!(g.yas >= 10 && g.yas <= 100)) return 'yas';
   if (!['kadin', 'erkek'].includes(g.cinsiyet)) return 'cinsiyet';
   if (!['hareketsiz', 'hafif', 'orta', 'yuksek'].includes(g.aktivite)) return 'aktivite';
-  if (!['ver', 'saglik', 'kas'].includes(g.hedef)) return 'hedef';
+  if (!['ver', 'saglik', 'kas', 'igne'].includes(g.hedef)) return 'hedef';
   if (!SAAT.test(g.kalkis) || !SAAT.test(g.yatis)) return 'saat';
   if (!/^[^@\s"]+@[^@\s"]+\.[^@\s"]+$/.test(g.email) || g.email.length > 200) return 'email';
   if (g.diyet != null && !['vejetaryen', 'vegan'].includes(g.diyet)) return 'diyet';
@@ -86,6 +86,7 @@ function ucretsiz(h) {
     uyanikSaat: h.uyanikSaat,
     ogunSayisi: h.ogunSayisi,
     onerilenOgunSayisi: h.onerilenOgunSayisi,
+    ...(h.igne ? { igne: true } : {}),
     kilitli: true,
   };
 }

@@ -31,7 +31,7 @@ details.tp-sss{border-bottom:1px solid var(--line);padding:10px 0}details.tp-sss
 .tp-hata{color:#B3261E;font-size:14px;min-height:20px;margin:6px 0}
 .tp-onay{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);margin:12px 0}.tp-onay input{width:20px;height:20px;margin-top:2px;accent-color:#1F5C3B}
 .tp-hedefler{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tp-hedefler div{background:var(--paper);border-radius:14px;padding:10px;text-align:center}.tp-hedefler b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:22px;color:var(--forest)}.tp-hedefler span{font-size:13px;color:var(--muted)}
-.tp-zaman{margin:10px 0 4px}.tp-zaman .sat{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--muted)}
+.tp-igne{margin:12px 0 6px;padding:0 0 0 18px;font-size:14px;line-height:1.5}.tp-igne li{margin:6px 0}.tp-igne b{color:var(--forest)}.tp-zaman{margin:10px 0 4px}.tp-zaman .sat{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--muted)}
 .tp-zaman .ray{position:relative;height:22px;background:var(--paper);border-radius:8px;overflow:hidden}
 .tp-zaman .ray i{position:absolute;top:0;bottom:0;border-radius:6px}
 .tp-zaman .tok{background:#2F8F5B}.tp-zaman .tipik{background:#9FB3A6}.tp-zaman .ac{background:repeating-linear-gradient(45deg,#E9A79F 0 6px,#F6D3CE 6px 12px)}
@@ -70,7 +70,7 @@ function govde() {
   <div class="tp-kutu">
     <h2>Questions</h2>
     <details class="tp-sss"><summary>How do you know how long a meal keeps me full?</summary><p>Every food on PlateRank has a fullness score built from its protein, fiber, fat, sugar and calories. A meal's hours come from its total calories and that score. It's an estimate, not a measurement. <a href="/en/method">Read the method</a>.</p></details>
-    <details class="tp-sss"><summary>Is this medical advice?</summary><p>No. Plans are for generally healthy adults. If you're under 18, pregnant or breastfeeding, have a chronic condition or take regular medication, talk to your doctor first. The plan builder won't create a plan in those cases.</p></details>
+    <details class="tp-sss"><summary>Is this medical advice?</summary><p>No. Plans are for generally healthy adults. If you're under 18, pregnant or breastfeeding, have a chronic condition or take regular medication (other than a weight-loss shot, which has its own goal), talk to your doctor first. The plan builder won't create a plan in those cases.</p></details>
     <details class="tp-sss"><summary>What if I don't like a meal?</summary><p>Every meal comes with two swaps that hit the same calories and protein.</p></details>
     <details class="tp-sss"><summary>Can I cancel?</summary><p>Anytime, from the link in your payment email. Your first payment is refundable within 14 days. <a href="/en/refund">Refund policy</a>.</p></details>
   </div>

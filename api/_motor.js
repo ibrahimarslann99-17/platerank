@@ -94,8 +94,8 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
         const ps = [bp];
         if (es) ps.push(parca(es[0], es[1], 'ek'));
         let t = topla(ps);
-        // Kalori eksikse ogle/aksamda bir yan tabak (salata/corba) dene
-        if (t.kcal < kMin && yanlar.length && tip !== 'kahvalti' && tip !== 'ara') {
+        // Kalori eksikse ogle/aksamda bir yan tabak (salata/corba) dene. Ignede yok: mide kucuk, hacim proteini yer.
+        if (t.kcal < kMin && yanlar.length && tip !== 'kahvalti' && tip !== 'ara' && !hedef.igne) {
           const eksik = hedef.kcal - t.kcal;
           let enIyi = null;
           for (const y of yanlar) {
@@ -110,6 +110,23 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
         if (t.kcal < kMin || t.kcal > kMax || t.protein < pMin) continue;
         if (t.protein > hedef.protein * 1.8) continue;
         const sapma = (t.kcal - hedef.kcal) / hedef.kcal;
+        if (hedef.igne) {
+          // Igne: tokluk sorun degil, ilac zaten doyuruyor. Aranan, az hacimde cok protein ve az yag
+          // (yagli tabak bulantiyi artirir). Hedefin altinda kalmak ustune cikmaktan kotu: risk az yemek.
+          const pPay = (t.protein * 4) / Math.max(t.kcal, 1), yPay = (t.yag * 9) / Math.max(t.kcal, 1);
+          const iskor = pPay * 5
+            - Math.max(0, yPay - 0.30) * 10
+            - Math.abs(sapma) * 2
+            - Math.max(0, -sapma) * 3
+            - Math.max(0, t.protein / hedef.protein - 1.1) * 6   // 2 g/kg ustune uzun sure cikilmasin
+            - (kat === 1 ? 0 : 0.15)
+            - (ps.length - 1) * 0.15
+            - (es ? es[2] : 0)
+            - bCeza
+            + jitter;
+          sonuc.push({ parcalar: ps, toplam: t, skor: iskor, tabanId: b.id });
+          continue;
+        }
         const skor = t.tokSaat
           - Math.abs(sapma) * 2
           - Math.max(0, sapma) * 6   // hedefin ustune cikmak kilo verme acigini yer; altinda kalmak daha az zararli
@@ -146,7 +163,7 @@ function disari(a) {
 // Her ogune tokluk bitis saati ve bir sonraki ogune kadar kalan ac sure (dk) yazilir; grafik bunu cizer.
 function saatDk(hhmm) { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; }
 function dkSaat(dk) { dk = ((Math.round(dk / 15) * 15) % 1440 + 1440) % 1440; return `${String(Math.floor(dk / 60)).padStart(2, '0')}:${String(dk % 60).padStart(2, '0')}`; }
-function saatAta(ogunler, kalkis, yatis) {
+function saatAta(ogunler, kalkis, yatis, sabitAra) {
   if (!kalkis || !yatis) return;
   const bas = saatDk(kalkis) + 30;
   let son = saatDk(yatis) - 180;
@@ -154,7 +171,7 @@ function saatAta(ogunler, kalkis, yatis) {
   const n = ogunler.length;
   const zaman = [bas];
   for (let i = 1; i < n; i++) {
-    const onceki = ogunler[i - 1].secim ? ogunler[i - 1].secim.toplam.tokSaat * 60 : 240;
+    const onceki = sabitAra || (ogunler[i - 1].secim ? ogunler[i - 1].secim.toplam.tokSaat * 60 : 240);
     const enGec = son - (n - 1 - i) * 120;
     zaman.push(Math.max(zaman[i - 1] + 120, Math.min(zaman[i - 1] + onceki, enGec)));
   }
@@ -191,7 +208,8 @@ function planUret(hedef, yemekler, secenek = {}) {
     const gunMutfak = new Set();
     const gunEk = new Set();
     const ogunler = [];
-    for (const oh of hedef.ogunler) {
+    for (const ohHam of hedef.ogunler) {
+      const oh = hedef.igne ? { ...ohHam, igne: true } : ohHam;
       const tip = ogunTipi(oh.ogun);
       const ekler = ekY.filter((y) => EKLER[y.id.slice(0, 8)].yer.includes(tip)).map((y) => {
         const e = EKLER[y.id.slice(0, 8)];
@@ -214,7 +232,7 @@ function planUret(hedef, yemekler, secenek = {}) {
       let a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, false), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
       if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
       if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, 0.15, 0.8, yanCeza);
-      if (!a.length) { ogunler.push({ ogun: oh.ogun, hedef: oh, secim: null, alternatifler: [] }); continue; }
+      if (!a.length) { ogunler.push({ ogun: oh.ogun, hedef: ohHam, secim: null, alternatifler: [] }); continue; }
       const secim = a[0];
       // Alternatifler: farkli ana tabakli sonraki en iyi iki aday
       const alt = [];
@@ -226,9 +244,9 @@ function planUret(hedef, yemekler, secenek = {}) {
         if (p.rol === 'yan') yanSayac.set(p.id, (yanSayac.get(p.id) || 0) + 1);
       }
       if (tip === 'ogle' || tip === 'aksam') gunMutfak.add(secim.parcalar[0].mutfak);
-      ogunler.push({ ogun: oh.ogun, hedef: oh, secim: disari(secim), alternatifler: alt.map(disari) });
+      ogunler.push({ ogun: oh.ogun, hedef: ohHam, secim: disari(secim), alternatifler: alt.map(disari) });
     }
-    saatAta(ogunler, s.kalkis, s.yatis);
+    saatAta(ogunler, s.kalkis, s.yatis, hedef.igne ? 210 : 0); // ignede 3,5 saatte bir kucuk ogun
     const t = { kcal: 0, protein: 0, yag: 0, lif: 0, karbonhidrat: 0 };
     for (const o of ogunler) if (o.secim) for (const k in t) t[k] += o.secim.toplam[k];
     gunler.push({ gun: g + 1, ogunler, toplam: t });

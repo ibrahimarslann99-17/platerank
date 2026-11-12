@@ -358,6 +358,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 .vrow .vbar{width:88px;height:6px;background:var(--paper);border-radius:2px;overflow:hidden;}
 .vrow .vfill{height:100%;background:var(--s);border-radius:2px;transition:width .6s cubic-bezier(0.22,1,0.36,1);}
 .vrow .vv{font-family:'Figtree',system-ui,sans-serif;font-size:12px;color:var(--ink);min-width:44px;text-align:right;font-weight:600;}
+.igne-kart ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.55}.igne-kart li{margin:5px 0}
 .pnot{border:1px solid var(--danger);background:rgba(165,52,44,0.08);border-radius:var(--r-sm);padding:11px 13px;font-size:12.5px;line-height:1.6;color:var(--ink);}
 .pnot b{color:var(--danger);}
 .uyari .sayac{font-family:'Figtree',system-ui,sans-serif;font-size:11px;color:var(--ink-muted);}
@@ -1701,7 +1702,7 @@ function renderBilgi(){
   if(gk || (kilo>=25 && kilo<=250)){
     h += '<div class="p-ozet">';
     if(gk) h += '<div><b>'+gk+'</b><span>kcal / gün</span></div>';
-    if(kilo>=25 && kilo<=250) h += '<div><b>'+Math.round(kilo*dd.k)+' g</b><span>protein / gün · '+esc(dd.ad.toLocaleLowerCase('tr'))+'</span></div>';
+    if(kilo>=25 && kilo<=250) h += '<div><b>'+pHedefGram(kilo, dd)+' g</b><span>protein / gün · '+esc(dd.ad.toLocaleLowerCase('tr'))+'</span></div>';
     h += '</div><button class="link-btn" data-seg="protein">Protein hedefini ayarla →</button>';
   }
   h += '</div>';
@@ -2708,6 +2709,7 @@ const P_DURUM = [
   {id:"saglik", k:1.1,  ad:"Sağlıklı ve dinç olmak için", not:"Hareketli ama sporcu olmayan bir yetişkin için makul aralık."},
   {id:"spor",   k:1.5,  ad:"Düzenli spor yapıyorum",      not:"Haftada 3+ gün ağırlık veya yoğun antrenman yapanlar için."},
   {id:"diyet",  k:1.8,  ad:"Kilo veriyorum",              not:"Az yerken kasını korumak için protein yükselir. Diyetin en kritik parçası budur."},
+  {id:"igne",   k:1.5,  ad:"Zayıflama iğnesi kullanıyorum", not:"Ozempic, Wegovy, Mounjaro gibi. İştah düşünce kas da erir; protein onu korur. Hesap boyuna göre sağlıklı kiloyla yapılır."},
   {id:"yasli",  k:1.6,  ad:"65 yaş üstündeyim",           not:"Yaşla birlikte kas erimesi hızlanır; ihtiyaç gençlerden yüksektir."},
   {id:"iyilesme",k:2.0, ad:"Hastalık/ameliyat sonrası iyileşiyorum", not:"Doku onarımı için en yüksek ihtiyaç. Böbrek rahatsızlığı olanlar için GEÇERSİZ; aşağıdaki uyarıyı oku."}
 ];
@@ -2785,6 +2787,17 @@ const P_VERIM = [
 ];
 function pDurum(){ return localStorage.getItem("pr_durum") || "saglik"; }
 function pKilo(){ return pg("kilo",""); }
+// Zayıflama iğnesi (GLP-1): Tok Plan ile aynı hesap. BKİ 25 üstündeyse boyun için BKİ 25 kilosu esas alınır
+// (gerçek kiloyla ihtiyaç şişer), 1,5 g/kg, günde en çok 120 g. Kaynak: ACLM/ASN/OMA/TOS ortak tavsiyesi, 2025.
+function pRefKilo(kilo){
+  const boy = parseFloat(pg("boy",""));
+  if(boy>=120 && boy<=230){ const m = boy/100; if(kilo/(m*m) > 25) return Math.round(25*m*m); }
+  return kilo;
+}
+function pHedefGram(kilo, dd){
+  if(dd.id==='igne') return Math.min(120, Math.round(pRefKilo(kilo)*dd.k));
+  return Math.round(kilo*dd.k);
+}
 // Hazır listeler şeridi (Ne yesem? ve Protein sekmelerinin altında): /liste sayfalarına geçit
 const HAZIR_LISTELER = {
   yesem: [['tok-tutan-kahvaltiliklar','Tok tutan kahvaltılıklar'],['100-kalori-alti-doyurucu','100 kalori altı doyurucular'],['diyet-icin-doyurucu-yemekler','Diyette tok tutan yemekler'],['200-kalori-alti-doyurucu','200 kalori altı doyurucular'],['en-doyurucu-corbalar','En doyurucu çorbalar'],['en-doyurucu-salatalar','En doyurucu salatalar'],['en-doyurucu-turk-yemekleri','En doyurucu Türk yemekleri'],['tok-tutan-icecekler','Tok tutan içecekler'],['en-doyurucu-tatlilar','En tok tutan tatlılar'],['en-az-doyurucu-yiyecekler','Boş kalori listesi']],
@@ -2899,16 +2912,22 @@ function renderProtein(){
   ).join('') + '</div>';
   html += '</div>';
   if(kilo && kilo>=25 && kilo<=250){
-    const hedef = Math.round(kilo * dd.k);
+    const hedef = pHedefGram(kilo, dd);
     html += '<div class="card psonuc"><div class="buyuk">'+hedef+'</div><div class="birim">gram protein / gün</div>';
     const gkx = gunlukKalori();
     if(gkx) html += '<div class="birim" style="margin-top:8px;color:var(--ink)">Günlük kalori ihtiyacın: <b>'+gkx+' kcal</b></div>';
+    if(dd.id==='igne'){
+      const rk = pRefKilo(kilo), ham = Math.round(rk*dd.k);
+      html += '<div class="birim" style="margin-top:6px">'+'Alt sınır: günde '+(pg("cins","e")==="k"?'1.200':'1.800')+' kcal. Bunun altında vitamin ve mineral eksikliği olasılığı artar.</div>';
+      html += '<div class="aciklama">'+(rk<kilo?'Boyuna göre sağlıklı kilonun üst sınırı '+rk+' kg; protein buna göre hesaplanır, yoksa ihtiyaç olduğundan yüksek çıkar. ':'')+rk+' kg × 1,5 = '+ham+' g'+(ham>hedef?', üst sınır '+hedef+' g':'')+'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>';
+    } else
     html += '<div class="aciklama">'+kilo+' kg × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
     html += '<div class="pshare"><button class="btn" id="p-share">Sonucumu paylaş</button><button class="btn ikincil" id="p-copy">Bağlantıyı kopyala</button></div>';
     html += '</div>';
     // ornek tabak
     const mutfakAd = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || '';
-    const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7 && !f.sadece_malzeme)
+    // İğnede yağlı tabak bulantıyı artırır: kalorisinin %35'inden fazlası yağdan gelenler örnek tabağa girmez
+    const havuz = (foodCache[currentCuisine]||[]).filter(f=>f.protein!=null && f.protein>=7 && !f.sadece_malzeme && !(dd.id==='igne' && f.yag!=null && f.kcal && f.yag*9/f.kcal > 0.35))
       .map(f=>({ad:f.ad, p:f.protein, kcal:f.kcal, v:(f.protein/f.kcal)*100}))
       .sort((a,b)=>b.v-a.v);
     html += '<div class="section-title">Bu kaç tabak eder? · ' + mutfakAd + '</div>';
@@ -2942,6 +2961,15 @@ function renderProtein(){
   } else {
     html += '<p class="note">Kilonu girince hedefin ve örnek tabaklar burada çıkacak.</p>';
   }
+  if(dd.id==='igne'){
+    html += '<div class="section-title">İğne kullanırken</div><div class="card igne-kart"><ul>'+
+      '<li><b>Önce protein.</b> Tabağa proteinden başla; iştah çabuk biter, kasını koruyan o.</li>'+
+      '<li><b>Küçük ve yağsız öğün.</b> Büyük ya da yağlı tabak bulantıyı artırır; 3-4 saatte bir küçük öğün daha iyi gider.</li>'+
+      '<li><b>Su ve lif.</b> Gün boyu su iç, lifi yavaş yavaş artır; kabızlık sık görülür.</li>'+
+      '<li><b>Ağırlık çalış.</b> Haftada en az 3 gün kuvvet antrenmanı yap; kası protein tek başına korumaz.</li>'+
+      '<li><b>Alkolü en aza indir.</b> Mide zaten hassas.</li>'+
+      '</ul><p class="note" style="margin:8px 0 0">Kaynak: Amerikan yaşam tarzı tıbbı, beslenme ve obezite derneklerinin 2025 ortak tavsiyesi (ACLM, ASN, OMA, TOS).</p></div>';
+  }
   // verimlilik listesi
   html += '<div class="section-title">100 kalori başına en çok protein</div>';
   html += '<p class="note">Asıl mesele "hangi besinde çok protein var" değil, <b>aynı kaloriye karşılık ne kadar protein aldığın</b>. Badem de tavuk da protein listelerinde iyi görünür; aradaki fark 5 kat.</p>';
@@ -2951,7 +2979,7 @@ function renderProtein(){
   });
   html += '</div>';
   html += '<p class="note">Sağdaki sayı: o besinden 100 kalori yediğinde kaç gram protein aldığın.</p>';
-  html += '<div class="pnot"><b>Önemli:</b> Bunlar genel kılavuz değerleridir, kişisel tedavi önerisi değildir. <b>Böbrek rahatsızlığın varsa yüksek protein zararlıdır</b>; bu durumda protein miktarı doktor tarafından kısıtlanır, yukarıdaki hesaba göre artırma. Gebelik, karaciğer hastalığı veya sürekli ilaç kullanımı varsa da hedefini doktoruna danışarak belirle.</div>';
+  html += '<div class="pnot">'+(dd.id==='igne'?'<b>İğneni yazan doktor</b> sana ayrı bir protein hedefi verdiyse o geçerli. ':'')+'<b>Önemli:</b> Bunlar genel kılavuz değerleridir, kişisel tedavi önerisi değildir. <b>Böbrek rahatsızlığın varsa yüksek protein zararlıdır</b>; bu durumda protein miktarı doktor tarafından kısıtlanır, yukarıdaki hesaba göre artırma. Gebelik, karaciğer hastalığı veya sürekli ilaç kullanımı varsa da hedefini doktoruna danışarak belirle.</div>';
   return html;
 }
 const TIER_NUM_X = null;
@@ -3010,7 +3038,7 @@ function wireUp(){
   const psh = document.getElementById("p-share");
   if(psh){
     const dd2 = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
-    const hedef2 = Math.round(parseFloat(pKilo()) * dd2.k);
+    const hedef2 = pHedefGram(parseFloat(pKilo()), dd2);
     const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;
     const metin = "Günlük protein ihtiyacım: " + hedef2 + " g (" + dd2.ad.toLocaleLowerCase("tr") + "). Seninki kaç?";
     psh.onclick = async ()=>{

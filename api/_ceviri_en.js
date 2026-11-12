@@ -6,6 +6,25 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  // ---------- zayıflama iğnesi (protein sekmesi) ----------
+  ['ad:"Zayıflama iğnesi kullanıyorum", not:"Ozempic, Wegovy, Mounjaro gibi. İştah düşünce kas da erir; protein onu korur. Hesap boyuna göre sağlıklı kiloyla yapılır."}',
+    'ad:"I’m on a weight-loss shot", not:"Like Ozempic, Wegovy or Mounjaro. When appetite drops, muscle goes too; protein protects it. Based on a healthy weight for your height."}', 'kod'],
+  ["'Alt sınır: günde '", "'Floor: '", 'kod'],
+  ["?'1.200':'1.800')+' kcal. Bunun altında vitamin ve mineral eksikliği olasılığı artar.</div>'", "?'1,200':'1,800')+' kcal a day. Below that, vitamin and mineral gaps get likely.</div>'", 'kod'],
+  ["'Boyuna göre sağlıklı kilonun üst sınırı '+rk+' kg; protein buna göre hesaplanır, yoksa ihtiyaç olduğundan yüksek çıkar. '",
+    "'The top of the healthy weight range for your height is '+rk+' kg; protein is based on that, otherwise the need comes out too high. '", 'kod'],
+  ["', üst sınır '+hedef+' g'", "', capped at '+hedef+' g'", 'kod'],
+  ["rk+' kg × 1,5 = '+ham", "rk+' kg × 1.5 = '+ham", 'kod'],
+  ["'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>'",
+    "'. Appetite is low on the shot, so split it into 5 small meals: about '+Math.round(hedef/5)+' g per meal. Eat the protein first at every meal.</div>'", 'kod'],
+  ['<div class="section-title">İğne kullanırken</div>', '<div class="section-title">On a weight-loss shot</div>', 'kod'],
+  ["'<li><b>Önce protein.</b> Tabağa proteinden başla; iştah çabuk biter, kasını koruyan o.</li>'", "'<li><b>Protein first.</b> Start your plate with the protein; appetite runs out fast, and protein is what protects your muscle.</li>'", 'kod'],
+  ["'<li><b>Küçük ve yağsız öğün.</b> Büyük ya da yağlı tabak bulantıyı artırır; 3-4 saatte bir küçük öğün daha iyi gider.</li>'", "'<li><b>Small, lean meals.</b> Big or fatty plates make nausea worse; a small meal every 3 to 4 hours sits better.</li>'", 'kod'],
+  ["'<li><b>Su ve lif.</b> Gün boyu su iç, lifi yavaş yavaş artır; kabızlık sık görülür.</li>'", "'<li><b>Water and fiber.</b> Drink through the day and add fiber slowly; constipation is common.</li>'", 'kod'],
+  ["'<li><b>Ağırlık çalış.</b> Haftada en az 3 gün kuvvet antrenmanı yap; kası protein tek başına korumaz.</li>'", "'<li><b>Lift weights.</b> Strength train at least 3 days a week; protein alone doesn’t keep muscle.</li>'", 'kod'],
+  ["'<li><b>Alkolü en aza indir.</b> Mide zaten hassas.</li>'", "'<li><b>Keep alcohol to a minimum.</b> Your stomach is sensitive enough already.</li>'", 'kod'],
+  ["Kaynak: Amerikan yaşam tarzı tıbbı, beslenme ve obezite derneklerinin 2025 ortak tavsiyesi (ACLM, ASN, OMA, TOS).", "Source: 2025 joint advisory from US lifestyle medicine, nutrition and obesity societies (ACLM, ASN, OMA, TOS).", 'kod'],
+  ["'<b>İğneni yazan doktor</b> sana ayrı bir protein hedefi verdiyse o geçerli. '", "'If <b>the doctor who prescribed your shot</b> gave you a different protein target, follow theirs. '", 'kod'],
   ['href="/yemek/${slug}#tarif">Nasıl yapılır →</a>', 'href="/en/food/${(window.PR_EN[f.id]||[])[1]||\'\'}#recipe">How to make it →</a>', 'kod'],
   ["['menu','🍽️ Bugün']", "['menu','🍽️ Today']", 'kod'],
   ['title="Bugüne ekle" aria-label="Bugüne ekle">', 'title="Add to today" aria-label="Add to today">', 'kod'],

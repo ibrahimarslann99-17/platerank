@@ -25,7 +25,7 @@
 
   var ADIMLAR = [
     { k: 'hedef', soru: "What's your goal?", ciz: function () {
-      return secenek('hedef', 'ver', 'Lose weight', 'A steady deficit with high protein') + secenek('hedef', 'saglik', 'Eat healthier', 'Same weight, better meals') + secenek('hedef', 'kas', 'Build muscle', 'A small surplus with more protein');
+      return secenek('hedef', 'ver', 'Lose weight', 'A steady deficit with high protein') + secenek('hedef', 'saglik', 'Eat healthier', 'Same weight, better meals') + secenek('hedef', 'kas', 'Build muscle', 'A small surplus with more protein') + secenek('hedef', 'igne', 'I\u2019m on a weight-loss shot', 'Ozempic, Wegovy, Mounjaro: small meals, protein first');
     } },
     { k: 'cinsiyet', soru: 'Your sex', acik: 'Used for your calorie estimate.', ciz: function () {
       return secenek('cinsiyet', 'kadin', 'Female') + secenek('cinsiyet', 'erkek', 'Male');
@@ -38,7 +38,8 @@
       D.yas = y; return null;
     } },
     { k: 'saglik', soru: 'Does any of this apply to you?', acik: "We'll check this before building anything. Your answer isn't stored.", ciz: function () {
-      return secenek('saglik', 'hamile', 'Pregnant or breastfeeding') + secenek('saglik', 'kronik', 'A chronic condition or regular medication', 'For example diabetes, kidney or heart disease') + secenek('saglik', 'yeme', 'An eating disorder, now or in the past') + secenek('saglik', 'yok', 'None of these');
+      var kronik = D.hedef === 'igne' ? secenek('saglik', 'kronik', 'Another condition or medication', 'Besides the shot: for example diabetes, kidney or heart disease') : secenek('saglik', 'kronik', 'A chronic condition or regular medication', 'For example diabetes, kidney or heart disease');
+      return secenek('saglik', 'hamile', 'Pregnant or breastfeeding') + kronik + secenek('saglik', 'yeme', 'An eating disorder, now or in the past') + secenek('saglik', 'yok', 'None of these');
     } },
     { k: 'boy', soru: 'How tall are you?', giris: true, ciz: function () {
       var b = birimSec();
@@ -205,16 +206,28 @@
     return 'Your ' + (TIPIK_AD[k.tipik] || 'breakfast') + ' runs out around ' + bitis + '. Ours lasts until ' + ogle + '.';
   }
 
+  // Zayiflama ignesi (GLP-1) kullananlar icin: ACLM/ASN/OMA/TOS ortak tavsiyesi, 2025
+  function igneNotu() {
+    return '<ul class="tp-igne">' +
+      '<li><b>Eat the protein first.</b> Appetite runs out fast on the shot; the protein on the plate is what protects your muscle.</li>' +
+      '<li><b>Keep meals small and not greasy.</b> Big or fatty meals make nausea worse. That\u2019s why your day has 5 small meals.</li>' +
+      '<li><b>Don\u2019t go too low.</b> Under about 1,200 kcal (women) or 1,800 kcal (men) a day, vitamin and mineral gaps get likely. Even with no appetite, try to reach your targets.</li>' +
+      '<li><b>Drink through the day</b> and add fiber slowly; constipation is common.</li>' +
+      '<li><b>Lift something 3 times a week.</b> Protein alone doesn\u2019t keep muscle; strength training does the rest.</li>' +
+      '</ul><p class="tp-not" style="text-align:left">If the doctor who prescribed your shot gave you different targets, follow theirs.</p>';
+  }
+
   function sonucCiz(id, s) {
     var on = s.onizleme;
     var ogunler = on && on.ogunler ? on.ogunler : [];
+    var igne = !!s.igne;
     var liste = ogunler.map(function (o) {
       return '<div class="tp-ogun"><div class="saat">' + saat12(o.saat) + '</div><div><div class="tp-parca"><span class="bos"></span><div class="ad">' + (OGUN[o.ogun] || 'Meal') + ' · Chosen dish<small>' + o.kcal + ' kcal · ' + o.protein + ' g protein</small></div></div></div></div>';
     }).join('');
     sonuc.innerHTML = '<div class="tp-kutu">' +
       '<p class="tp-acik" style="margin:0">Your daily targets</p>' +
-      '<h2 class="tp-soru" style="margin-top:4px">' + esc(baslikCumlesi(on)) + '</h2>' +
-      zamanCiz(on) +
+      '<h2 class="tp-soru" style="margin-top:4px">' + esc(igne ? 'Small meals every 3 to 4 hours, protein first' : baslikCumlesi(on)) + '</h2>' +
+      (igne ? igneNotu() : zamanCiz(on)) +
       '<div class="tp-hedefler"><div><b>' + s.gunluk.kcal.toLocaleString('en-US') + '</b><span>kcal a day</span></div><div><b>' + s.gunluk.protein + ' g</b><span>protein</span></div><div><b>' + s.ogunSayisi + '</b><span>meals</span></div></div>' +
       '<p class="tp-acik">Fat ' + s.gunluk.yag + ' g · Carbs ' + s.gunluk.karbonhidrat + ' g · Fiber ' + s.gunluk.lif + ' g</p>' +
       '<div class="tp-kilit"><div class="bulanik">' + liste + '</div><div class="ust">7-day plan, meal by meal</div></div>' +
@@ -264,11 +277,11 @@
       if (!s) return '';
       return '<div class="tp-ogun"><div class="saat">' + saat12(o.saat) + '<small>' + (OGUN[o.ogun] || '') + '</small></div><div>' +
         s.parcalar.map(parcaCiz).join('') +
-        '<div class="alt"><span>' + s.toplam.kcal + ' kcal · ' + s.toplam.protein + ' g protein · full ~' + saatYaz(s.toplam.tokSaat) + ' h</span>' +
+        '<div class="alt"><span>' + s.toplam.kcal + ' kcal · ' + s.toplam.protein + ' g protein' + (P.igne ? '' : ' · full ~' + saatYaz(s.toplam.tokSaat) + ' h') + '</span>' +
         (secenekler.length > 1 ? '<button type="button" data-degis="' + anahtar + '">Swap (' + ((sec % secenekler.length) + 1) + '/' + secenekler.length + ')</button>' : '') + '</div></div></div>';
     }).join('');
     planEl.innerHTML = '<div class="tp-kutu"><p class="tp-acik" style="margin:0">Week ' + ((P.hafta || 0) + 1) + ' · ' + P.gunluk.kcal.toLocaleString('en-US') + ' kcal · ' + P.gunluk.protein + ' g protein a day</p>' +
-      '<h2 class="tp-soru" style="margin-top:4px">Your Stay Full Plan</h2><div class="tp-gunler">' + sekme + '</div>' + ogun +
+      '<h2 class="tp-soru" style="margin-top:4px">Your Stay Full Plan</h2>' + (P.igne ? '<p class="tp-acik">Small meals, protein first. Stop when you\u2019re full, but try not to skip a meal.</p>' : '') + '<div class="tp-gunler">' + sekme + '</div>' + ogun +
       '<div class="tp-toplam"><span>Day total</span><span>' + Math.round(g.toplam.kcal) + ' kcal · ' + Math.round(g.toplam.protein) + ' g protein</span></div></div>' +
       '<p class="tp-not">Bookmark this page to come back to your plan. A new week is built every 7 days.</p>';
     goster(planEl);
