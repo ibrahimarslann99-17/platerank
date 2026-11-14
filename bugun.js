@@ -170,6 +170,10 @@
     var r = await sb.from('ogun_tokluk').upsert({ ogun_id: s.ogun.id, baslangic: s.ogun.bas, sure_dk: sure, aclik: aclik, toplam_kcal: h.kcal,
       kalemler: s.ogun.kalemler.map(function(x){ return { yemek_id: x.yemek_id, porsiyon: x.porsiyon }; }) });
     if(r.error){ console.error('ogun_tokluk', r.error); toast(T.kaydedildi); render(); return; }
+    // Kombo: birden çok kalem (ya da tek kalemin 1'den farklı porsiyonu), içecek dışında en az bir yemek
+    var kk = s.ogun.kalemler.map(function(x){ return { yemek_id: x.yemek_id, porsiyon: x.porsiyon }; });
+    var komboMu = (kk.length > 1 || (kk[0] && kk[0].porsiyon !== 1)) && s.ogun.kalemler.some(function(x){ var f = yemek(x.yemek_id); return f && f.tur !== 'icecek' && !f.sadece_malzeme; });
+    if(sure != null && komboMu && typeof kbKaydet === 'function') kbKaydet(kk, Math.min(360, sure), 'gunluk');
     // Meclis'e yalnızca öğünün baskın yemeği gider: tek porsiyon, içecek değil, öğün kalorisinin en az %70'i
     var meclis = false;
     if(sure != null){
@@ -423,12 +427,12 @@
   var M = EN ? {
     ust: 'Report fullness · meal', soru: 'How long did this meal keep you full?', yanina: 'Add something else from the meal…',
     porsiyon: 'servings', hesap: 'The math says ~', bildir: 'Report', vazgec: 'Cancel', girisGerek: 'Reporting a full meal is for members. No password: we email you a code.',
-    rozet: 'Badges', rozetAlt: 'optional · 2 max · for ', sen: 'You', halk: 'Crowd', hesapK: 'Math', kaydedildi: 'Saved ✓', baska: 'Report another meal', duzelt: 'Edit',
+    rozet: 'Badges', rozetAlt: 'optional · 2 max · for ', komboHalk: 'Combo crowd', kisi: 'people', sen: 'You', halk: 'Crowd', hesapK: 'Math', kaydedildi: 'Saved ✓', baska: 'Report another meal', duzelt: 'Edit',
     saatSec: 'First pick how many hours it kept you full', katiYok: 'Add at least one food that isn’t a drink', gonderiliyor: 'Sending…', hata: 'Couldn’t save, try again in a moment'
   } : {
     ust: 'Tokluk bildir · öğün', soru: 'Bu öğün seni kaç saat tok tuttu?', yanina: 'Yanında başka ne vardı? Ekle…',
     porsiyon: 'porsiyon', hesap: 'Hesap ~', bildir: 'Bildir', vazgec: 'Vazgeç', girisGerek: 'Öğün bildirmek üyelere açık. Şifre yok, e-postana kod gelir.',
-    rozet: 'Rozet', rozetAlt: 'isteğe bağlı · en fazla 2 · ', sen: 'Sen', halk: 'Halk', hesapK: 'Hesap', kaydedildi: 'Kaydedildi ✓', baska: 'Başka öğün bildir', duzelt: 'Düzelt',
+    rozet: 'Rozet', rozetAlt: 'isteğe bağlı · en fazla 2 · ', komboHalk: 'Kombo halkı', kisi: 'kişi', sen: 'Sen', halk: 'Halk', hesapK: 'Hesap', kaydedildi: 'Kaydedildi ✓', baska: 'Başka öğün bildir', duzelt: 'Düzelt',
     saatSec: 'Önce kaç saat tok tuttuğunu seç', katiYok: 'İçecek dışında en az bir yemek ekle', gonderiliyor: 'Gönderiliyor…', hata: 'Kaydedilemedi, birazdan tekrar dene'
   };
   var oAra = '';
@@ -490,7 +494,7 @@
       var on = bildirim.rozet.indexOf(k) >= 0;
       return '<button class="' + (on ? 'on' : '') + '" data-bkr="' + k + '" aria-pressed="' + on + '">' + rozetSvg(k, 26) + '<span>' + ROZETLER[k].ad + '</span><small>' + esc(ROZETLER[k].acik) + '</small></button>';
     }).join('') + '</div>' : '';
-    var uyeGerek = !currentUser && !oTek();
+    var uyeGerek = false;   // 14.11: kombo/öğün bildirimi girişsiz de açık, girişsiz bildirim yarım sayılır
     return '<div class="bk" id="bk"><div class="bk-ust">' + M.ust + '</div>' + kalem +
       '<div class="m-ara bo-ara"><input type="text" id="bo-ara" autocomplete="off" placeholder="' + esc(M.yanina) + '" value="' + esc(oAra) + '"><div class="m-sonuc" id="bo-sonuc">' + oAramaHtml() + '</div></div>' +
       '<div class="bk-meta">' + h.kcal + ' kcal · ' + h.protein + ' ' + T.protein + (h.sure != null ? ' · ' + M.hesap + sayi(yarim(h.sure)) + ' ' + T.sa : '') + '</div>' +
@@ -504,9 +508,12 @@
   window.bgOgunSonucHtml = function(){
     var s = bildirimSonuc;
     var hal = '';
-    if(s.yemek){ var o = meclis.ozet.get(s.yemek); hal = '<span>' + M.halk + (o && o.medyan_dk != null ? '<b>' + saatYaz(o.medyan_dk) + '</b>' : '<b>?</b>') + '</span>'; }
+    var ko = typeof kbOzet === 'function' ? kbOzet(s.anahtar) : null;
+    if(ko) hal = '<span>' + M.komboHalk + (ko.medyan_dk != null && ko.kisi >= RAPOR_ESIK ? '<b>' + saatYaz(ko.medyan_dk) + '</b><small>' + ko.kisi + ' ' + M.kisi + '</small>' : '<b>?</b><small>' + ko.kisi + ' ' + M.kisi + '</small>') + '</span>';
+    else if(s.yemek){ var o = meclis.ozet.get(s.yemek); hal = '<span>' + M.halk + (o && o.medyan_dk != null ? '<b>' + saatYaz(o.medyan_dk) + '</b>' : '<b>?</b>') + '</span>'; }
     return '<div class="bk" id="bk"><div class="bk-ust">' + M.kaydedildi + '</div><div class="bk-ad">' + esc(s.adlar) + '</div>' +
       '<div class="bk-sat"><span>' + M.sen + '<b>' + saatYaz(s.saat_dk) + '</b></span>' + hal + (s.hesap != null ? '<span>' + M.hesapK + '<b>~' + sayi(yarim(s.hesap)) + ' ' + T.sa + '</b></span>' : '') + '</div>' +
+      (!currentUser && typeof girisTeklifHtml === 'function' ? girisTeklifHtml() : '') +
       '<div class="bk-btns"><button class="btn" id="bo-baska">' + M.baska + '</button></div></div>';
   };
 
@@ -522,12 +529,17 @@
       if(!(await saatKaydet(l[0].id, dk))){ if(btn){ btn.disabled = false; btn.textContent = M.bildir; } return; }
       hedef = l[0].id;
     } else {
-      if(!currentUser) return;
-      var oid = uuid();
-      var r = await sb.from('ogun_tokluk').insert({ ogun_id: oid, baslangic: new Date(Date.now() - dk*60000).toISOString(), sure_dk: dk, aclik: 'evet', toplam_kcal: h.kcal,
-        kalemler: l.map(function(k){ return { yemek_id: k.id, porsiyon: k.p }; }) });
-      if(r.error){ console.error('ogun_tokluk', r.error); toast(M.hata); if(btn){ btn.disabled = false; btn.textContent = M.bildir; } return; }
-      if(hedef){ var o = await sb.from('oylar').insert({ yemek_id: hedef, saat_dk: dk, ogun_id: oid }); if(o.error) console.error('oylar', o.error); else benimBildirim.set(hedef, dk); }
+      var oid = uuid(), kk = l.map(function(k){ return { yemek_id: k.id, porsiyon: k.p }; });
+      var anahtar = typeof kbKaydet === 'function' ? await kbKaydet(kk, dk, 'meclis') : null;
+      if(!anahtar){ if(btn){ btn.disabled = false; btn.textContent = M.bildir; } return; }
+      if(currentUser){
+        var r = await sb.from('ogun_tokluk').insert({ ogun_id: oid, baslangic: new Date(Date.now() - dk*60000).toISOString(), sure_dk: dk, aclik: 'evet', toplam_kcal: h.kcal, kalemler: kk });
+        if(r.error){ console.error('ogun_tokluk', r.error); oid = null; }
+      } else oid = null;
+      if(hedef){
+        var ov = { yemek_id: hedef, saat_dk: dk }; if(oid) ov.ogun_id = oid; if(!currentUser) ov.cihaz = 'd:' + deviceId();
+        var o = await sb.from('oylar').insert(ov); if(o.error) console.error('oylar', o.error); else benimBildirim.set(hedef, dk);
+      }
     }
     // rozetler: baskın (ya da ilk) yemeğe
     var ry = hedef || l[0].id;
@@ -538,9 +550,10 @@
       for(var i = 0; i < degis.length; i++){ var e2 = await sb.from('rozet_oylar').insert({ yemek_id: ry, rozet: degis[i].rozet, aktif: degis[i].aktif }); if(e2.error) console.error('rozet', e2.error); }
       if(rozetler.length) benimRozet.set(ry, rozetler); else benimRozet.delete(ry);
     }
-    bildirimSonuc = oTekMi ? { id: hedef, saat_dk: dk } : { ogun: true, yemek: hedef, saat_dk: dk, hesap: h.sure, adlar: l.map(function(k){ var f = oYemek(k.id); return f ? (k.p !== 1 ? sayi(k.p) + '× ' : '') + f.ad : ''; }).filter(Boolean).join(' + ') };
+    bildirimSonuc = oTekMi ? { id: hedef, saat_dk: dk } : { ogun: true, anahtar: anahtar, yemek: hedef, saat_dk: dk, hesap: h.sure, adlar: l.map(function(k){ var f = oYemek(k.id); return f ? (k.p !== 1 ? sayi(k.p) + '× ' : '') + f.ad : ''; }).filter(Boolean).join(' + ') };
     bildirim = null;
     buzz([14,40,22]);
+    if(!oTekMi && typeof kbYenile === 'function') await kbYenile();
     await meclisYukle(true);
     requestAnimationFrame(function(){ var k = document.getElementById('bk'); if(k) k.scrollIntoView({ behavior: azHareket() ? 'auto' : 'smooth', block: 'center' }); });
   }

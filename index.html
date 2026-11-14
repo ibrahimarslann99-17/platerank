@@ -1794,13 +1794,16 @@ function arowHtml(f,i,max,favs,menuSet){
 function hizliBildirHtml(id){
   const dk = benimBildirim.get(id);
   let ust;
-  if(dk!=null){
+  const kbUst = typeof kbDurum==='function' ? kbDurum(id) : null;   // kombo.js: bu yemekten girilen son kombo
+  if(kbUst) ust = kbUst;
+  else if(dk!=null){
     const o = meclis.ozet.get(id), f = mYemek(id), t = f ? acikmaSuresi(f) : null;
     const halk = o && o.medyan_dk!=null ? `Halk <b>${saatYaz(o.medyan_dk)}</b> (${o.saatli} kişi)` : 'Halkın saati henüz oturmadı';
     ust = `✓ Sen <b>${saatYaz(dk)}</b> dedin · ${halk}${t?` · hesap ~${saatStr(t)} sa`:''}`;
   } else ust = '⏱ Seni kaç saat tok tuttu? Dokun, kaydolsun.';
   return `<div class="abildir hb" data-hb="${id}">
     <div class="hb-s">${ust}</div>
+    ${typeof kbYanHtml==='function' ? kbYanHtml(id) : ''}
     <div class="bk-saat hb-saat">${SAAT_AD.map((a,i)=>`<button type="button" class="${SAAT_ADIM[i]===dk?'on':''}" data-hbs="${i}" data-hby="${id}" aria-pressed="${SAAT_ADIM[i]===dk}">${a}</button>`).join('')}</div>
     <button type="button" class="link-btn hb-m" data-bildir="${id}">${currentUser?'Rozet bas, Meclis\'te aç':'Meclis\'te aç'} →</button>
     ${dk!=null && !currentUser && !teklifKapali() ? '<button type="button" class="link-btn hb-m hb-g" data-hbgiris>Tam sayılsın, giriş yap →</button>' : ''}
@@ -1809,6 +1812,7 @@ function hizliBildirHtml(id){
 let hbMesgul = false;
 async function hizliBildir(id, i, btn){
   if(hbMesgul || !votingOpen) return;
+  if(typeof kbBildir==='function' && kbBildir(id, i, btn)) return;   // yanında bir şey eklendiyse kombo olarak kaydolur
   const saat_dk = SAAT_ADIM[i];
   if(benimBildirim.get(id)===saat_dk){ toast('Bu saati zaten bildirdin'); return; }
   hbMesgul = true; buzz(8);
@@ -1816,6 +1820,7 @@ async function hizliBildir(id, i, btn){
   if(kutu) kutu.classList.add('gonder');
   const ok = await saatKaydet(id, saat_dk);
   if(ok){
+    if(typeof kbTemizle==='function') kbTemizle(id);
     // yalnız bu yemeğin halk özetini tazele; Meclis bir sonraki açılışta baştan yüklenir
     try{
       const {data} = await sb.from('meclis_ozet').select('yemek_id,oy,s,a,b,c,d,saatli,medyan_dk,son_oy').eq('yemek_id', id).maybeSingle();
@@ -2082,6 +2087,7 @@ function meclisBolumHtml(){
   <p class="m-alt">Kalori her paketin üstünde yazar. Kaç saat tok tuttuğu yalnızca burada: yiyenlerin bildirdiği saatlerden.</p>
   ${bildirimKartHtml()}
   ${halkSaatleriHtml()}
+  ${typeof kbListeHtml==='function' ? kbListeHtml() : ''}
   ${rozetRehberiHtml()}
   ${oneriBolumHtml()}`;
 }
@@ -3446,5 +3452,6 @@ function tnIlkZiyaret(){
 })();
 </script>
 <script src="/bugun.js"></script>
+<script src="/kombo.js"></script>
 </body>
 </html>
