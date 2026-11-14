@@ -132,4 +132,4 @@ function enAdres(d, trSlug) {
   return `${SITE}/en/food/${e.slug}`;
 }
 
-module.exports = { enHazirla, enAdres, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER };
+module.exports = { SECME_CIFTLER, enHazirla, enAdres, ciftSlug, saatYaz, saatEk, dkYaz, CUISINES, CUISINE, TIER };

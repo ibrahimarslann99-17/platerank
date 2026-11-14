@@ -9,6 +9,8 @@ const { satir, sayfa, yanit, surgu } = require('./_sablon.js');
 const { LISTELER, listeKalemleri } = require('./_listeler.js');
 const { enAdres } = require('./_en_veri.js');
 const { tarifCek, tarifHtml, tarifLd } = require('./_tarif.js');
+const { kiyasHazirla } = require('./_kiyas_veri.js');
+const { kiyasYanit, kiyasSatiri } = require('./_kiyas.js');
 
 // Türkçe sayfanın İngilizce karşılığı varsa hreflang üçlüsü (x-default İngilizce)
 function dilAlternatif(tr, en) {
@@ -115,8 +117,9 @@ function yemekSayfasi(y, d, t) {
   const kanonik = `${SITE}/yemek/${y.kanonikSlug || y.slug}`;
   const saatli = y.saat != null;
   const S = saatli ? saatYaz(y.saat) : null;
+  // 14.11: cevap başlıkta (aramada 1. sayfadayız ama tıklanmıyorduk). Ölçüm: Search Console'da 2-3 hafta sonra TO.
   const baslik = saatli
-    ? `${kok} kaç saat tok tutar, kaç kalori? · PlateRank`
+    ? `${kok} kaç saat tok tutar? ~${S} saat, ${y.kcal} kcal · PlateRank`
     : `${y.ad} kaç kalori, tok tutar mı? · PlateRank`;
   const aciklama = saatli
     ? `${kok} yaklaşık ${S} saat tok tutar${y.halkDk != null ? ` (yiyenlere göre ${dkYaz(y.halkDk)})` : ''}. ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g lif; ${y.lig} ligi, ${d.toplam} yemek arasında ${y.sira}. sırada. Daha uzun tok tutan alternatifleri gör.`
@@ -177,6 +180,8 @@ ${alternatif.length
     ? `<ul class="liste">${alternatif.map(satir).join('')}</ul>`
     : `<p>${y.kcal} kcal civarında bundan daha tok tutan bir yemek yok. Bu kalori aralığının en iyisi.</p>`}
 
+${(() => { const kl = (kiyasHazirla(d).yemegin.get(y.slug) || []).slice().sort((p, q) => q.secme - p.secme).slice(0, 6); return kl.length ? `<h2>${esc(kok)} ile karşılaştırmalar</h2><ul class="liste">${kl.map((c) => kiyasSatiri(c)).join('')}</ul>` : ''; })()}
+
 ${komsu.length ? `<h2>${esc(m.ad)} mutfağında yakın sıralar</h2><ul class="liste">${komsu.map(satir).join('')}</ul>` : ''}
 
 ${(() => { const gl = gectigiListeler(y, d); return gl.length ? `<h2>${esc(kok)} bu listelerde</h2><ul class="liste">${gl.map((t) => `<li><a href="/liste/${t.slug}"><img class="kc" src="/img/liste/k/${t.slug}.jpg" alt="" width="48" height="36" loading="lazy" decoding="async"><span class="ad">${esc(t.kisa)}</span><span class="dg">${listeKalemleri(t, d).indexOf(y) + 1}. sırada</span></a></li>`).join('')}</ul>` : ''; })()}
@@ -229,6 +234,7 @@ function dizinSayfasi(d) {
 <h1>Yemeklerin kalorisi ve doyuruculuk puanı</h1>
 <p class="alt">${d.toplam} yemek, kalori başına ne kadar tok tuttuğuna göre sıralandı. Bir yemeğe dokun: kaç kalori olduğunu, tok tutup tutmadığını ve aynı kaloride daha tok tutan alternatiflerini gör.</p>
 <p><a class="btn" href="/liste">Hazır listeler: yüksek proteinli kahvaltı, 100 kalori altı doyurucular ve fazlası</a></p>
+<p><a href="/kiyas">Karşılaştırmalar: hangisi daha uzun tok tutar?</a></p>
 <div class="mutfak-nav">${gruplar.map((g) => `<a href="#${g.m.id}">${g.m.ic} ${esc(g.m.ad)}</a>`).join('')}</div>
 ${gruplar.map((g) => `<h2 id="${g.m.id}">${g.m.ic} ${esc(g.m.ad)}</h2><ul class="liste">${g.liste.map(satir).join('')}</ul>`).join('')}
 `;
@@ -264,6 +270,8 @@ module.exports = {
     } catch (e) {
       return yanit('<!doctype html><meta charset="utf-8"><title>PlateRank</title><p>Şu an yüklenemedi, birazdan tekrar dene. <a href="/">Ana sayfa</a></p>', 503, 'no-store');
     }
+    const k = url.searchParams.get('k');
+    if (k) return kiyasYanit(k);   // /kiyas ve /kiyas/:a-vs-:b (ayrı fonksiyon açılmadı: Vercel sınırı)
     const s = (url.searchParams.get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
     if (!s) return yanit(dizinSayfasi(d));
     const y = d.slugIle.get(s);

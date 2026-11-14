@@ -44,6 +44,14 @@
       "destination": "/api/yemek?s=:slug"
     },
     {
+      "source": "/kiyas",
+      "destination": "/api/yemek?k=1"
+    },
+    {
+      "source": "/kiyas/:slug",
+      "destination": "/api/yemek?k=:slug"
+    },
+    {
       "source": "/sitemap-yemekler.xml",
       "destination": "/api/sitemap"
     },

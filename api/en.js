@@ -198,8 +198,9 @@ function yemekSayfasi(y, e, t) {
   const saatli = y.saat != null;
   const sc = saatCevabi(y);
   const tr = trAlternatif(y);
+  // 14.11: the answer goes in the title (we rank on page 1 for these queries but got almost no clicks)
   const baslik = saatli
-    ? `How long does ${y.ad} keep you full? Calories & satiety · PlateRank`
+    ? `How long does ${y.ad} keep you full? About ${saatEk(y.saat)}, ${y.kcal} kcal · PlateRank`
     : `${y.ad}: calories and satiety score · PlateRank`;
   const aciklama = saatli
     ? `${y.ad}${y.porsiyon ? ` (${y.porsiyon})` : ''} keeps you full for about ${saatEk(y.saat)}${y.halkDk != null ? ` (${dkYaz(y.halkDk)} by eaters' reports)` : ''}. ${y.kcal} kcal, ${y.protein} g protein, ${y.lif} g fiber; tier ${y.lig}, #${y.sira} of ${e.toplam} foods. See more filling alternatives.`
@@ -307,7 +308,12 @@ function ciftSayfasi(c, e, listede) {
   const [k, z] = berabere ? (a.doyuruculuk >= b.doyuruculuk ? [a, b] : [b, a]) : (a.ayniSaat > b.ayniSaat ? [a, b] : [b, a]);
   const porsiyonCumle = ` Per serving: ${a.ad} (${a.kcal} kcal) lasts about ${saatEk(a.saat)}, ${b.ad} (${b.kcal} kcal) about ${saatEk(b.saat)}.`;
 
-  const baslik = `${a.ad} vs ${b.ad}: which keeps you full longer? · PlateRank`;
+  // Verdict in the title when per-calorie and per-serving winners agree; otherwise the question stays
+  const baslik = berabere
+    ? `${a.ad} vs ${b.ad}: which keeps you full longer? It's a tie · PlateRank`
+    : k.saat >= z.saat
+      ? `${a.ad} vs ${b.ad}: ${k.ad} wins on fullness · PlateRank`
+      : `${a.ad} vs ${b.ad}: which keeps you full longer? · PlateRank`;
   const aciklama = berabere
     ? `Calorie for calorie, ${a.ad} and ${b.ad} are even: 300 kcal of either keeps you full about ${saatEk(a.ayniSaat)}. Calories, protein, fiber and hours per serving compared side by side.`
     : `Calorie for calorie, ${k.ad} keeps you full about ${saatEk(fark)} longer than ${z.ad} (${saatYaz(k.ayniSaat)} vs ${saatYaz(z.ayniSaat)} hours per 300 kcal). Calories, protein, fiber and hours per serving compared side by side.`;

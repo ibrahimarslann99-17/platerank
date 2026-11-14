@@ -113,7 +113,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
 <div class="wrap">
 <header class="top"><a class="logo" href="/">Plate<i>Rank</i></a><a class="btn" href="/">Tüm liste</a></header>
 ${govde}
-<footer><a href="/liste">Listeler</a> · <a href="/yemek">Tüm yemekler</a> · <a href="/yontem">Yöntem</a> · <a href="/">PlateRank ana sayfa</a> · <a href="/en" hreflang="en" lang="en">English</a> · iletisim@platerank.dev</footer>
+<footer><a href="/liste">Listeler</a> · <a href="/yemek">Tüm yemekler</a> · <a href="/kiyas">Karşılaştırmalar</a> · <a href="/yontem">Yöntem</a> · <a href="/">PlateRank ana sayfa</a> · <a href="/en" hreflang="en" lang="en">English</a> · iletisim@platerank.dev</footer>
 </div>
 </body>
 </html>`;

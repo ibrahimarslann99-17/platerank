@@ -38,6 +38,7 @@ ${enKisa.map(satir).join('\n')}
 ## Diğer
 
 - [Tüm yemekler](${SITE}/yemek): ${d.toplam} yemeğin mutfak mutfak dizini; her yemeğin kendi sayfası var (/yemek/<ad>)
+- [Karşılaştırmalar](${SITE}/kiyas): iki yemekten hangisi daha uzun tok tutar, kalori kalori ve porsiyon başına (/kiyas/<a>-vs-<b>)
 - [Site haritası](${SITE}/sitemap-yemekler.xml)
 
 ## English
