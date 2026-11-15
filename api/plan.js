@@ -2,10 +2,13 @@
 // POST                 : form girdisini alir, hedefi hesaplar, plani kaydeder. Doner: ucretsiz kisim + onizleme
 //                        (ogun saatleri ve kahvalti karsilastirmasi; yemek adlari yok).
 // POST ?islem=odeme    : { plan_id } -> Polar odeme oturumu acar, { url } doner.
+// GET  ?liste=tr|en    : ankette "normalde ne yersin" aramasi icin plana girebilen yemekler: [[id8, ad, tur], ...]
 // GET  ?id=            : plan. Erisim su yollardan biriyle acilir, yoksa sadece ucretsiz kisim:
 //                        1) checkout_id: Polar'a sorulur, odeme bu plana aitse plan hemen acilir ve erisim anahtari verilir
 //                        2) x-plan-anahtar basligi (odemede verilen anahtar) + aktif abonelik
 //                        3) girisli kullanici (Supabase oturumu) + aktif abonelik
+//                        Acik planda &artan=0|1 "bir pisir iki ye" ayarini degistirir ve haftayi yeniden kurar.
+//                        Yanitta tarifler: plandaki yemeklerin tarifi (plan ici tarif ve alisveris listesi icin).
 // Hesap ve kapi sadece burada calisir; tarayiciya yalnizca sonuc gider.
 
 const crypto = require('crypto');
@@ -28,7 +31,10 @@ const URUN_YIL = process.env.POLAR_PRODUCT_ID_YIL || '';
 
 const ZORUNLU = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'email'];
 // Veritabanina yalnizca bunlar yazilir. Saglik kapisi cevaplari (hamile, kronikHastalik) asla saklanmaz.
-const SAKLANAN = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'ogunSayisi', 'kahvalti', 'dil', 'diyet', 'alerjen', 'mutfakHaric', 'birim', 'onay'];
+const SAKLANAN = ['boy', 'kilo', 'yas', 'cinsiyet', 'aktivite', 'hedef', 'kalkis', 'yatis', 'ogunSayisi', 'kahvalti', 'aliskanlik', 'dil', 'diyet', 'alerjen', 'mutfakHaric', 'birim', 'onay'];
+// "Normalde ne yersin": ogun basina en fazla 3 yemek (id'nin ilk 8 hanesi). Motor bunlari sifir noktasi alir.
+const ALISKANLIK_OGUN = ['kahvalti', 'ogle', 'aksam'];
+const ID8 = /^[0-9a-f]{8}$/;
 const ALERJENLER = ['et', 'balik', 'sut', 'yumurta', 'gluten', 'kuruyemis', 'soya', 'baklagil'];
 const MUTFAKLAR = ['tr', 'us', 'it', 'jp', 'mx', 'cn', 'me', 'kr', 'in', 'th', 'veg', 'hm', 'temel'];
 const HAFTA_MS = 7 * 24 * 3600 * 1000;
@@ -74,6 +80,13 @@ function dogrula(g) {
   if (g.alerjen != null && !(Array.isArray(g.alerjen) && g.alerjen.every((a) => ALERJENLER.includes(a)))) return 'alerjen';
   if (g.mutfakHaric != null && !(Array.isArray(g.mutfakHaric) && g.mutfakHaric.every((m) => MUTFAKLAR.includes(m)))) return 'mutfak';
   if (g.kahvalti != null && !(g.kahvalti in TIPIK)) return 'kahvalti';
+  if (g.aliskanlik != null) {
+    const a = g.aliskanlik;
+    if (typeof a !== 'object' || Array.isArray(a)) return 'aliskanlik';
+    for (const k of Object.keys(a)) {
+      if (!ALISKANLIK_OGUN.includes(k) || !Array.isArray(a[k]) || a[k].length > 3 || !a[k].every((x) => typeof x === 'string' && ID8.test(x))) return 'aliskanlik';
+    }
+  }
   if (g.birim != null && !['metrik', 'imperial'].includes(g.birim)) return 'birim';
   // Saglikla iliskili veri (boy, kilo) acik riza olmadan islenmez
   if (g.onay !== true) return 'onay';
@@ -128,6 +141,7 @@ function secenekler(kayit, hafta, ek = {}) {
     alerjen: g.alerjen || [],
     mutfakHaric: g.mutfakHaric || [],
     mutfakAgirlik: kayit.dil === 'en' ? EN_AGIRLIK : TR_AGIRLIK,
+    aliskanlik: g.aliskanlik || null,
     yerel: kayit.dil !== 'en',
     kalkis: g.kalkis,
     yatis: g.yatis,
@@ -136,32 +150,97 @@ function secenekler(kayit, hafta, ek = {}) {
   };
 }
 
+// Tarifin kac porsiyon cikardigi: "4 kişilik", "6 porsiyon (12 adet)", "3 bowls". Porsiyon olmayan olculer
+// ("4 sandviç", "12 adet", "6 yarım porsiyon") null doner; onlarda kat hesabi yapilmaz.
+function porsiyonSay(kisi) {
+  const m = /^(\d+)\s*(kişilik|porsiyon|kase|tabak|servings?|bowls?|plates?)(?![a-zçğıöşü])/i.exec(String(kisi || '').trim());
+  return m ? Number(m[1]) : null;
+}
+
+// Bir pisir iki ye: tarifi en az 2 porsiyon cikan yemekler (id'nin ilk 8 hanesi). Motor bunlardan ana yemek ve
+// corba olanlari aksam pisirip ertesi ogleye tasir. Tarif tablosu okunamazsa liste bos doner, plan yine kurulur.
+const cokOnbellek = {};
+async function cokPisenler(dil) {
+  const o = cokOnbellek[dil];
+  if (o && Date.now() - o.zaman < 10 * 60 * 1000) return o.liste;
+  try {
+    const satirlar = await sorgu(`tarifler?select=yemek_id,kisi&dil=eq.${dil}&limit=2000`);
+    const liste = (satirlar || []).filter((t) => porsiyonSay(t.kisi) >= 2).map((t) => String(t.yemek_id).slice(0, 8));
+    cokOnbellek[dil] = { liste, zaman: Date.now() };
+    return liste;
+  } catch (e) { console.error('cokPisenler', e); return o ? o.liste : []; }
+}
+
+// Plandaki (secili ve alternatif) yemeklerin tarifleri: { yemek_id: { sure, kisi, porsiyon, malzemeler, adimlar } }
+async function planTarifleri(gunler, dil) {
+  const ids = new Set();
+  for (const g of gunler) for (const o of g.ogunler) for (const s of [o.secim, ...(o.alternatifler || [])]) {
+    if (s) for (const p of s.parcalar) if (UUID.test(p.id)) ids.add(p.id);
+  }
+  const hepsi = [...ids];
+  const gruplar = [];
+  for (let i = 0; i < hepsi.length; i += 60) gruplar.push(hepsi.slice(i, i + 60));
+  const yanitlar = await Promise.all(gruplar.map((g) => sorgu(`tarifler?select=yemek_id,sure_dk,kisi,malzemeler,adimlar&dil=eq.${dil}&yemek_id=in.(${g.join(',')})`)));
+  const sonuc = {};
+  for (const satirlar of yanitlar) for (const t of satirlar || []) {
+    sonuc[t.yemek_id] = { sure: t.sure_dk, kisi: t.kisi, porsiyon: porsiyonSay(t.kisi), malzemeler: t.malzemeler || [], adimlar: t.adimlar || [] };
+  }
+  return sonuc;
+}
+
+function artanAcik(kayit) { return (kayit.girdi || {}).artan !== false; }
+
 // Haftalik plan: plan olusturulduktan sonraki her 7 gunde yeni hafta, tohum plan id + hafta no.
+// Ayar (bir pisir iki ye) degisirse ayni hafta yeniden kurulur.
 async function haftalikPlan(kayit) {
   const hafta = Math.floor((Date.now() - Date.parse(kayit.created_at)) / HAFTA_MS);
-  if (kayit.plan && kayit.plan.hafta === hafta) return kayit.plan;
-  const yemekler = await yemekleriCek(kayit.dil);
-  const sonuc = planUret(kayit.hedef, yemekler, secenekler(kayit, hafta));
-  const plan = { hafta, olusturma: new Date().toISOString(), gunler: sonuc.gunler };
+  const artan = artanAcik(kayit);
+  const eski = kayit.plan;
+  // Ayar eklenmeden once kurulmus hafta (artan alani yok) kullanici ayara dokunmadikca oldugu gibi kalir
+  const ayni = eski && eski.hafta === hafta && (eski.artan === undefined ? (kayit.girdi || {}).artan === undefined : eski.artan === artan);
+  if (ayni) return eski;
+  const dil = kayit.dil === 'en' ? 'en' : 'tr';
+  const [yemekler, cokPisen] = await Promise.all([yemekleriCek(kayit.dil), artan ? cokPisenler(dil) : []]);
+  const sonuc = planUret(kayit.hedef, yemekler, secenekler(kayit, hafta, { artan, cokPisen }));
+  const plan = { hafta, olusturma: new Date().toISOString(), artan, gunler: sonuc.gunler };
   await sorgu(`planlar?id=eq.${kayit.id}`, { method: 'PATCH', body: { plan } });
   return plan;
 }
 
-// Odeme oncesi onizleme: ilk gunun ogun saatleri ve kahvalti karsilastirmasi. Yemek adi icermez.
+// Kullanicinin kendi tabaginin (oldugu gibi: porsiyon carpani 1, ek yok) tokluk suresi. Kalem yoksa null.
+function tabakSuresi(ids, yemekler) {
+  const set = new Set((ids || []).slice(0, 3));
+  const k = set.size ? yemekler.filter((y) => set.has(y.id.slice(0, 8))) : [];
+  if (!k.length) return null;
+  const kcal = k.reduce((n, y) => n + y.kcal, 0);
+  const puanKcal = k.reduce((n, y) => n + y.doyuruculuk * y.kcal, 0);
+  return Math.round(tabakSaat(kcal, kcal ? puanKcal / kcal : 0) * 2) / 2;
+}
+
+// Odeme oncesi onizleme: ilk gunun ogun saatleri ve "her zamanki gunun" karsilastirmasi. Yemek adi icermez.
+// Kullanici ne yedigini sectiyse her ana ogunde tipikSaat doner (kendi tabaginin tokluk suresi);
+// secmediyse eski yol: yalnizca kahvalti sikkindan (TIPIK) karsilastirma.
 async function onizleme(kayit) {
   const yemekler = await yemekleriCek(kayit.dil);
   const gun = planUret(kayit.hedef, yemekler, secenekler(kayit, 0, { gun: 1 })).gunler[0];
   const ilk = gun.ogunler[0];
   const g = kayit.girdi || {};
+  const al = g.aliskanlik || {};
+  const kendi = {};
+  for (const k of ALISKANLIK_OGUN) kendi[k] = tabakSuresi(al[k], yemekler);
+  const kendiVar = ALISKANLIK_OGUN.some((k) => kendi[k] != null);
+  const sikSaat = g.kahvalti ? tipikSaat(g.kahvalti) : null;
+  if (kendiVar && kendi.kahvalti == null) kendi.kahvalti = sikSaat; // kahvaltiyi sikla ya da "atliyorum" ile vermis olabilir
   return {
     ogunler: gun.ogunler.map((o) => ({
       ogun: o.ogun, saat: o.saat, tokBitis: o.tokBitis, acDk: o.acDk,
       kcal: o.hedef.kcal, protein: o.hedef.protein,
       tokSaat: o.secim ? o.secim.toplam.tokSaat : null,
+      ...(kendiVar && kendi[o.ogun] != null ? { tipikSaat: kendi[o.ogun] } : {}),
     })),
     kahvalti: {
-      tipik: g.kahvalti || null,
-      tipikSaat: g.kahvalti ? tipikSaat(g.kahvalti) : null,
+      tipik: tabakSuresi(al.kahvalti, yemekler) != null ? 'kendi' : (g.kahvalti || null),
+      tipikSaat: tabakSuresi(al.kahvalti, yemekler) != null ? kendi.kahvalti : sikSaat,
       planSaat: ilk && ilk.secim ? ilk.secim.toplam.tokSaat : null,
     },
   };
@@ -233,6 +312,15 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ plan_id: kayit.id, ...ucretsiz(h), onizleme: on, yillik: !!URUN_YIL });
     }
 
+    // Anketteki yemek aramasi: plana girebilen yemekler. Tatli ve icecek plana girmedigi icin listede de yok.
+    if (req.method === 'GET' && req.query.liste) {
+      const dil = req.query.liste === 'en' ? 'en' : 'tr';
+      const yemekler = await yemekleriCek(dil);
+      res.setHeader('Cache-Control', 'public, max-age=600, s-maxage=3600');
+      return res.status(200).json(yemekler.filter((y) => y.tur !== 'tatli' && y.tur !== 'icecek')
+        .map((y) => [y.id.slice(0, 8), y.porsiyon ? `${y.ad} (${y.porsiyon})` : y.ad, y.tur]));
+    }
+
     if (req.method === 'GET') {
       const id = String(req.query.id || '');
       if (!UUID.test(id)) return res.status(400).json({ hata: 'id' });
@@ -274,8 +362,17 @@ module.exports = async function handler(req, res) {
 
       if (!erisim) return res.status(200).json(ucretsiz(plan.hedef));
 
+      // Bir pisir iki ye ayari: yalnizca plani acik olan degistirebilir
+      const ayar = String(req.query.artan || '');
+      if ((ayar === '0' || ayar === '1') && artanAcik(plan) !== (ayar === '1')) {
+        plan.girdi = { ...(plan.girdi || {}), artan: ayar === '1' };
+        await sorgu(`planlar?id=eq.${id}`, { method: 'PATCH', body: { girdi: plan.girdi } });
+      }
+
       const hafta = await haftalikPlan(plan);
-      return res.status(200).json({ ...plan.hedef, kilitli: false, hafta: hafta.hafta, gunler: hafta.gunler, ...(anahtar ? { anahtar } : {}) });
+      let tarifler = {};
+      try { tarifler = await planTarifleri(hafta.gunler, plan.dil === 'en' ? 'en' : 'tr'); } catch (e) { console.error('tarifler', e); }
+      return res.status(200).json({ ...plan.hedef, kilitli: false, hafta: hafta.hafta, gunler: hafta.gunler, artan: artanAcik(plan), tarifler, ...(anahtar ? { anahtar } : {}) });
     }
 
     res.setHeader('Allow', 'GET, POST');

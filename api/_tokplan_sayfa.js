@@ -44,6 +44,27 @@ details.tp-sss{border-bottom:1px solid var(--line);padding:10px 0}details.tp-sss
 .tp-ogun .alt{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-top:4px}.tp-ogun .alt button{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;color:var(--teal)}
 .tp-gunler{display:flex;gap:6px;overflow-x:auto;margin:6px 0 4px;padding-bottom:4px}.tp-gunler button{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}.tp-gunler button.on{background:var(--forest);color:var(--lime);border-color:var(--forest)}
 .tp-toplam{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);padding-top:10px}
+.tp-etiket{display:inline-block;font-size:12px;font-weight:600;color:var(--forest);background:var(--lime);border-radius:999px;padding:3px 10px;margin:0 0 2px}
+.tp-etiket.cift,.tp-etiket.oneri{background:#E3F1E7;color:var(--teal)}
+.tp-etiket.kendi{background:var(--forest);color:var(--lime)}
+.tp-etiket+.tp-etiket{margin-left:6px}
+.tp-al{margin:16px 0 4px}.tp-al h3{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;color:var(--forest);margin:0 0 4px}
+.tp-al .tp-alan{margin:6px 0}.tp-al .tp-alan input{font-size:17px;padding:11px 14px}.tp-al .tp-cips{margin:6px 0}
+.tp-al-son button{display:block;width:100%;text-align:left;background:var(--card);border:0;border-bottom:1px solid var(--line);padding:11px 14px;font:inherit;color:var(--ink);cursor:pointer}
+.tp-al-son button:first-child{border-radius:14px 14px 0 0}.tp-al-son button:last-child{border-radius:0 0 14px 14px;border-bottom:0}.tp-al-son button:only-child{border-radius:14px}
+.tp-al-son .tp-acik{margin:6px 0 0;font-size:14px}
+.tp-tarif-ac{display:block;background:none;border:0;padding:4px 0 0;font:inherit;font-size:13px;font-weight:600;color:var(--teal);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.tp-tarif{background:var(--paper);border-radius:14px;padding:12px 14px;margin:4px 0 10px;font-size:14px;line-height:1.5}
+.tp-tarif .tm{margin:0;color:var(--muted)}
+.tp-tarif h4,.tp-lg{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:12px 0 4px}
+.tp-tarif ul{list-style:none;margin:0;padding:0}.tp-tarif ul li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px dashed var(--line)}.tp-tarif ul li span:last-child{color:var(--muted);text-align:right}
+.tp-tarif ol{margin:0;padding-left:20px}.tp-tarif ol li{margin:0 0 6px}
+.tp-ayar{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}.tp-ayar b{display:block;color:var(--forest)}.tp-ayar small{display:block;color:var(--muted);font-size:13px;line-height:1.35}.tp-ayar .tp-birim{flex:0 0 auto;background:var(--paper);margin:0}
+.tp-lb{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;color:var(--forest);margin:12px 0 2px}.tp-lg{margin-top:18px}
+.tp-ly{border-bottom:1px solid var(--line);padding:10px 0}.tp-ly b{display:block;line-height:1.25}.tp-ly>small{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.tp-lm{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;padding:7px 0;font-size:15px;cursor:pointer}.tp-lm input{width:18px;height:18px;margin:2px 0 0;accent-color:#1F5C3B}.tp-lm span:last-child{color:var(--muted);text-align:right;max-width:150px}.tp-lm small{display:block;color:var(--muted);font-size:12px}
+.tp-lm input:checked~span{text-decoration:line-through;opacity:.55}
+.tp-kopya{display:block;width:100%;margin-top:14px;border:1.5px solid var(--forest);background:var(--card);color:var(--forest);font:600 16px Figtree,system-ui,sans-serif;padding:12px;border-radius:999px;cursor:pointer}
 `;
 
 function govde() {
@@ -52,18 +73,21 @@ function govde() {
   <h1>A meal plan built around staying full</h1>
   <p class="alt">Tell us how your day runs. We build a week of meals timed so each one carries you to the next, picked from 760 foods ranked by how long they keep you full.</p>
   <ul class="tp-mad">
+    <li>Starts from what you already eat, then suggests more filling swaps</li>
     <li>Calorie and protein targets for every meal, not just the day</li>
     <li>Meal times matched to when you wake up and go to bed</li>
     <li>Vegan, vegetarian and allergy filters</li>
     <li>A new plan every week, with two swaps for every meal</li>
+    <li>A weekly shopping list, and recipes for 300+ dishes right inside the plan</li>
+    <li>Cook once, eat twice: a dinner you cook comes back as lunch the next day</li>
   </ul>
   <button class="tp-cta" type="button" data-basla>Build my plan</button>
   <p class="tp-not">Your daily targets are free. The full plan is $5/month or $30/year, cancel anytime.</p>
 
   <div class="tp-kutu">
     <h2>How it works</h2>
-    <div class="tp-adim"><b>1</b><div>Answer 11 short questions: your goal, body, schedule, diet and what you usually eat for breakfast.</div></div>
-    <div class="tp-adim"><b>2</b><div>See your daily calories and protein, and how long your current breakfast actually keeps you full.</div></div>
+    <div class="tp-adim"><b>1</b><div>Answer 11 short questions: your goal, body, schedule, diet and what you usually eat.</div></div>
+    <div class="tp-adim"><b>2</b><div>See your daily calories and protein, and how long your usual meals actually keep you full.</div></div>
     <div class="tp-adim"><b>3</b><div>Unlock a 7-day plan: what to eat, how much and when, with the hours each meal keeps you full.</div></div>
   </div>
 

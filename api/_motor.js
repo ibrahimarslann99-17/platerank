@@ -28,6 +28,14 @@ const YABANCI_BITKISEL = /tofu|edamame|tvp|seitan|quorn|natto|tempeh|spirulina/i
 const KCAL_TOL = 0.10;      // kalori +-%10
 const PROTEIN_ALT = 0.90;   // proteinin en az %90'i
 const TEKRAR_GUN = 3;       // ayni ana tabak 3 gun icinde tekrar etmez
+// Bir pisir iki ye (secenek.artan): tarifi en az 2 porsiyon cikan ana yemek/corba aksam pisirilirse
+// ertesi gunun oglesine "dunden kalan" olarak gelir. Odul, boyle yemeklerin aksama daha sik dusmesini saglar.
+const ARTAN_ODUL = 0.35;
+// Aliskanlik (secenek.aliskanlik): kullanicinin "normalde yediklerim" tabagi sifir noktasidir. Tabak hedefe en az
+// dokunusla ayarlanir (porsiyon carpani, en fazla bir protein eki, gerekirse yan tabak) ve asagidaki gunlerde
+// varsayilan ogun olur; diger gunlerde ilk alternatif olarak durur. Oneriler kullanicinin mutfagina yakin secilir.
+const YABANCI_CEZA = 0.5;   // kullanicinin hic yemedigi mutfaktan tabak, tok-saat olceginde
+const kendiGunu = (tip, g) => (tip === 'kahvalti' ? g % 2 === 0 : tip === 'ogle' ? (g === 0 || g % 3 === 2) : g % 3 === 0);
 
 // Tokluk suresi (api/_veri.js ile ayni egri), birlesik tabak icin kcal agirlikli puanla
 function tabanSaat(kcal) { return 0.8 + 2.7 * Math.pow(Math.max(kcal, 1) / 500, 0.65); }
@@ -90,11 +98,14 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
     const jitter = rnd() * 0.35; // ayni profildeki kullanicilar ayni haftayi gormesin
     const bCeza = ceza(b);
     if (bCeza === Infinity) continue;
+    // Taban tek yemek ya da kullanicinin tabagi ({ plaka: [yemekler] }) olabilir; tabakta kalemler ayni carpanla buyur
+    const temel = b.plaka || [b];
     for (const kat of KATLAR) {
-      const bp = parca(b, kat, 'ana');
-      if (bp.kcal > kMax) continue;
+      const bps = temel.map((y) => parca(y, kat, 'ana'));
+      if (bps.reduce((n, x) => n + x.kcal, 0) > kMax) continue;
       for (const es of ekSecenek) {
-        const ps = [bp];
+        if (es && b.plaka && temel.some((y) => y.id === es[0].id)) continue; // tabakta zaten olan kalem ek olarak gelmez
+        const ps = bps.slice();
         if (es) ps.push(parca(es[0], es[1], 'ek'));
         let t = topla(ps);
         // Kalori eksikse ogle/aksamda bir yan tabak (salata/corba) dene. Ignede yok: mide kucuk, hacim proteini yer.
@@ -102,10 +113,10 @@ function adaylar(hedef, tip, taban, ekler, yanlar, ceza, rnd, tol = KCAL_TOL, pA
           const eksik = hedef.kcal - t.kcal;
           let enIyi = null;
           for (const y of yanlar) {
-            if (y.id === b.id) continue;
-            if (y.tur === b.tur) continue; // corbanin yanina corba, salatanin yanina salata yok
+            if (temel.some((x) => x.id === y.id)) continue;
+            if (y.tur === temel[0].tur) continue; // corbanin yanina corba, salatanin yanina salata yok
             // Kaloriye yakinlik + ayni mutfaktan olma + hafta icinde az tekrar
-            const fark = Math.abs(y.kcal - eksik) / hedef.kcal + (y.mutfak === b.mutfak ? 0 : 0.15) + yanCeza(y);
+            const fark = Math.abs(y.kcal - eksik) / hedef.kcal + (y.mutfak === temel[0].mutfak ? 0 : 0.15) + yanCeza(y);
             if (!enIyi || fark < enIyi[1]) enIyi = [y, fark];
           }
           if (enIyi) { ps.push(parca(enIyi[0], 1, 'yan')); t = topla(ps); }
@@ -159,9 +170,11 @@ function disari(a) {
     parcalar: a.parcalar.map((p) => ({
       id: p.id, ad: p.ad, rol: p.rol, kat: p.kat, kcal: Math.round(p.kcal), protein: Math.round(p.protein),
       ...(p.slug ? { slug: p.slug } : {}), ...(p.gorsel ? { gorsel: true } : {}), ...(p.porsiyon ? { porsiyon: p.porsiyon } : {}),
-      ...(EKLER[p.id.slice(0, 8)] && EKLER[p.id.slice(0, 8)].adet ? { adet: true } : {}),
+      ...(p.rol === 'ek' && EKLER[p.id.slice(0, 8)] && EKLER[p.id.slice(0, 8)].adet ? { adet: true } : {}),
     })),
     toplam: yuvarla(a.toplam),
+    // kendi: kullanicinin kendi tabagi; eksik: tabak ancak gevsek sinirla sigdi (protein ya da kalori hedefin altinda)
+    ...(a.kendi ? { kendi: true } : {}), ...(a.eksik ? { eksik: true } : {}),
   };
 }
 
@@ -197,7 +210,7 @@ function saatAta(ogunler, kalkis, yatis, sabitAra) {
 // hedef: hedefHesapla() ciktisi; yemekler: [{id,ad,tur,mutfak,kcal,protein,yag,lif,karbonhidrat,doyuruculuk,alerjenler[],diyet[]}]
 // secenek: { diyet: 'vegan'|'vejetaryen'|null, alerjen: [], mutfakHaric: [], mutfakAgirlik: {kod: 0..1}, tohum: 'plan-id', gun: 7 }
 function planUret(hedef, yemekler, secenek = {}) {
-  const s = { diyet: null, alerjen: [], mutfakHaric: [], mutfakAgirlik: {}, tohum: 'tok', gun: 7, ...secenek };
+  const s = { diyet: null, alerjen: [], mutfakHaric: [], mutfakAgirlik: {}, tohum: 'tok', gun: 7, artan: false, cokPisen: [], aliskanlik: null, ...secenek };
   // Et yiyen kullaniciya ozel urunler (TVP, Quorn, natto vb.) daha seyrek gelsin
   if (!s.diyet && s.mutfakAgirlik.veg === undefined) s.mutfakAgirlik = { ...s.mutfakAgirlik, veg: 0.6 };
   const rnd = tohumla(s.tohum);
@@ -210,7 +223,22 @@ function planUret(hedef, yemekler, secenek = {}) {
   const sonKullanim = new Map(); // tabanId -> gun
   const ekSayac = new Map();     // ek id -> haftadaki kullanim
   const yanSayac = new Map();    // yan tabak id -> haftadaki kullanim
-  const yanCeza = (y) => (yanSayac.get(y.id) || 0) * 0.12;
+  // Kullanicinin tabaklari: ogun basina en fazla 3 kalem (id'nin ilk 8 hanesi), diyet ve alerjen suzgecinden gecenler
+  const plaka = {};
+  const kendiMutfak = new Set();
+  for (const tip of ['kahvalti', 'ogle', 'aksam']) {
+    const ids = new Set(((s.aliskanlik || {})[tip] || []).slice(0, 3));
+    const kalemler = ids.size ? liste.filter((y) => ids.has(y.id.slice(0, 8))) : [];
+    if (!kalemler.length) continue;
+    plaka[tip] = { id: 'plaka:' + tip, plaka: kalemler };
+    for (const y of kalemler) if (y.mutfak !== 'temel') kendiMutfak.add(y.mutfak);
+  }
+  const yabanci = (y) => kendiMutfak.size > 0 && y.mutfak !== 'temel' && !kendiMutfak.has(y.mutfak);
+  const yanCeza = (y) => (yanSayac.get(y.id) || 0) * 0.12 + (yabanci(y) ? YABANCI_CEZA * 0.6 : 0);
+  // cokPisen: tarifi 2+ porsiyon cikan yemeklerin id'lerinin ilk 8 hanesi (api/plan.js tarifler tablosundan verir)
+  const cokPisen = new Set(s.cokPisen || []);
+  const ikiOgunluk = (y) => s.artan && (y.tur === 'ana' || y.tur === 'corba') && cokPisen.has(y.id.slice(0, 8));
+  let bekleyen = null; // dun aksam pisen, bugun ogleye kalan: { y, gun, kaynak (aksam ogunu), kaynakSira }
   const gunler = [];
   for (let g = 0; g < s.gun; g++) {
     const gunMutfak = new Set();
@@ -234,25 +262,65 @@ function planUret(hedef, yemekler, secenek = {}) {
         if ((tip === 'ogle' || tip === 'aksam') && gunMutfak.has(b.mutfak)) c += 0.4;
         const w = s.mutfakAgirlik[b.mutfak];
         if (w !== undefined) c += (1 - w) * 0.8;
+        if (tip === 'aksam' && g < s.gun - 1 && ikiOgunluk(b)) c -= ARTAN_ODUL;
+        if (yabanci(b)) c += YABANCI_CEZA;
         return c;
       };
+      // Kendi tabagi: once normal sinir, sonra gevsek; ikisine de sigmazsa en gevsek sinirla yalnizca alternatif olur
+      let kendi = null;
+      if (plaka[tip]) {
+        const sifir = () => 0;
+        let k = adaylar(oh, tip, [plaka[tip]], ekler, yanlar, sifir, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
+        if (!k.length) k = adaylar(oh, tip, [plaka[tip]], ekler, yanlar, sifir, rnd, 0.15, 0.8, yanCeza);
+        if (k.length) kendi = k[0];
+        else {
+          k = adaylar(oh, tip, [plaka[tip]], ekler, yanlar, sifir, rnd, 0.3, 0.5, yanCeza);
+          if (k.length) { kendi = k[0]; kendi.eksik = true; }
+        }
+        if (kendi) kendi.kendi = true;
+      }
+      const kendiSecili = !!kendi && !kendi.eksik && kendiGunu(tip, g);
+      // Dun aksamdan kalan varsa ogle once onu dener; kalori ve protein siniri ayni, porsiyon ve ek serbest
+      let kalan = null;
+      if (tip === 'ogle' && bekleyen && bekleyen.gun === g) {
+        const sifir = () => 0;
+        let k = adaylar(oh, tip, [bekleyen.y], ekler, yanlar, sifir, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
+        if (!k.length) k = adaylar(oh, tip, [bekleyen.y], ekler, yanlar, sifir, rnd, 0.15, 0.8, yanCeza);
+        if (k.length) kalan = k[0];
+      }
       // Bulamazsa kademeli gevset: once havuz, sonra tolerans
       let a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, false), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
       if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, KCAL_TOL, PROTEIN_ALT, yanCeza);
       if (!a.length) a = adaylar(oh, tip, tabanHavuz(tip, liste, ekIdler, true), ekler, yanlar, ceza, rnd, 0.15, 0.8, yanCeza);
-      if (!a.length) { ogunler.push({ ogun: oh.ogun, hedef: ohHam, secim: null, alternatifler: [] }); continue; }
-      const secim = a[0];
-      // Alternatifler: farkli ana tabakli sonraki en iyi iki aday
+      if (kendiSecili) kalan = null; // kendi gununde dunden kalan yerine kullanicinin tabagi
+      if (!a.length && !kalan && !kendi) { ogunler.push({ ogun: oh.ogun, hedef: ohHam, secim: null, alternatifler: [] }); continue; }
+      const secim = kendiSecili ? kendi : (kalan || a[0] || kendi);
+      // Alternatifler: farkli ana tabakli sonraki en iyi iki aday. Kullanicinin tabagi secili degilse ilk alternatif odur;
+      // tabaktaki kalemler tek basina "oneri" olarak gelmez.
       const alt = [];
       const goruldu = new Set([secim.tabanId]);
+      if (plaka[tip]) for (const y of plaka[tip].plaka) goruldu.add(y.id);
+      if (kendi && secim !== kendi) alt.push(kendi);
       for (const x of a) { if (alt.length >= 2) break; if (!goruldu.has(x.tabanId)) { alt.push(x); goruldu.add(x.tabanId); } }
       sonKullanim.set(secim.tabanId, g);
+      if (secim.kendi) for (const p of secim.parcalar) if (p.rol === 'ana') sonKullanim.set(p.id, g);
       for (const p of secim.parcalar) {
         if (p.rol === 'ek') { ekSayac.set(p.id, (ekSayac.get(p.id) || 0) + 1); gunEk.add(p.id); }
         if (p.rol === 'yan') yanSayac.set(p.id, (yanSayac.get(p.id) || 0) + 1);
       }
       if (tip === 'ogle' || tip === 'aksam') gunMutfak.add(secim.parcalar[0].mutfak);
-      ogunler.push({ ogun: oh.ogun, hedef: ohHam, secim: disari(secim), alternatifler: alt.map(disari) });
+      const kayit = { ogun: oh.ogun, hedef: ohHam, secim: disari(secim), alternatifler: alt.map(disari) };
+      if (kalan) {
+        // Iki ogun birbirini gosterir (gun ve ogun sirasi 0'dan baslar); ekran etiketi ve alisveris listesi bunu kullanir
+        kayit.artan = { gun: g - 1, ogun: bekleyen.kaynakSira };
+        bekleyen.kaynak.cift = { gun: g, ogun: ogunler.length };
+      }
+      if (tip === 'ogle') bekleyen = null;
+      if (tip === 'aksam' && g < s.gun - 1) {
+        const y = liste.find((x) => x.id === secim.tabanId);
+        if (y && ikiOgunluk(y)) bekleyen = { y, gun: g + 1, kaynak: kayit, kaynakSira: ogunler.length };
+      }
+      ogunler.push(kayit);
     }
     saatAta(ogunler, s.kalkis, s.yatis, hedef.igne ? 210 : 0); // ignede 3,5 saatte bir kucuk ogun
     const t = { kcal: 0, protein: 0, yag: 0, lif: 0, karbonhidrat: 0 };
