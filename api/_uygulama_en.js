@@ -9,14 +9,18 @@ const CEVIRI = require('./_ceviri_en.js');
 const { esc } = require('./_veri.js');
 
 const KAYNAK = path.join(__dirname, '..', 'index.html');
-let cevrik = null; // { html, eksik } — kaynak değişmediği sürece bir kez hesaplanır
+let cevrik = null; // { html, eksik, golgede } — kaynak değişmediği sürece bir kez hesaplanır
 
 function kacis(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 // Kaynağı çevirir. <style> blokları dokunulmadan kalır. 'kod' satırları birebir, diğerleri kelime sınırıyla aranır.
+// eksik: kaynakta hiç geçmeyen satırlar (kaynak değişmiş, satır eskimiş): bunlar düzeltilmeli.
+// golgede: kaynakta geçen ama daha önceki, daha uzun bir satırın zaten çevirdiği yedek satırlar: sorun değil, uyarı vermez.
 function cevir(src) {
   const p = src.split(/(<style[\s\S]*?<\/style>)/);
+  const ham = p.filter((_, i) => i % 2 === 0).join('\n');
   const eksik = [];
+  const golgede = [];
   for (const [tr, en, tip] of CEVIRI) {
     let n = 0;
     let re = null;
@@ -29,9 +33,12 @@ function cevir(src) {
       if (re) p[i] = p[i].replace(re, () => { n++; return en; });
       else { const s = p[i].split(tr); n += s.length - 1; p[i] = s.join(en); }
     }
-    if (!n) eksik.push(tr);
+    if (!n) {
+      const kaynakta = re ? new RegExp(re.source, 'u').test(ham) : ham.includes(tr);
+      (kaynakta ? golgede : eksik).push(tr);
+    }
   }
-  return { html: p.join(''), eksik };
+  return { html: p.join(''), eksik, golgede };
 }
 
 // Uygulamanın İngilizce moda geçmesi için kod düzeltmeleri (metin değil, davranış).
@@ -139,7 +146,7 @@ function uygulamaEn(e) {
       if (!html.includes(a)) eksik.push('DAVRANIS: ' + a.slice(0, 60));
       html = html.split(a).join(b);
     }
-    cevrik = { html: basligiCevir(html), eksik };
+    cevrik = { html: basligiCevir(html), eksik, golgede: c.golgede };
     if (eksik.length) console.warn('en çeviri: kaynakta bulunamayan parçalar', eksik.length, eksik.slice(0, 20));
   }
   const ad = {};
@@ -150,4 +157,4 @@ function uygulamaEn(e) {
     .replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>', (m) => veri + m);
 }
 
-module.exports = { uygulamaEn, cevir, _eksik: () => (cevrik ? cevrik.eksik : null) };
+module.exports = { uygulamaEn, cevir, _eksik: () => (cevrik ? cevrik.eksik : null), _golgede: () => (cevrik ? cevrik.golgede : null) };
