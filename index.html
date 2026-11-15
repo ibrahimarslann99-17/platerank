@@ -349,6 +349,18 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 .pshare .btn.ikincil{background:transparent;color:var(--ink);border-color:var(--line-strong);}
 .pshare .btn.ikincil:hover{background:var(--paper);color:var(--ink);}
 .psonuc .aciklama{font-size:13px;color:var(--ink-muted);margin-top:10px;line-height:1.6;}
+.pvki{border-top:1px solid var(--line);margin-top:16px;padding-top:14px;text-align:left;}
+.pvu{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--ink);}
+.pvu b{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--teal-dark);margin-left:4px;}
+.pvs{font-family:'Figtree',system-ui,sans-serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;}
+.pvs.zayif{background:#E4E7EA;color:#3A3F47;}.pvs.normal{background:#DCEFE3;color:#15432A;}.pvs.fazla{background:#FBE9C6;color:#6B4A05;}.pvs.obez{background:#F8D6D1;color:#7A241B;}
+.pvc{position:relative;display:flex;height:8px;margin-top:14px;}
+.pvc i{display:block;height:8px;}.pvc .z{flex:3.5;background:#C9CED3;border-radius:4px 0 0 4px;}.pvc .n{flex:6.5;background:#5DB58A;}.pvc .f{flex:5;background:#F0C36A;}.pvc .o{flex:10;background:#E89A8F;border-radius:0 4px 4px 0;}
+.pvc b{position:absolute;top:-5px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:var(--ink);}
+.pve{position:relative;height:16px;margin-top:5px;font-family:'Figtree',system-ui,sans-serif;font-size:11px;color:var(--ink-muted);}
+.pve span{position:absolute;transform:translateX(-50%);}
+.pvy{font-size:14px;color:var(--ink);margin-top:8px;}.pvy b{font-weight:700;}
+.pvn{font-size:12px;color:var(--ink-muted);margin-top:8px;line-height:1.5;}
 .ptabak{display:grid;gap:8px;margin-top:4px;}
 .pt{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:9px 0;border-bottom:1px dashed var(--line);}
 .pt:last-child{border-bottom:none;}
@@ -2766,6 +2778,33 @@ function gunlukKalori(){
   const akt = (P_AKTIVITE.find(a=>a.id===pg("akt","hafif"))||P_AKTIVITE[1]).k;
   return Math.round(bmr * akt);
 }
+// VKİ ve tahmini yağ oranı (protein sonucunun altındaki cetvel). Beden verisi gibi yalnızca cihazda hesaplanır.
+// Sınıflar DSÖ'nün yetişkin eşikleri: 18,5 / 25 / 30. 18 yaş altında bu eşikler geçerli olmadığı için blok hiç çıkmaz.
+// Yağ oranı Deurenberg (1991): 1,20 × VKİ + 0,23 × yaş − 10,8 × (erkek 1, kadın 0) − 5,4. Bel ölçüsü yok;
+// kaslı vücutta olduğundan yüksek, kası az vücutta düşük çıkar. Bu yüzden ekranda hep "tahmini" yazar.
+function vucutOzeti(){
+  const kilo = parseFloat(pg("kilo","")), boy = parseFloat(pg("boy","")), yas = parseFloat(pg("yas",""));
+  if(!kilo || !boy || kilo<25 || kilo>250 || boy<120 || boy>230) return null;
+  if(yas && yas < 18) return null;
+  const vki = kilo / Math.pow(boy/100, 2);
+  const o = { vki: Math.round(vki*10)/10 };
+  o.sinif = o.vki < 18.5 ? 'zayif' : o.vki < 25 ? 'normal' : o.vki < 30 ? 'fazla' : 'obez';
+  if(yas >= 18 && yas <= 100){
+    const y = 1.2*vki + 0.23*yas - 10.8*(pg("cins","e")==="e" ? 1 : 0) - 5.4;
+    if(y >= 3 && y <= 60) o.yag = Math.round(y);
+  }
+  return o;
+}
+const VKI_SINIF = { zayif:'Zayıf', normal:'Normal', fazla:'Fazla kilolu', obez:'Obezite' };
+// Cetvel 15-40 arasını gösterir; bölme genişlikleri (3,5 / 6,5 / 5 / 10) eşiklerle aynı ölçekte
+function vkiBlok(vo){
+  const yer = Math.max(0, Math.min(100, (vo.vki-15)/25*100));
+  return '<div class="pvki"><div class="pvu"><span>VKİ <b>'+String(vo.vki.toFixed(1)).replace(".",",")+'</b></span><span class="pvs '+vo.sinif+'">'+VKI_SINIF[vo.sinif]+'</span></div>'
+    + '<div class="pvc"><i class="z"></i><i class="n"></i><i class="f"></i><i class="o"></i><b style="left:'+yer.toFixed(1)+'%"></b></div>'
+    + '<div class="pve"><span style="left:14%">18,5</span><span style="left:40%">25</span><span style="left:60%">30</span></div>'
+    + (vo.yag!=null ? '<div class="pvy">'+'Tahmini yağ oranı <b>~%'+vo.yag+'</b>'+'</div>' : '')
+    + '<div class="pvn">'+(vo.yag!=null ? 'Yağ oranı boy, kilo, yaş ve cinsiyetten tahmin edilir; kaslı vücutta olduğundan yüksek çıkar. ' : 'Yaşını girersen tahmini yağ oranın da çıkar. ')+'VKİ kasla yağı ayırmaz.'+'</div></div>';
+}
 function secGrup(id, liste, aktifId){
   return '<div class="psec" data-grup="'+id+'">' + liste.map(function(x){
     return '<button data-v="'+x.id+'" class="'+(x.id===aktifId?"sec":"")+'">'+x.ad+(x.not?'<br><span style="font-size:10.5px;opacity:.7">'+x.not+'</span>':'')+'</button>';
@@ -2949,6 +2988,8 @@ function renderProtein(){
       html += '<div class="aciklama">'+(rk<kilo?'Boyuna göre sağlıklı kilonun üst sınırı '+kgYaz(rk)+'; protein buna göre hesaplanır, yoksa ihtiyaç olduğundan yüksek çıkar. ':'')+kgYaz(rk)+' × 1,5 = '+ham+' g'+(ham>hedef?', üst sınır '+hedef+' g':'')+'. İğnede iştah az olduğu için bunu 5 küçük öğüne böl: öğün başına yaklaşık '+Math.round(hedef/5)+' g. Her öğünde önce proteini ye.</div>';
     } else
     html += '<div class="aciklama">'+kgYaz(kilo)+' × '+String(dd.k).replace(".",",")+' = '+hedef+' g. Bunu güne yayman gerekir: tek öğünde 40 gramdan fazlası verimli kullanılmaz, 3-4 öğüne bölmek en iyisi.</div>';
+    const vo = vucutOzeti();
+    if(vo) html += vkiBlok(vo);
     html += '<div class="pshare"><button class="btn" id="p-share">Sonucumu paylaş</button><button class="btn ikincil" id="p-copy">Bağlantıyı kopyala</button></div>';
     html += '</div>';
     // ornek tabak
@@ -3066,7 +3107,10 @@ function wireUp(){
   if(psh){
     const dd2 = P_DURUM.find(x=>x.id===pDurum()) || P_DURUM[1];
     const hedef2 = pHedefGram(parseFloat(pKilo()), dd2);
-    const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;
+    // Paylaşım kartı: protein hedefi + günlük kalori + VKİ + tahmini yağ oranı (k, v = VKİ × 10, y)
+    const gk2 = gunlukKalori(), vo2 = vucutOzeti();
+    const paylasEk = (gk2 ? "&k=" + gk2 : "") + (vo2 ? "&v=" + Math.round(vo2.vki*10) + (vo2.yag!=null ? "&y=" + vo2.yag : "") : "");
+    const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + paylasEk;
     const metin = "Günlük protein ihtiyacım: " + hedef2 + " g (" + dd2.ad.toLocaleLowerCase("tr") + "). Seninki kaç?";
     psh.onclick = async ()=>{
       buzz(12);

@@ -6,6 +6,15 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  // ---------- VKİ cetveli ve tahmini yağ oranı (protein sekmesi) ----------
+  // En üstte durmalı: aşağıdaki genel 'Zayıf' → 'Weak' satırı (lig adı) bu etiketlere dokunmadan önce çevrilsinler.
+  ["const VKI_SINIF = { zayif:'Zayıf', normal:'Normal', fazla:'Fazla kilolu', obez:'Obezite' };", "const VKI_SINIF = { zayif:'Underweight', normal:'Normal', fazla:'Overweight', obez:'Obesity' };", 'kod'],
+  ["<span>VKİ <b>'+String(vo.vki.toFixed(1)).replace(\".\",\",\")+'</b></span>", "<span>BMI <b>'+vo.vki.toFixed(1)+'</b></span>", 'kod'],
+  ['<span style="left:14%">18,5</span>', '<span style="left:14%">18.5</span>', 'kod'],
+  ["'Tahmini yağ oranı <b>~%'+vo.yag+'</b>'", "'Estimated body fat <b>~'+vo.yag+'%</b>'", 'kod'],
+  ["'Yağ oranı boy, kilo, yaş ve cinsiyetten tahmin edilir; kaslı vücutta olduğundan yüksek çıkar. '", "'Body fat is estimated from height, weight, age and sex; it reads high for muscular builds. '", 'kod'],
+  ["'Yaşını girersen tahmini yağ oranın da çıkar. '", "'Enter your age to see your estimated body fat too. '", 'kod'],
+  ["'VKİ kasla yağı ayırmaz.'", "'BMI does not tell muscle from fat.'", 'kod'],
   // ---------- zayıflama iğnesi (protein sekmesi) ----------
   ['ad:"Zayıflama iğnesi kullanıyorum", not:"Ozempic, Wegovy, Mounjaro gibi. İştah düşünce kas da erir; protein onu korur. Hesap boyuna göre sağlıklı kiloyla yapılır."}',
     'ad:"I’m on a weight-loss shot", not:"Like Ozempic, Wegovy or Mounjaro. When appetite drops, muscle goes too; protein protects it. Based on a healthy weight for your height."}', 'kod'],
@@ -32,7 +41,7 @@ module.exports = [
   ['data-seg="menu">Ne yedin? Bugün’e ekle →</button>', 'data-seg="menu">What did you eat? Add it to today →</button>', 'kod'],
   ['<a class="hero-plan" href="/tok-plan">Seni tok tutan yemek planını al →</a>', '<a class="hero-plan" href="/en/plan">Get a meal plan that keeps you full →</a>', 'kod'],
   ['<div class="card plan-kart"><div class="p-baslik">Tok Plan</div><p class="p-alt">Seni tok tutmaya göre kurulmuş haftalık yemek planı: her öğün için kalori ve protein hedefi. Zaten abone misin? Aynı e-postayla giriş yapınca planın burada açılır.</p><a class="hero-plan" href="/tok-plan">Planımı kur →</a></div>', '<div class="card plan-kart"><div class="p-baslik">Stay Full Plan</div><p class="p-alt">A week of meals built around staying full, with calorie and protein targets for every meal. Already subscribed? Your plan opens here once you sign in with the same email.</p><a class="hero-plan" href="/en/plan">Build my plan →</a></div>', 'kod'],
-  ['const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id;', 'const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + "&l=en";', 'kod'],
+  ['const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + paylasEk;', 'const paylasUrl = "https://platerank.dev/api/paylas?p=" + hedef2 + "&d=" + dd2.id + paylasEk + "&l=en";', 'kod'],
   ["await fetch('/api/menu-card?i=' + encodeURIComponent(b64));", "await fetch('/api/menu-card?i=' + encodeURIComponent(b64) + '&l=en');", 'kod'],
   ["a.download = 'platerank-menum.png';", "a.download = 'platerank-my-menu.png';", 'kod'],
   ['<span class="nl-k">Besinler</span>', '<span class="nl-k">Foods</span>', 'kod'],
