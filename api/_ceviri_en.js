@@ -15,6 +15,9 @@ module.exports = [
   ["'Yağ oranı boy, kilo, yaş ve cinsiyetten tahmin edilir; kaslı vücutta olduğundan yüksek çıkar. '", "'Body fat is estimated from height, weight, age and sex; it reads high for muscular builds. '", 'kod'],
   ["'Yaşını girersen tahmini yağ oranın da çıkar. '", "'Enter your age to see your estimated body fat too. '", 'kod'],
   ["'VKİ kasla yağı ayırmaz.'", "'BMI does not tell muscle from fat.'", 'kod'],
+  ["'İdeal kilo aralığın <b>'+kiloAralikYaz(vo.kgAlt, vo.kgUst)+'</b>'", "'Your healthy weight range <b>'+kiloAralikYaz(vo.kgAlt, vo.kgUst)+'</b>'", 'kod'],
+  ["'Şu an bu aralıktasın.' : vo.fark>0 ? 'Üst sınırın '+kiloFarkYaz(vo.fark)+' üstündesin.' : 'Alt sınırın '+kiloFarkYaz(-vo.fark)+' altındasın.'", "'You are in this range now.' : vo.fark>0 ? 'You are '+kiloFarkYaz(vo.fark)+' above the upper end.' : 'You are '+kiloFarkYaz(-vo.fark)+' below the lower end.'", 'kod'],
+  ["'65 yaş üstünde ideal aralık VKİ 23-30 alınır: bu yaşta düşük kilo daha riskli bulunuyor. ' : 'İdeal aralık boyuna göre VKİ 18,5-25 karşılığıdır; cinsiyet ve hareket düzeyi bunu değiştirmez. '", "'Over 65 the healthy range uses BMI 23-30: at this age low weight carries more risk. ' : 'The healthy range is BMI 18.5-25 for your height; sex and activity level do not change it. '", 'kod'],
   // ---------- İngilizce sayfada Türkçe kalmış metinler (15.11.2026 taraması) ----------
   ["toast('Kaydedildi: '+saatYaz(saat_dk))", "toast('Saved: '+saatYaz(saat_dk))", 'kod'],
   ["${currentUser?'Kaydedildi ✓':", "${currentUser?'Saved ✓':", 'kod'],

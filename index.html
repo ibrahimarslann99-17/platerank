@@ -360,6 +360,7 @@ input[type=text],input[type=number]{width:100%;font-family:'Figtree',system-ui,s
 .pve{position:relative;height:16px;margin-top:5px;font-family:'Figtree',system-ui,sans-serif;font-size:11px;color:var(--ink-muted);}
 .pve span{position:absolute;transform:translateX(-50%);}
 .pvy{font-size:14px;color:var(--ink);margin-top:8px;}.pvy b{font-weight:700;}
+.pvd{font-size:13px;color:var(--ink-muted);margin-top:2px;}
 .pvn{font-size:12px;color:var(--ink-muted);margin-top:8px;line-height:1.5;}
 .ptabak{display:grid;gap:8px;margin-top:4px;}
 .pt{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:9px 0;border-bottom:1px dashed var(--line);}
@@ -2793,8 +2794,21 @@ function vucutOzeti(){
     const y = 1.2*vki + 0.23*yas - 10.8*(pg("cins","e")==="e" ? 1 : 0) - 5.4;
     if(y >= 3 && y <= 60) o.yag = Math.round(y);
   }
+  // İdeal (sağlıklı) kilo aralığı: boya göre, DSÖ'nün normal VKİ aralığı 18,5-25'in kilo karşılığı.
+  // Tek sayı veren "ideal kilo" formülleri (Devine, Robinson, Hamwi) ilaç dozu için yazılmıştır, sağlık hedefi değildir; kullanılmaz.
+  // Cinsiyet ve hareket düzeyi aralığı değiştirmez. Yaş yalnızca 65 üstünde değiştirir: Winter ve ark. 2014
+  // (Am J Clin Nutr 99:875, 65+ yaşta 197.940 kişi) ölüm riskinin VKİ 23'ün altında arttığını, fazla kiloda artmadığını buldu;
+  // bu yüzden 65+ için aralık VKİ 23-30 alınır.
+  o.yasli = yas >= 65;
+  o.vkiAlt = o.yasli ? 23 : 18.5; o.vkiUst = o.yasli ? 30 : 25;
+  const m2 = Math.pow(boy/100, 2);
+  o.kgAlt = Math.ceil(o.vkiAlt*m2); o.kgUst = Math.floor(o.vkiUst*m2 - 0.001);
+  o.fark = o.vki < o.vkiAlt ? -Math.max(1, Math.round(o.vkiAlt*m2 - kilo)) : o.vki >= o.vkiUst ? Math.max(1, Math.round(kilo - o.vkiUst*m2)) : 0;
   return o;
 }
+// Kilo aralığı ve farkı: İngilizce sürümde lb seçiliyse lb, yoksa kg
+function kiloAralikYaz(a, b){ return imperial() ? Math.round(a/LB)+'-'+Math.round(b/LB)+' lb' : a+'-'+b+' kg'; }
+function kiloFarkYaz(kg){ return imperial() ? Math.max(1, Math.round(kg/LB))+' lb' : kg+' kg'; }
 const VKI_SINIF = { zayif:'Zayıf', normal:'Normal', fazla:'Fazla kilolu', obez:'Obezite' };
 // Cetvel 15-40 arasını gösterir; bölme genişlikleri (3,5 / 6,5 / 5 / 10) eşiklerle aynı ölçekte
 function vkiBlok(vo){
@@ -2803,7 +2817,9 @@ function vkiBlok(vo){
     + '<div class="pvc"><i class="z"></i><i class="n"></i><i class="f"></i><i class="o"></i><b style="left:'+yer.toFixed(1)+'%"></b></div>'
     + '<div class="pve"><span style="left:14%">18,5</span><span style="left:40%">25</span><span style="left:60%">30</span></div>'
     + (vo.yag!=null ? '<div class="pvy">'+'Tahmini yağ oranı <b>~%'+vo.yag+'</b>'+'</div>' : '')
-    + '<div class="pvn">'+(vo.yag!=null ? 'Yağ oranı boy, kilo, yaş ve cinsiyetten tahmin edilir; kaslı vücutta olduğundan yüksek çıkar. ' : 'Yaşını girersen tahmini yağ oranın da çıkar. ')+'VKİ kasla yağı ayırmaz.'+'</div></div>';
+    + '<div class="pvy">'+'İdeal kilo aralığın <b>'+kiloAralikYaz(vo.kgAlt, vo.kgUst)+'</b>'+'</div>'
+    + '<div class="pvd">'+(vo.fark===0 ? 'Şu an bu aralıktasın.' : vo.fark>0 ? 'Üst sınırın '+kiloFarkYaz(vo.fark)+' üstündesin.' : 'Alt sınırın '+kiloFarkYaz(-vo.fark)+' altındasın.')+'</div>'
+    + '<div class="pvn">'+(vo.yasli ? '65 yaş üstünde ideal aralık VKİ 23-30 alınır: bu yaşta düşük kilo daha riskli bulunuyor. ' : 'İdeal aralık boyuna göre VKİ 18,5-25 karşılığıdır; cinsiyet ve hareket düzeyi bunu değiştirmez. ')+(vo.yag!=null ? 'Yağ oranı boy, kilo, yaş ve cinsiyetten tahmin edilir; kaslı vücutta olduğundan yüksek çıkar. ' : 'Yaşını girersen tahmini yağ oranın da çıkar. ')+'VKİ kasla yağı ayırmaz.'+'</div></div>';
 }
 function secGrup(id, liste, aktifId){
   return '<div class="psec" data-grup="'+id+'">' + liste.map(function(x){
