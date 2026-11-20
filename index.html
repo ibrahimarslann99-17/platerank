@@ -895,12 +895,31 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
 .lseridi .ls-kart{flex:0 0 220px;scroll-snap-align:start;background:var(--card);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);}
 .lseridi .ls-kart img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;background:var(--line);}
 .lseridi .ls-kart span{display:block;padding:8px 10px 10px;font-weight:600;font-size:14px;line-height:1.3;}
+
+/* ---------- Sürüş modu: Spor+ / Konfor / Eko — bütün sitenin rengi buradan ---------- */
+body[data-surus="spor"]{--paper:#F7EDEC;--line:#EED7D4;--line-strong:#E3C3BF;--teal:#B3261E;--teal-dark:#7F1712;--teal-wash:#FBE4E1;--forest:#3A0B08;--lime:#FFFFFF;--hero-a:#D2453B;--hero-b:#8E1E17;}
+body[data-surus="konfor"]{--paper:#F6F1E4;--line:#EADFC4;--line-strong:#DCCCA6;--teal:#8A6410;--teal-dark:#64480A;--teal-wash:#F6EDD6;--forest:#2E2205;--lime:#FFFFFF;--hero-a:#C9A23A;--hero-b:#7A5A0E;}
+body[data-surus="eko"]{--paper:#E9F0F7;--line:#D4E1ED;--line-strong:#C0D1E3;--teal:#1D5FA8;--teal-dark:#144478;--teal-wash:#E1ECF8;--forest:#0A1D33;--lime:#FFFFFF;--hero-a:#3C7FC8;--hero-b:#123A66;}
+body[data-surus] .hero{background:radial-gradient(120% 90% at 50% 18%, var(--hero-a) 0%, var(--hero-b) 48%, var(--forest) 100%);}
+body{transition:background-color .35s ease;}
+.surus{display:flex;gap:4px;background:var(--forest);border-radius:16px;padding:4px;margin:6px 0 6px;transition:background-color .35s ease;}
+.surus .sm{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;color:rgba(255,255,255,.62);font:700 13px/1.2 'Figtree',system-ui,sans-serif;padding:9px 0 8px;border-radius:12px;cursor:pointer;transition:background-color .25s,color .25s;-webkit-tap-highlight-color:transparent;}
+.surus .sm svg{width:21px;height:21px;}
+.surus .sm.on{background:#FFFFFF;color:var(--teal-dark);}
+.surus-alt{font-size:13px;color:var(--ink-muted);margin:0 2px 12px;min-height:18px;}
+body.arama .surus, body.arama .surus-alt, body.profil .surus, body.profil .surus-alt, body.meclis .surus, body.meclis .surus-alt{display:none;}
+body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--forest));color:#FFFFFF;}
+.mod-mini{display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:var(--forest);color:#FFFFFF;align-items:center;justify-content:center;cursor:pointer;z-index:2;}
+.mod-mini svg{width:18px;height:18px;}
+#stickybar.yapisik .mod-mini{display:flex;}
+#stickybar.yapisik .tabwrap{padding-right:42px;}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
 </script>
 </head>
 <body>
+<script>try{var _s=localStorage.getItem('pr_surus');document.body.dataset.surus=(_s==='spor'||_s==='eko')?_s:'konfor';}catch(e){document.body.dataset.surus='konfor';}</script>
 <div class="wrap">
   <header class="ust">
     <div class="selam">
@@ -919,6 +938,12 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
     </div>
     <button class="ara-hap" id="ara-hap" aria-label="Yemek ara"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
   </div>
+  <div class="surus" id="surus" role="radiogroup" aria-label="Beslenme modu">
+    <button class="sm" data-surus="spor" role="radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h1M6 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zM9 12h6M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1zM18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M22 12h-1"/></svg><span>Spor+</span></button>
+    <button class="sm" data-surus="konfor" role="radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/><path d="M5 11V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M6 19v2M18 19v2"/></svg><span>Konfor</span></button>
+    <button class="sm" data-surus="eko" role="radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c.5-4.5 2.5-8 7-10"/><path d="M9 18c6.218 0 10.5-3.288 11-12V4h-4.014C7 4 4 8 4 13c0 1 0 3 2 5h3z"/></svg><span>Eko</span></button>
+  </div>
+  <p class="surus-alt" id="surus-alt"></p>
   <div class="searchwrap" id="searchwrap">
     <span class="sic">⌕</span>
     <input type="text" id="q" placeholder="Bir yemek ara: mercimek, pizza, cips…" autocomplete="off">
@@ -945,7 +970,7 @@ body.meclis #stickybar, body.meclis #turs{display:none;}
   </div>
 
   <div id="banner"></div>
-  <div id="stickybar"><div class="tabwrap" id="tabwrap"><div class="tabs" id="tabs"></div></div></div>
+  <div id="stickybar"><div class="tabwrap" id="tabwrap"><div class="tabs" id="tabs"></div></div><button class="mod-mini" id="mod-mini" aria-label="Modu değiştir"></button></div>
   <div class="turs" id="turs"></div>
   <div id="hero"></div>
   <div id="content"></div>
@@ -1762,10 +1787,12 @@ function renderAuto(){
   if(aramaAktif) html += '<div class="sonucbilgi">"'+esc(arama)+'" için '+foods.length+' sonuç · tüm mutfaklarda arandı</div>';
   else if(currentCuisine==='hm') html += hmBanner();
   html += foods.some(f=>ayniKaloriSuresi(f)!=null)
-    ? `<p class="note">Daireler: 1 porsiyonun kaç saat tok tuttuğu. Kaloriler de 1 porsiyon içindir, 100 g değil. Sıralama doyuruculuk puanına göre; aynı 300 kalorideki süre için satıra dokun.</p>`
+    ? `<p class="note">Daireler: 1 porsiyonun kaç saat tok tuttuğu. Kaloriler de 1 porsiyon içindir, 100 g değil. ${surus==='konfor' ? 'Sıralama doyuruculuk puanına göre; aynı 300 kalorideki süre için satıra dokun.' : 'Aynı 300 kalorideki süre için satıra dokun.'}</p>`
     : `<p class="note">Bu bölümde tok tutma süresi yok: ${foods.every(f=>f.tur==='icecek') ? 'içecekler mideden hızlı geçer, içilen kalori tok tutmaz' : (foods.every(f=>f.sadece_malzeme) ? 'malzeme tek başına öğün değil, süre içinde olduğu yemekte hesaplanır' : 'içecekler mideden hızlı geçer, malzemeler tek başına öğün değil')}. Kaloriler 1 porsiyon içindir. Satıra dokununca nedenini görürsün.</p>`;
   if(currentCuisine==='market' && !aramaAktif) html += `<p class="note">Bu sekmedeki ürünlerin besin değerleri <a href="https://tr.openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> veri tabanından alınmıştır, <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL 1.0</a> lisansıyla.</p>`;
-  html += tierListHtml(foods, max, myFavs(), new Set(typeof bgBugunIdleri==='function' ? bgBugunIdleri() : myMenu()));
+  html += surusNotu();
+  const _ms = new Set(typeof bgBugunIdleri==='function' ? bgBugunIdleri() : myMenu());
+  html += surus==='konfor' ? tierListHtml(foods, max, myFavs(), _ms) : surusListeHtml(foods, max, myFavs(), _ms);
   return html;
 }
 
@@ -2895,6 +2922,12 @@ function listeSeridi(mod){
     l.map(([s,ad])=>`<a class="ls-kart" href="/liste/${s}"><img src="/img/liste/k/${s}.jpg" alt="" width="600" height="315" loading="lazy" decoding="async"><span>${ad}</span></a>`).join('') +
     '</div></div>';
 }
+// Ne yesem? sıralamasında modun ağırlığı: Spor+ protein yoğunluğunu, Eko porsiyon süresini öne çeker.
+function surusCarpan(f){
+  if(surus==='spor') return 0.7 + 0.6*Math.min(1, (f.protein==null||!f.kcal ? 0 : f.protein/f.kcal*100)/10);
+  if(surus==='eko'){ const t = acikmaSuresi(f); return 0.7 + 0.6*Math.min(1, (t||0)/6); }
+  return 1;
+}
 function renderYesem(){
   const gk = gunlukKalori();
   let h = '<p class="note">Ne yiyeceğine karar veremiyor musun? Üç soruya cevap ver, sana uygun seçenekleri sıralayayım. Üstteki mutfak şeridinden \"Tümü\" seçersen bütün mutfaklara bakar.</p>';
@@ -2948,7 +2981,7 @@ function neYesem(){
   havuz.sort(function(a,b){
     var ya = 1 - Math.abs(a.kcal - porsiyon)/porsiyon;
     var yb = 1 - Math.abs(b.kcal - porsiyon)/porsiyon;
-    return (b.doyuruculuk * (0.55 + 0.45*Math.max(0,yb))) - (a.doyuruculuk * (0.55 + 0.45*Math.max(0,ya)));
+    return (b.doyuruculuk * (0.55 + 0.45*Math.max(0,yb)) * surusCarpan(b)) - (a.doyuruculuk * (0.55 + 0.45*Math.max(0,ya)) * surusCarpan(a));
   });
   const mutfakAdi = (CUISINES.find(c=>c.id===currentCuisine)||{}).name || "";
   h += '<div class="section-title">Sana uygun seçenekler · '+mutfakAdi+'</div>';
@@ -3308,6 +3341,59 @@ document.getElementById("q-clear").onclick = ()=>{
   qWrap.classList.remove("dolu"); qEl.focus(); render();
 };
 
+
+// ---------- Sürüş modu (Spor+ / Konfor / Eko) ----------
+// Konfor varsayılan: bugünkü doyuruculuk sıralaması. Spor+ kalori başına protein, Eko porsiyon süresi.
+const SURUS = {
+  spor:{ad:'Spor+', alt:'Antrenman yapanlara: kalori başına en çok protein', renk:'#F7EDEC', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h1M6 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zM9 12h6M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1zM18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M22 12h-1"/></svg>'},
+  konfor:{ad:'Konfor', alt:'Sıradan bir gün için dengeli seçim', renk:'#F6F1E4', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/><path d="M5 11V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M6 19v2M18 19v2"/></svg>'},
+  eko:{ad:'Eko', alt:'Tek tabakla en uzun süre tok kal', renk:'#E9F0F7', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c.5-4.5 2.5-8 7-10"/><path d="M9 18c6.218 0 10.5-3.288 11-12V4h-4.014C7 4 4 8 4 13c0 1 0 3 2 5h3z"/></svg>'}
+};
+const SURUS_SIRA = ['spor','konfor','eko'];
+let surus = (function(){ try{ const v = localStorage.getItem('pr_surus'); return SURUS[v] ? v : 'konfor'; }catch(e){ return 'konfor'; } })();
+function surusUygula(){
+  document.body.dataset.surus = surus;
+  document.querySelectorAll('#surus .sm').forEach(b=>{ const on = b.dataset.surus===surus; b.classList.toggle('on', on); b.setAttribute('aria-checked', on?'true':'false'); });
+  const alt = document.getElementById('surus-alt'); if(alt) alt.textContent = SURUS[surus].alt;
+  const mm = document.getElementById('mod-mini'); if(mm){ mm.innerHTML = SURUS[surus].ik; mm.title = SURUS[surus].ad + ' modu: değiştirmek için dokun'; }
+  const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', SURUS[surus].renk);
+}
+function surusSec(m){
+  if(!SURUS[m] || m===surus) return;
+  surus = m;
+  try{ localStorage.setItem('pr_surus', m); }catch(e){}
+  surusUygula(); buzz(12);
+  try{ window.va('event', {name:'surus_modu', data:{mod:m}}); }catch(e){}
+  render();
+}
+function surusDeger(f){
+  if(surus==='spor') return (f.protein==null || !f.kcal) ? -1 : f.protein/f.kcal*100;
+  if(surus==='eko'){ const t = acikmaSuresi(f); return t==null ? -1 : t; }
+  return f.doyuruculuk;
+}
+// Spor+ ve Eko'da liste moda göre sıralanır; ardışık aynı lig satırları tek blokta toplanır, harf sütunu korunur.
+function surusListeHtml(foods, max, favs, menuSet){
+  const sirali = foods.slice().sort((a,b)=> surusDeger(b)-surusDeger(a) || b.doyuruculuk-a.doyuruculuk);
+  let h = '', cur = null, buf = [];
+  const bosalt = ()=>{
+    if(!buf.length) return;
+    h += `<div class="tier tier-${cur} tliste">${tierLabelHtml(cur, null)}<div class="tier-rows">`;
+    buf.forEach((f,i)=>{ h += arowHtml(f,i,max,favs,menuSet); });
+    h += '</div></div>'; buf = [];
+  };
+  sirali.forEach(f=>{ const t = satietyToTier(f.doyuruculuk); if(t!==cur){ bosalt(); cur = t; } buf.push(f); });
+  bosalt();
+  return h;
+}
+function surusNotu(){
+  if(surus==='spor') return '<p class="note"><b>Spor+</b> açık: kalori başına en çok protein veren üstte. Harf yine doyuruculuk ligini gösterir.</p>';
+  if(surus==='eko') return '<p class="note"><b>Eko</b> açık: tek porsiyonla en uzun tok tutan üstte. Harf yine doyuruculuk ligini gösterir.</p>';
+  return '';
+}
+document.querySelectorAll('#surus .sm').forEach(b=> b.onclick = ()=> surusSec(b.dataset.surus));
+(function(){ const mm = document.getElementById('mod-mini'); if(mm) mm.onclick = ()=> surusSec(SURUS_SIRA[(SURUS_SIRA.indexOf(surus)+1)%3]); })();
+surusUygula();
+
 // yapisik seride kaydirinca golge
 (function(){
   const sb_el = document.getElementById('stickybar');
@@ -3326,6 +3412,7 @@ document.getElementById("q-clear").onclick = ()=>{
 // Açılış turu kısa (4 adım); bölümlerin ayrıntısı o bölüme ilk girişte kendi kabarcığıyla gelir.
 const TANITIM = [
   {sec:'#ara-hap', lab:'Ara', b:'Aradığın yemeği bul', m:'Simit, mercimek, cips… Yaz, kalorisini ve kaç saat tok tuttuğunu gör.'},
+  {sec:'#surus', lab:'Mod', b:'Modunu seç', m:'Spor+, Konfor ya da Eko: listeler ve sitenin rengi seçtiğin moda göre değişir. Seçimin bu cihazda kalır.'},
   {sec:'.nbtn[data-nav="auto"]', lab:'Besin değerleri', b:'Besin değerleri', m:'Yemekler liglere ayrılmış: S en uzun tok tutan, D boş kalori. Satıra dokun, protein, lif ve şekeri gör.'},
   {sec:'.nbtn[data-nav="yesem"]', lab:'Ne yesem?', b:'Ne yesem? · Protein', m:'Ne kadar aç olduğunu söyle, sana en uzun tok tutacak seçenekleri sıralayalım; günlük protein ihtiyacını da burada hesapla.'},
   {sec:'.nbtn[data-nav="comm"]', lab:'Meclis-i Mide', b:'Meclis-i Mide', m:'Yediğin yemek seni kaç saat tuttu? Burada bildirirsin; herkesin bildirdiği saatler ve rozetler de burada.'},
