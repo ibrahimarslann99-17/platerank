@@ -909,6 +909,9 @@ body{transition:background-color .35s ease;}
 .surus-alt{font-size:13px;color:var(--ink-muted);margin:0 2px 12px;min-height:18px;}
 body.arama .surus, body.arama .surus-alt, body.profil .surus, body.profil .surus-alt, body.meclis .surus, body.meclis .surus-alt{display:none;}
 body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--forest));color:#FFFFFF;}
+.surus-tek .tier-rows{padding-left:12px;}
+.surus-tek .sw{position:relative;padding-left:26px;}
+.surus-tek .sw::before{content:attr(data-l);position:absolute;left:0;top:16px;width:20px;height:20px;border-radius:6px;background:var(--tc);color:#FFFFFF;font:800 11px/20px 'Figtree',system-ui,sans-serif;text-align:center;}
 .mod-mini{display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:var(--forest);color:#FFFFFF;align-items:center;justify-content:center;cursor:pointer;z-index:2;}
 .mod-mini svg{width:18px;height:18px;}
 #stickybar.yapisik .mod-mini{display:flex;}
@@ -2924,7 +2927,7 @@ function listeSeridi(mod){
 }
 // Ne yesem? sıralamasında modun ağırlığı: Spor+ protein yoğunluğunu, Eko porsiyon süresini öne çeker.
 function surusCarpan(f){
-  if(surus==='spor') return 0.7 + 0.6*Math.min(1, (f.protein==null||!f.kcal ? 0 : f.protein/f.kcal*100)/10);
+  if(surus==='spor') return 0.7 + 0.6*Math.min(1, (f.protein==null||!f.kcal ? 0 : f.protein/f.kcal*100*Math.min(1, f.protein/20))/10);
   if(surus==='eko'){ const t = acikmaSuresi(f); return 0.7 + 0.6*Math.min(1, (t||0)/6); }
   return 1;
 }
@@ -3367,27 +3370,20 @@ function surusSec(m){
   render();
 }
 function surusDeger(f){
-  if(surus==='spor') return (f.protein==null || !f.kcal) ? -1 : f.protein/f.kcal*100;
+  if(surus==='spor') return (f.protein==null || !f.kcal) ? -1 : f.protein/f.kcal*100 * Math.min(1, f.protein/20);
   if(surus==='eko'){ const t = acikmaSuresi(f); return t==null ? -1 : t; }
   return f.doyuruculuk;
 }
 // Spor+ ve Eko'da liste moda göre sıralanır; ardışık aynı lig satırları tek blokta toplanır, harf sütunu korunur.
 function surusListeHtml(foods, max, favs, menuSet){
   const sirali = foods.slice().sort((a,b)=> surusDeger(b)-surusDeger(a) || b.doyuruculuk-a.doyuruculuk);
-  let h = '', cur = null, buf = [];
-  const bosalt = ()=>{
-    if(!buf.length) return;
-    h += `<div class="tier tier-${cur} tliste">${tierLabelHtml(cur, null)}<div class="tier-rows">`;
-    buf.forEach((f,i)=>{ h += arowHtml(f,i,max,favs,menuSet); });
-    h += '</div></div>'; buf = [];
-  };
-  sirali.forEach(f=>{ const t = satietyToTier(f.doyuruculuk); if(t!==cur){ bosalt(); cur = t; } buf.push(f); });
-  bosalt();
-  return h;
+  let h = '<div class="tier tliste surus-tek"><div class="tier-rows">';
+  sirali.forEach((f,i)=>{ const t = satietyToTier(f.doyuruculuk); h += `<div class="tier-${t} sw" data-l="${t}">` + arowHtml(f,i,max,favs,menuSet) + '</div>'; });
+  return h + '</div></div>';
 }
 function surusNotu(){
-  if(surus==='spor') return '<p class="note"><b>Spor+</b> açık: kalori başına en çok protein veren üstte. Harf yine doyuruculuk ligini gösterir.</p>';
-  if(surus==='eko') return '<p class="note"><b>Eko</b> açık: tek porsiyonla en uzun tok tutan üstte. Harf yine doyuruculuk ligini gösterir.</p>';
+  if(surus==='spor') return '<p class="note"><b>Spor+</b> açık: kalori başına en çok protein veren üstte. Soldaki harf doyuruculuk ligi.</p>';
+  if(surus==='eko') return '<p class="note"><b>Eko</b> açık: tek porsiyonla en uzun tok tutan üstte. Soldaki harf doyuruculuk ligi.</p>';
   return '';
 }
 document.querySelectorAll('#surus .sm').forEach(b=> b.onclick = ()=> surusSec(b.dataset.surus));
