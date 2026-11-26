@@ -925,6 +925,8 @@ body.yeniev:not(.ev) .baslik-satir, body.yeniev:not(.ev) .sayac-kutu{display:non
 body.yeniev:not(.ev) .ust{margin-bottom:12px;}
 body.yeniev:not(.ev){padding-top:10px;}
 body.yeniev:not(.ev) .selam-t{font-size:18px;}
+.nbtn.nev{display:none;}
+body.yeniev .nbtn.nev{display:flex;}
 .ev-profil{display:none;width:44px;height:44px;border-radius:50%;border:0;background:#FFFFFF;color:var(--ink);align-items:center;justify-content:center;cursor:pointer;flex:none;box-shadow:var(--shadow);}
 .ev-profil svg{width:22px;height:22px;}
 #evtus{display:none;}
@@ -1165,6 +1167,7 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
 
 </div>
 <nav class="altmenu" id="altmenu" aria-label="Bölümler">
+  <button class="nbtn nev" data-nav="ev" aria-label="Ana sayfa"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span class="nlab">Ana sayfa</span></button>
   <button class="nbtn" data-nav="auto" aria-label="Besin değerleri"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 16v-5"/><path d="M13 16V7"/><path d="M18 16v-8"/></svg><span class="nlab"><span class="nl-u">Besin değerleri</span><span class="nl-k">Besinler</span></span></button>
   <button class="nbtn" data-nav="yesem" aria-label="Ne yesem ve protein"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg><span class="nlab">Ne yesem?</span></button>
   <button class="nbtn" data-nav="comm" aria-label="Meclis-i Mide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nlab"><span class="nl-u">Meclis-i Mide</span><span class="nl-k">Meclis</span></span></button>
@@ -1851,6 +1854,8 @@ function render(){
 // Bölüm aç: alt menü, bölüm içi seçim ve vitrin butonu hepsi buradan geçer.
 async function modAc(m){
   const oncekiEv = !currentMode;
+  // Ana sayfadan bir bölüme geçerken tarayıcı geçmişine bir adım: telefonun geri hareketi siteden çıkmak yerine ana sayfaya döner
+  if(oncekiEv && !(history.state && history.state.prMod)){ try{ history.pushState({prMod:1}, ''); }catch(e){} }
   currentMode = m; selectedFood = null;
   if(m==='fav'){ await loadFavs(); }
   else if(m==='menu'){ await loadMenu(); }
@@ -1858,6 +1863,16 @@ async function modAc(m){
   else render();
   if(oncekiEv){ window.scrollTo({top:0}); requestAnimationFrame(()=>moveInk(true)); }
 }
+// Ana sayfaya dönüş: geçmişte bölüm adımı varsa geri gidilir (popstate ana sayfayı çizer), yoksa doğrudan döner
+function evGeri(){
+  if(history.state && history.state.prMod){ history.back(); return; }
+  evDon();
+}
+window.addEventListener('popstate', ()=>{
+  const d = document.getElementById('duello');
+  if(d && !d.hidden){ duelloKapat('geri'); return; }
+  if(currentMode) evDon();
+});
 function evDon(){
   currentMode = null; selectedFood = null;
   arama = ""; aramaSonuc = null;
@@ -3501,9 +3516,10 @@ document.querySelectorAll('.nbtn').forEach(b=>{
   b.onclick = ()=>{
     buzz(10);
     const hedef = b.dataset.nav;
+    if(hedef==='ev'){ evGeri(); return; }
     // aktif sekmeye tekrar dokunmak: aşağıdaysan başa kaydırır, zaten yukarıdaysan ana ekrana döner
     if(currentMode && MOD_NAV[currentMode]===hedef){
-      if(window.scrollY > 300) window.scrollTo({top:0, behavior:'smooth'}); else evDon();
+      if(window.scrollY > 300) window.scrollTo({top:0, behavior:'smooth'}); else evGeri();
       return;
     }
     modAc(hedef==='yesem' ? beslenAlt : hedef==='bilgi' ? profilAlt : hedef);
@@ -3873,7 +3889,7 @@ async function evListeAc(){
     const hb = document.getElementById('hero-btn'); if(hb) hb.click();
   });
   document.getElementById('ev-profil').onclick = ()=>{ buzz(10); modAc(profilAlt); };
-  document.getElementById('ev-geri').onclick = ()=>{ buzz(10); evDon(); };
+  document.getElementById('ev-geri').onclick = ()=>{ buzz(10); evGeri(); };
 })();
 
 // ================= Günün düellosu =================
@@ -3960,6 +3976,7 @@ function duelloCiz(){
 }
 function duelloAc(){
   let k = document.getElementById('duello');
+  const zatenAcik = !!(k && !k.hidden);
   if(!k){
     k = document.createElement('div'); k.id = 'duello'; k.setAttribute('role','dialog'); k.setAttribute('aria-modal','true'); k.setAttribute('aria-label', EVM.baslik);
     document.body.appendChild(k);
@@ -3967,19 +3984,25 @@ function duelloAc(){
       const sec = e.target.closest('[data-dsec]'), kap = e.target.closest('[data-dkapat]'), bil = e.target.closest('[data-dbildir]'), pay = e.target.closest('[data-dpaylas]');
       if(kap){ duelloKapat(); return; }
       if(sec && !sec.disabled){ duelloSec(sec.dataset.dsec); return; }
-      if(bil){ const d = duelloBugun(); const f = d && [d.a,d.b].find(x=>x.id===bil.dataset.dbildir); duelloKapat(); if(f){ mYemekKaydet([f]); oyAc(f.id); } return; }
+      if(bil){ const d = duelloBugun(); const f = d && [d.a,d.b].find(x=>x.id===bil.dataset.dbildir); duelloKapat('bolum'); if(f){ mYemekKaydet([f]); oyAc(f.id); } return; }
       if(pay){ duelloPaylas(); return; }
     });
   }
   document.documentElement.style.overflow = 'hidden';
+  if(!zatenAcik){ try{ history.pushState({prDuello:1}, ''); }catch(e){} }
   k.hidden = false; k.scrollTop = 0;
   duelloCiz();
   try{ window.va('event', {name:'duello_acildi'}); }catch(e){}
 }
-function duelloKapat(){
-  const k = document.getElementById('duello'); if(k) k.hidden = true;
+// yol: 'geri' = tarayıcının geri hareketi (geçmiş zaten geri gitti), 'bolum' = düellodan bir bölüme geçiş, boş = kapat düğmesi
+function duelloKapat(yol){
+  const k = document.getElementById('duello'); if(!k || k.hidden) return;
+  const adim = history.state && history.state.prDuello;
+  if(!yol && adim){ history.back(); return; }   // popstate tekrar buraya 'geri' ile gelir
+  k.hidden = true;
   document.documentElement.style.overflow = '';
-  if(!currentMode) render();
+  if(yol==='bolum' && adim){ try{ history.replaceState({prMod:1}, ''); }catch(e){} }
+  if(!currentMode && yol!=='bolum') render();
 }
 function duelloSec(id){
   const d = duelloBugun(); if(!d) return;
