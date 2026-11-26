@@ -6,6 +6,31 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  // ---------- Karşılama kartı, mod açıklaması, kişisel protein satırı (26.11.2026) ----------
+  ["const NICK_S = ['Tok','Sabırlı','Meraklı','Hızlı','Sakin','Cesur','Neşeli','Akıllı','Sessiz','Güçlü','Çevik','Usta'];", "const NICK_S = ['Full','Patient','Curious','Swift','Calm','Brave','Cheerful','Clever','Quiet','Mighty','Nimble','Steady'];", 'kod'],
+  ["const NICK_I = ['Kaplan','Ayı','Kartal','Tilki','Kurt','Baykuş','Panda','Yunus','Şahin','Geyik','Aslan','Vaşak'];", "const NICK_I = ['Tiger','Bear','Eagle','Fox','Wolf','Owl','Panda','Dolphin','Hawk','Deer','Lion','Lynx'];", 'kod'],
+  ['<p class="ks-ust">Hoş geldin</p>', '<p class="ks-ust">Welcome</p>', 'kod'],
+  ['<h2 id="ks-baslik">Selam, <span id="ks-nick"></span>', '<h2 id="ks-baslik">Hey, <span id="ks-nick"></span>', 'kod'],
+  ['aria-label="Başka bir takma ad"', 'aria-label="Another nickname"', 'kod'],
+  ['Üç bilgi ver, site sana göre ayarlansın. Bilgilerin sadece bu telefonda kalır.', 'Give us three things and the site adjusts to you. Your details stay on this phone only.', 'kod'],
+  ['>Boyun (cm)<input id="ks-boy"', '>Height (cm)<input id="ks-boy"', 'kod'],
+  ['>Kilon (kg)<input id="ks-kilo"', '>Weight (kg)<input id="ks-kilo"', 'kod'],
+  ['<p class="ks-l">Hedefin ne?</p>', '<p class="ks-l">What is your goal?</p>', 'kod'],
+  ['data-h="diyet">Kilo vermek<small>Az yiyip tok kalmak</small>', 'data-h="diyet">Lose weight<small>Eat less, stay full</small>', 'kod'],
+  ['data-h="saglik">Formumu korumak<small>Dengeli beslenmek</small>', 'data-h="saglik">Stay in shape<small>Eat balanced</small>', 'kod'],
+  ['data-h="spor">Kas yapmak<small>Düzenli spor yapıyorum</small>', 'data-h="spor">Build muscle<small>I train regularly</small>', 'kod'],
+  ['data-h="igne">Zayıflama iğnesi<small>Ozempic, Mounjaro gibi</small>', 'data-h="igne">Weight-loss shot<small>Ozempic, Mounjaro and similar</small>', 'kod'],
+  ['id="ks-basla">Başla</button>', 'id="ks-basla">Start</button>', 'kod'],
+  ['id="ks-gec">Şimdilik geç</button>', 'id="ks-gec">Skip for now</button>', 'kod'],
+  ["hata('Boyunu santim olarak yaz: 120 ile 230 arası.')", "hata('Enter your height in cm: 120 to 230.')", 'kod'],
+  ["hata('Kilonu kilogram olarak yaz: 25 ile 250 arası.')", "hata('Enter your weight in kg: 25 to 250.')", 'kod'],
+  ["hata('Bir hedef seç.')", "hata('Pick a goal.')", 'kod'],
+  ["toast(SURUS[surus].ad+' modu açıldı'+(ph ? ' · günlük protein hedefin '+ph+' g' : ''))", "toast(SURUS[surus].ad+' mode on'+(ph ? ' · your daily protein goal is '+ph+' g' : ''))", 'kod'],
+  ["'<div class=\"hero-sen\">Günlük protein hedefin <b>'+h+' g</b>. Bu tabak hedefinin <b>%'+pay+'</b> kadarını karşılar.</div>'", "'<div class=\"hero-sen\">Your daily protein goal is <b>'+h+' g</b>. This plate covers <b>'+pay+'%</b> of it.</div>'", 'kod'],
+  ["nasil:'Liste kalori başına proteine göre sıralanır'", "nasil:'The list is sorted by protein per calorie'", 'kod'],
+  ["nasil:'Liste doyuruculuk puanına göre sıralanır'", "nasil:'The list is sorted by satiety score'", 'kod'],
+  ["nasil:'Liste tek porsiyonun tok tutma süresine göre sıralanır'", "nasil:'The list is sorted by how long one portion keeps you full'", 'kod'],
+  ['<label>Yaşın (isteğe bağlı)</label>', '<label>Your age (optional)</label>', 'kod'],
   // ---------- VKİ cetveli ve tahmini yağ oranı (protein sekmesi) ----------
   // En üstte durmalı: aşağıdaki genel 'Zayıf' → 'Weak' satırı (lig adı) bu etiketlere dokunmadan önce çevrilsinler.
   ["const VKI_SINIF = { zayif:'Zayıf', normal:'Normal', fazla:'Fazla kilolu', obez:'Obezite' };", "const VKI_SINIF = { zayif:'Underweight', normal:'Normal', fazla:'Overweight', obez:'Obesity' };", 'kod'],
@@ -138,7 +163,7 @@ module.exports = [
   ['`PlateRank · Menüm\\n', '`PlateRank · My menu\\n', 'kod'],
   ['\\n\\nToplam: ${', '\\n\\nTotal: ${', 'kod'],
   [": 'İleri';", ": 'Next';", 'kod'],
-  ["'Selam, '+(ad?esc(ad):'yabancı')", "'Hey, '+(ad?esc(ad):'stranger')", 'kod'],
+  ["'Selam, '+(ad?esc(ad):(pg('nick','')?esc(pg('nick','')):'yabancı'))", "'Hey, '+(ad?esc(ad):(pg('nick','')?esc(pg('nick','')):'stranger'))", 'kod'],
   // ---------- sayı ve süre biçimi ----------
   ["function saatStr(t){ return String(t).replace('.',','); }", "function saatStr(t){ return String(t); }", 'kod'],
   ["if(dk < 60) return Math.round(dk)+' dk';", "if(dk < 60) return Math.round(dk)+' min';", 'kod'],

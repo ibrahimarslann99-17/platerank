@@ -906,7 +906,40 @@ body{transition:background-color .35s ease;}
 .surus .sm{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;color:rgba(255,255,255,.62);font:700 13px/1.2 'Figtree',system-ui,sans-serif;padding:9px 0 8px;border-radius:12px;cursor:pointer;transition:background-color .25s,color .25s;-webkit-tap-highlight-color:transparent;}
 .surus .sm svg{width:21px;height:21px;}
 .surus .sm.on{background:#FFFFFF;color:var(--teal-dark);}
-.surus-alt{font-size:13px;color:var(--ink-muted);margin:0 2px 12px;min-height:18px;}
+.surus-alt{display:flex;align-items:center;gap:11px;margin:2px 0 14px;padding:11px 14px;border-radius:14px;background:var(--teal-wash);border:1.5px solid var(--line-strong);color:var(--teal-dark);min-height:0;}
+.surus-alt svg{width:24px;height:24px;flex:none;color:var(--teal);}
+.surus-alt .sa-y{display:flex;flex-direction:column;gap:1px;font-size:15.5px;line-height:1.3;font-weight:700;}
+.surus-alt .sa-y small{font-size:13px;font-weight:500;color:var(--ink-muted);}
+#seo .sss-bas{font:700 11px/1.2 'Figtree',system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin:0 0 4px;}
+#seo .sss{border-bottom:1px solid var(--line-strong);}
+#seo .sss summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:17px 2px;-webkit-tap-highlight-color:transparent;}
+#seo .sss summary::-webkit-details-marker{display:none;}
+#seo .sss summary h2,#seo .sss summary h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;line-height:1.3;color:var(--ink);}
+#seo .sss summary::after{content:'+';flex:none;width:30px;height:30px;border-radius:50%;background:var(--teal-wash);color:var(--teal);font:700 22px/30px 'Figtree',system-ui,sans-serif;text-align:center;transition:transform .2s ease;}
+#seo .sss[open] summary::after{transform:rotate(45deg);}
+#seo .sss[open]{padding-bottom:8px;}
+#karsila{position:fixed;inset:0;z-index:210;background:rgba(10,12,8,.45);display:flex;align-items:flex-end;justify-content:center;padding:12px;}
+#karsila[hidden]{display:none;}
+.ks-kart{width:100%;max-width:440px;max-height:calc(100dvh - 24px);overflow:auto;background:var(--paper);color:var(--ink);border-radius:26px;padding:22px 20px 16px;box-shadow:0 20px 50px -20px rgba(0,0,0,.45);}
+.ks-ust{font:700 11px/1.2 'Figtree',system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin:0 0 6px;}
+.ks-kart h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.15;margin:0 0 6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+#ks-nick{color:var(--teal);}
+#ks-nick-yeni{border:0;background:var(--teal-wash);color:var(--teal);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;}
+.ks-not{font-size:14.5px;line-height:1.5;color:var(--ink-muted);margin:0 0 16px;}
+.ks-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.ks-2 label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700;}
+.ks-2 input{font:700 24px/1.2 'Figtree',system-ui,sans-serif;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line-strong);background:#FFFFFF;color:var(--ink);width:100%;}
+.ks-2 input:focus{outline:none;border-color:var(--teal);}
+.ks-l{font-size:14px;font-weight:700;margin:0 0 8px;}
+.ks-hedef{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ks-hedef button{border:1.5px solid var(--line-strong);background:#FFFFFF;color:var(--ink);border-radius:14px;padding:13px 10px;font:700 15px/1.25 'Figtree',system-ui,sans-serif;cursor:pointer;text-align:left;}
+.ks-hedef button small{display:block;font-weight:500;font-size:12px;color:var(--ink-muted);margin-top:3px;}
+.ks-hedef button.sec{border-color:var(--teal);background:var(--teal-wash);box-shadow:inset 0 0 0 1px var(--teal);}
+.ks-hata{min-height:20px;font-size:13.5px;color:#B23A34;margin:10px 0 0;}
+.ks-basla{width:100%;border:0;border-radius:16px;background:var(--forest);color:#FFFFFF;font:800 18px/1 'Figtree',system-ui,sans-serif;padding:17px;margin-top:6px;cursor:pointer;}
+.ks-gec{width:100%;border:0;background:none;color:var(--ink-muted);font:600 14px/1 'Figtree',system-ui,sans-serif;padding:14px;cursor:pointer;}
+.hero-sen{margin:14px auto 0;max-width:300px;font-size:14px;line-height:1.45;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:9px 12px;}
+.hero-sen b{font-weight:800;}
 body.arama .surus, body.arama .surus-alt, body.profil .surus, body.profil .surus-alt, body.meclis .surus, body.meclis .surus-alt{display:none;}
 body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--forest));color:#FFFFFF;}
 .surus-tek .tier-rows{padding-left:12px;}
@@ -979,7 +1012,8 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
   <div id="content"></div>
 
   <section id="seo">
-    <h2>En doyurucu yiyecekler: kalori başına tokluk şampiyonları</h2>
+    <p class="sss-bas">Merak edilenler</p>
+    <details class="sss"><summary><h2>En doyurucu yiyecekler: kalori başına tokluk şampiyonları</h2></summary>
     <p>"En doyurucu yiyecekler hangileri?" sorusunun cevabı porsiyon büyüklüğünde değil, <b>kalori başına tokluk</b> oranında saklı. Aşağıdaki liste, PlateRank'teki <span class="toplam-sayi">600+</span> yemek arasından doyuruculuk skoru en yüksek 15'i gösteriyor. Ortak noktaları belli: yüksek su hacmi, yüksek protein, yüksek lif ve düşük şeker.</p>
     <ol class="seo-list">
       <li><b><a href="/yemek/ayran">Ayran</a></b> · 65 kcal · skor 300 · protein ve su hacmi bir arada, sitedeki en verimli tokluk kaynağı</li>
@@ -998,19 +1032,25 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
       <li><b><a href="/yemek/ezogelin-corbasi">Ezogelin çorbası</a></b> · 140 kcal · skor 245 · 8 g protein, 5 g lif</li>
       <li><b><a href="/yemek/ceviche">Ceviche</a></b> · 170 kcal · skor 245 · 22 g protein, yağsız</li>
     </ol>
-    <p>Listenin diğer ucunda ne var? Cool Cake (skor 26), gulab jamun (37), tres leches (45) ve lokma (45) gibi şeker yoğun tatlılar; yüksek kalori verip kısa süreli tokluk sağladıkları için <b>D ligi</b>nde. Aradaki farkı görmek için yukarıdaki <b>Besin değerleri</b> sekmesinden tüm sıralamaya, <b>Çelişki</b> sekmesinden ise halkın algısıyla verinin çatıştığı yemeklere bakabilirsin.</p>
-    <h3>Günde kaç gram protein almalıyım?</h3>
+    <p>Listenin diğer ucunda ne var? Cool Cake (skor 26), gulab jamun (37), tres leches (45) ve lokma (45) gibi şeker yoğun tatlılar; yüksek kalori verip kısa süreli tokluk sağladıkları için <b>D ligi</b>nde. Aradaki farkı görmek için yukarıdaki <b>Besin değerleri</b> sekmesinden tüm sıralamaya, <b>Meclis-i Mide</b> bölümünden ise yiyenlerin bildirdiği saatlerle hesabın çatıştığı yemeklere bakabilirsin.</p>
+    </details>
+    <details class="sss"><summary><h3>Günde kaç gram protein almalıyım?</h3></summary>
     <p>Basit hesap: <b>kilon × katsayı</b>. Katsayı durumuna göre değişir: sadece eksik kalmamak için 0,8; sağlıklı ve dinç olmak için 1,1; düzenli spor yapıyorsan 1,5; kilo veriyorsan 1,8; 65 yaş üstündeysen 1,6; hastalık veya ameliyat sonrası iyileşiyorsan 2,0. Örnek: 70 kilo ve spor yapan biri için günde 105 gram. Yukarıdaki <b>Protein</b> sekmesinden kendi hesabını yapabilir, bunun kaç tabak ettiğini mutfak mutfak görebilirsin. (Böbrek rahatsızlığı olanlarda protein kısıtlanır; o durumda hedefini doktorun belirler.)</p>
-    <h3>Az kalorili ama doyurucu ne yenir?</h3>
+    </details>
+    <details class="sss"><summary><h3>Az kalorili ama doyurucu ne yenir?</h3></summary>
     <p>100 kalorinin altında en çok tok tutanlar: ayran (65 kcal), miso çorbası (80 kcal), tofulu miso çorbası (90 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal), cacık (90 kcal). Ortak özellikleri su hacmi ve protein. Buna karşılık aynı kalorideki bir avuç kuruyemiş ya da iki bisküvi, seni yarım saat sonra tekrar mutfağa gönderir.</p>
-    <h3>Hangi yemek kaç kalori?</h3>
+    </details>
+    <details class="sss"><summary><h3>Hangi yemek kaç kalori?</h3></summary>
     <p>Sitedeki <span class="toplam-sayi">600+</span> yemeğin her birinde porsiyon başına kalori, protein, lif, yağ ve şeker değeri var. Üstteki arama kutusuna yemeğin adını yaz: simit, lahmacun, pizza, cips, kola, ne olursa; kalorisini, kaç saat tok tuttuğunu ve kan şekerini ne hızda yükselttiğini görürsün. Kalemlerin yaklaşık beşte birinde değerler belgeli kaynaktan gelir (USDA FoodData Central, McDonald's Türkiye resmi tablosu, Open Food Facts etiketleri) ve kaynak adı yemeğin detayında yazar; geri kalanı tipik porsiyon tahminidir, porsiyon farkına göre ±%30 sapabilir.</p>
     <p>Tüm yemeklerin kalorisi ve doyuruculuk puanı tek sayfada: <a href="/yemek"><b>yemek listesi</b></a>. Her yemeğin kendi sayfasında tok tutup tutmadığını ve aynı kaloride daha tok tutan alternatiflerini bulursun.</p>
     <p>Hazır listeler: <a href="/liste/yuksek-proteinli-kahvalti">yüksek proteinli kahvaltı</a>, <a href="/liste/100-kalori-alti-doyurucu">100 kalori altı doyurucular</a>, <a href="/liste/diyet-icin-doyurucu-yemekler">diyette tok tutan yemekler</a>, <a href="/liste/en-doyurucu-corbalar">en doyurucu çorbalar</a>, <a href="/liste/vejetaryen-protein-kaynaklari">vejetaryen protein kaynakları</a> ve <a href="/liste"><b>diğerleri</b></a>.</p>
-    <h3>Puan nasıl oluşuyor?</h3>
+    </details>
+    <details class="sss"><summary><h3>Puan nasıl oluşuyor?</h3></summary>
     <p>Doyuruculuk puanı laboratuvarda ölçülmüş bir değer değil, yemekleri birbirine göre sıralamak için kurulmuş bir hesap. Dört girdisi var: porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür. Makro tablosu su hacmini göstermediği için çorba, ayran ve sulu yemekler ayrıca elle yukarı alınır; aynı şekilde her yeni yemek, kendi türündeki mevcut komşularına bakılarak yerleştirilir. Kalemlerin yaklaşık beşte birinde besin değerleri belgeli kaynaktan gelir (USDA FoodData Central, McDonald's Türkiye resmi tablosu, Open Food Facts etiketleri) ve kaynağın adı yemeğin detayında görünür; geri kalanında değerler tipik porsiyon tahminidir. Ligler: 200 üzeri S, 150-200 A, 100-150 B, 70-100 C, 70 altı D. <b>Şeker şoku hızı</b> ve <b>tahmini tekrar acıkma süresi</b> de aynı makrolardan türetilen tahminlerdir.</p>
-    <h3>Veriye API ile erişebilir miyim?</h3>
+    </details>
+    <details class="sss"><summary><h3>Veriye API ile erişebilir miyim?</h3></summary>
     <p>Evet, tüm veri seti salt-okunur ve herkese açık: <code>GET https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler</code>, başlığa <code>apikey: sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ</code> eklemen yeterli. Örnek: <code>curl "https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler?select=ad,mutfak,kcal,doyuruculuk&amp;mutfak=eq.tr" -H "apikey: sb_publishable_D1jGcv4slm8P3fBsPpbKOA_WkoH2PjJ"</code>. Yazma izni yok, sadece okuma. Kullanım koşulları için <a href="/lisans">lisans sayfası</a>.</p>
+    </details>
   </section>
 
 </div>
@@ -1021,6 +1061,27 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
   <button class="nbtn nprof" data-nav="bilgi" aria-label="Profil"><span class="avatar" id="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="nlab">Profil</span></button>
 </nav>
 <div id="toast"></div>
+<div id="karsila" hidden role="dialog" aria-modal="true" aria-labelledby="ks-baslik">
+  <div class="ks-kart">
+    <p class="ks-ust">Hoş geldin</p>
+    <h2 id="ks-baslik">Selam, <span id="ks-nick"></span> <button type="button" id="ks-nick-yeni" aria-label="Başka bir takma ad">↻</button></h2>
+    <p class="ks-not">Üç bilgi ver, site sana göre ayarlansın. Bilgilerin sadece bu telefonda kalır.</p>
+    <div class="ks-2">
+      <label>Boyun (cm)<input id="ks-boy" type="number" inputmode="numeric" min="120" max="230" placeholder="170"></label>
+      <label>Kilon (kg)<input id="ks-kilo" type="number" inputmode="decimal" min="25" max="250" placeholder="70"></label>
+    </div>
+    <p class="ks-l">Hedefin ne?</p>
+    <div class="ks-hedef">
+      <button type="button" data-h="diyet">Kilo vermek<small>Az yiyip tok kalmak</small></button>
+      <button type="button" data-h="saglik">Formumu korumak<small>Dengeli beslenmek</small></button>
+      <button type="button" data-h="spor">Kas yapmak<small>Düzenli spor yapıyorum</small></button>
+      <button type="button" data-h="igne">Zayıflama iğnesi<small>Ozempic, Mounjaro gibi</small></button>
+    </div>
+    <p class="ks-hata" id="ks-hata"></p>
+    <button type="button" class="ks-basla" id="ks-basla">Başla</button>
+    <button type="button" class="ks-gec" id="ks-gec">Şimdilik geç</button>
+  </div>
+</div>
 <div id="tanitim" aria-live="polite"><div id="tn-perde"></div><div id="tn-lens"></div>
   <div id="tn-kart" role="dialog" aria-label="Kısa tanıtım"><div class="tn-b" id="tn-b"></div><div class="tn-m" id="tn-m"></div>
     <div class="tn-alt"><div class="tn-nok" id="tn-nok"></div><div class="tn-btns"><button class="tn-gec" id="tn-gec">Geç</button><button class="tn-ileri" id="tn-ileri">İleri</button></div></div>
@@ -1113,7 +1174,7 @@ function kullaniciAdi(){
 function renderSelam(){
   const ad = kullaniciAdi();
   const st = document.getElementById('selam-t');
-  if(st) st.innerHTML = 'Selam, '+(ad?esc(ad):'yabancı')+' <span class="el">👋</span>';
+  if(st) st.innerHTML = 'Selam, '+(ad?esc(ad):(pg('nick','')?esc(pg('nick','')):'yabancı'))+' <span class="el">👋</span>';
   const gl = document.getElementById('giris-link');
   if(gl) gl.hidden = !!currentUser;
   const av = document.getElementById('avatar');
@@ -1704,6 +1765,19 @@ function heroSecim(){
   const gun = Math.floor((Date.now() + 3*3600e3) / 864e5);
   return src[gun % src.length];
 }
+// Karşılama kartında boy/kilo/hedef girildiyse ana kart kişiye göre konuşur: günlük protein hedefi ve bu tabağın payı
+function kisiselProteinHedefi(){
+  const kilo = parseFloat(pg("kilo",""));
+  if(!kilo || kilo<25 || kilo>250) return null;
+  const dd = P_DURUM.find(function(x){ return x.id===pDurum(); }) || P_DURUM[1];
+  return pHedefGram(kilo, dd);
+}
+function kisiselHeroSatir(f){
+  const h = kisiselProteinHedefi();
+  if(!h || f.protein==null) return '';
+  const pay = Math.max(1, Math.round(f.protein/h*100));
+  return '<div class="hero-sen">Günlük protein hedefin <b>'+h+' g</b>. Bu tabak hedefinin <b>%'+pay+'</b> kadarını karşılar.</div>';
+}
 function heroHtml(){
   const f = heroSecim();
   if(!f) return '<div class="hero hero-bos"><div class="hero-harf">S</div><div class="hero-alt">'+(Object.keys(foodCache).length ? 'Alttaki menüden bir bölüm seç.' : 'Mutfak ısınıyor…')+'</div></div>';
@@ -1719,6 +1793,7 @@ function heroHtml(){
       <span>${ic('<path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.5-4.5 2.5-6 .5 2 1.5 3 2.5 3 0-3-1-5 0-8z"/>')}${f.kcal} kcal</span>
       ${f.protein!=null?`<span>${ic('<path d="M6.5 6.5 17.5 17.5"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/>')}${f.protein} g protein</span>`:''}
     </div>
+    ${kisiselHeroSatir(f)}
     ${ayniKaloriSuresi(f)!=null?`<div class="hero-tok">${tsureHtml(ayniKaloriSuresi(f))}<div class="ht-alt">aynı 300 kaloride tok tutma süresi · porsiyonu (${f.kcal} kcal) ~${saatStr(t)} sa</div></div>`:''}
     <button class="hero-btn" id="hero-btn" data-id="${f.id}" data-m="${f.mutfak}">Listede gör</button>
   </div>
@@ -2802,8 +2877,9 @@ function ps(k,v){
   try{ localStorage.setItem("pr_"+k, v); }catch(e){}
 }
 function gunlukKalori(){
-  const kilo = parseFloat(pg("kilo","")), boy = parseFloat(pg("boy","")), yas = parseFloat(pg("yas",""));
-  if(!kilo || !boy || !yas) return null;
+  // Yaş isteğe bağlı: girilmemişse 30 alınır (insanlar yaşını paylaşmak istemiyor; fark günde ~100 kcal içinde kalır)
+  const kilo = parseFloat(pg("kilo","")), boy = parseFloat(pg("boy","")), yas = parseFloat(pg("yas","")) || 30;
+  if(!kilo || !boy) return null;
   const c = pg("cins","e");
   const bmr = 10*kilo + 6.25*boy - 5*yas + (c==="e" ? 5 : -161);
   const akt = (P_AKTIVITE.find(a=>a.id===pg("akt","hafif"))||P_AKTIVITE[1]).k;
@@ -2900,7 +2976,7 @@ function bedenAlanlari(){
     h += '<div class="pf2"><div class="pfield"><label>Kilon (kg)</label><input type="number" id="p-kilo" min="25" max="250" placeholder="72" value="'+(pKilo()||'')+'"></div>';
     h += '<div class="pfield"><label>Boyun (cm)</label><input type="number" id="p-boy" min="120" max="230" placeholder="175" value="'+pg("boy","")+'"></div>';
   }
-  h += '<div class="pfield"><label>Yaşın</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
+  h += '<div class="pfield"><label>Yaşın (isteğe bağlı)</label><input type="number" id="p-yas" min="12" max="100" placeholder="30" value="'+pg("yas","")+'"></div></div>';
   return h;
 }
 // Zayıflama iğnesi (GLP-1): Tok Plan ile aynı hesap. BKİ 25 üstündeyse boyun için BKİ 25 kilosu esas alınır
@@ -3348,16 +3424,16 @@ document.getElementById("q-clear").onclick = ()=>{
 // ---------- Sürüş modu (Spor+ / Konfor / Eko) ----------
 // Konfor varsayılan: bugünkü doyuruculuk sıralaması. Spor+ kalori başına protein, Eko porsiyon süresi.
 const SURUS = {
-  spor:{ad:'Spor+', alt:'Antrenman yapanlara: kalori başına en çok protein', renk:'#F7EDEC', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h1M6 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zM9 12h6M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1zM18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M22 12h-1"/></svg>'},
-  konfor:{ad:'Konfor', alt:'Sıradan bir gün için dengeli seçim', renk:'#F6F1E4', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/><path d="M5 11V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M6 19v2M18 19v2"/></svg>'},
-  eko:{ad:'Eko', alt:'Tek tabakla en uzun süre tok kal', renk:'#E9F0F7', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c.5-4.5 2.5-8 7-10"/><path d="M9 18c6.218 0 10.5-3.288 11-12V4h-4.014C7 4 4 8 4 13c0 1 0 3 2 5h3z"/></svg>'}
+  spor:{ad:'Spor+', alt:'Antrenman yapanlara: kalori başına en çok protein', nasil:'Liste kalori başına proteine göre sıralanır', renk:'#F7EDEC', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h1M6 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zM9 12h6M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1zM18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M22 12h-1"/></svg>'},
+  konfor:{ad:'Konfor', alt:'Sıradan bir gün için dengeli seçim', nasil:'Liste doyuruculuk puanına göre sıralanır', renk:'#F6F1E4', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/><path d="M5 11V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M6 19v2M18 19v2"/></svg>'},
+  eko:{ad:'Eko', alt:'Tek tabakla en uzun süre tok kal', nasil:'Liste tek porsiyonun tok tutma süresine göre sıralanır', renk:'#E9F0F7', ik:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c.5-4.5 2.5-8 7-10"/><path d="M9 18c6.218 0 10.5-3.288 11-12V4h-4.014C7 4 4 8 4 13c0 1 0 3 2 5h3z"/></svg>'}
 };
 const SURUS_SIRA = ['spor','konfor','eko'];
 let surus = (function(){ try{ const v = localStorage.getItem('pr_surus'); return SURUS[v] ? v : 'konfor'; }catch(e){ return 'konfor'; } })();
 function surusUygula(){
   document.body.dataset.surus = surus;
   document.querySelectorAll('#surus .sm').forEach(b=>{ const on = b.dataset.surus===surus; b.classList.toggle('on', on); b.setAttribute('aria-checked', on?'true':'false'); });
-  const alt = document.getElementById('surus-alt'); if(alt) alt.textContent = SURUS[surus].alt;
+  const alt = document.getElementById('surus-alt'); if(alt) alt.innerHTML = SURUS[surus].ik + '<span class="sa-y">' + SURUS[surus].ad + ': ' + SURUS[surus].alt + '<small>' + SURUS[surus].nasil + '</small></span>';
   const mm = document.getElementById('mod-mini'); if(mm){ mm.innerHTML = SURUS[surus].ik; mm.title = SURUS[surus].ad + ' modu: değiştirmek için dokun'; }
   const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', SURUS[surus].renk);
 }
@@ -3566,11 +3642,63 @@ document.addEventListener('keydown', e=>{
   else if(e.key==='ArrowLeft' && tnIdx>0) tnGoster(tnIdx-1);
 }, true);
 window.addEventListener('resize', ()=>requestAnimationFrame(tnYerlestir));
+// ---------- ilk ziyaret: karşılama kartı (BilBul usulü) ----------
+// Tanıtım turunu çoğu kişi okumadan geçiyordu. Yerine tek kart: otomatik takma ad, boy, kilo, hedef.
+// Yaş sorulmaz (Profil'de isteğe bağlı). Hedef, protein katsayısını (pr_durum) ve sürüş modunu birlikte ayarlar.
+// Tur kaldırılmadı: "?" düğmesiyle elle açılabilir.
+const NICK_S = ['Tok','Sabırlı','Meraklı','Hızlı','Sakin','Cesur','Neşeli','Akıllı','Sessiz','Güçlü','Çevik','Usta'];
+const NICK_I = ['Kaplan','Ayı','Kartal','Tilki','Kurt','Baykuş','Panda','Yunus','Şahin','Geyik','Aslan','Vaşak'];
+function nickUret(){ const r = n=>Math.floor(Math.random()*n); return NICK_S[r(NICK_S.length)]+' '+NICK_I[r(NICK_I.length)]+' '+(10+r(90)); }
+function nickVar(){ let n = pg('nick',''); if(!n){ n = nickUret(); ps('nick', n); } return n; }
+const HEDEF_MOD = { diyet:'eko', igne:'eko', saglik:'konfor', spor:'spor' };
+function karsilaAc(){
+  const k = document.getElementById('karsila'); if(!k) return;
+  document.getElementById('ks-nick').textContent = nickVar();
+  const by = pg('boy',''), kg = pg('kilo','');
+  if(by) document.getElementById('ks-boy').value = by;
+  if(kg) document.getElementById('ks-kilo').value = kg;
+  k.hidden = false;
+  try{ window.va('event', {name:'karsilama_acildi'}); }catch(e){}
+}
+function karsilaKapat(){ const k = document.getElementById('karsila'); if(k) k.hidden = true; try{ localStorage.setItem('pr_karsilandi','1'); }catch(e){} }
+(function(){
+  const k = document.getElementById('karsila'); if(!k) return;
+  let hedef = null;
+  const hata = t=>{ document.getElementById('ks-hata').textContent = t || ''; };
+  document.getElementById('ks-nick-yeni').onclick = ()=>{ const n = nickUret(); ps('nick', n); document.getElementById('ks-nick').textContent = n; buzz(10); };
+  k.querySelectorAll('.ks-hedef button').forEach(b=> b.onclick = ()=>{
+    hedef = b.dataset.h; k.querySelectorAll('.ks-hedef button').forEach(x=>x.classList.toggle('sec', x===b)); hata(''); buzz(10);
+  });
+  ['ks-boy','ks-kilo'].forEach(id=> document.getElementById(id).addEventListener('input', ()=>hata('')));
+  document.getElementById('ks-basla').onclick = ()=>{
+    const boy = parseFloat(document.getElementById('ks-boy').value), kilo = parseFloat(String(document.getElementById('ks-kilo').value).replace(',','.'));
+    if(!(boy>=120 && boy<=230)) return hata('Boyunu santim olarak yaz: 120 ile 230 arası.');
+    if(!(kilo>=25 && kilo<=250)) return hata('Kilonu kilogram olarak yaz: 25 ile 250 arası.');
+    if(!hedef) return hata('Bir hedef seç.');
+    ps('boy', String(Math.round(boy))); ps('kilo', String(Math.round(kilo*10)/10)); ps('durum', hedef);
+    karsilaKapat();
+    const m = HEDEF_MOD[hedef];
+    if(m && m!==surus) surusSec(m); else render();
+    renderSelam();
+    const he = document.getElementById('hero'); if(he) he.innerHTML = heroHtml();
+    const ph = kisiselProteinHedefi();
+    toast(SURUS[surus].ad+' modu açıldı'+(ph ? ' · günlük protein hedefin '+ph+' g' : ''));
+    try{ window.va('event', {name:'karsilama_tamam', data:{hedef:hedef}}); }catch(e){}
+  };
+  document.getElementById('ks-gec').onclick = ()=>{ karsilaKapat(); try{ window.va('event', {name:'karsilama_gecti'}); }catch(e){} };
+})();
 function tnIlkZiyaret(){
+  // İngilizce sürümde (lb/ft birimleri) karşılama kartı yok: eski tanıtım turu kalır
+  if(BIRIM_SECIMI){
+    let g = false; try{ g = !!localStorage.getItem('pr_tanitim_v2'); }catch(e){ g = true; }
+    if(!g && !currentMode && !arama) tnBaslat(TANITIM, 'pr_tanitim_v2');
+    return;
+  }
+  nickVar(); renderSelam();
   let gordu = false;
-  try{ gordu = !!localStorage.getItem('pr_tanitim_v2'); }catch(e){ gordu = true; }
+  try{ gordu = !!localStorage.getItem('pr_karsilandi') || !!localStorage.getItem('pr_kilo'); }catch(e){ gordu = true; }
   // sadece ana ekrandayken ve kullanıcı henüz bir şeye başlamamışsa
-  if(!gordu && !currentMode && !arama) tnBaslat(TANITIM, 'pr_tanitim_v2');
+  if(!gordu && !currentMode && !arama) karsilaAc();
 }
 
 (async ()=>{
