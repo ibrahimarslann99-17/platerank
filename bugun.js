@@ -707,6 +707,17 @@
       '<div class="bga-kalem"><span>' + adlar + '</span><span>' + h.kcal + ' kcal</span></div>' +
       '<button type="button" class="bga-ara" data-seg="menu">' + K.ekle + '</button>' + not + '</div>';
   };
+  // Ana sayfadaki "Bugün ne yedim?" tuşunun alt satırı: son öğüne göre ne zamana kadar tok (ya da ne zamandan beri aç)
+  window.bgTokSatir = function(){
+    if(!kayit.length) return null;
+    if(!TUM){ tumYemekYukle(); return null; }
+    var simdi = new Date(), l = ogunler(gunAnahtari(simdi));
+    if(!l.length) return null;
+    var b = ogunSonu(l[l.length - 1]);
+    if(!b) return null;
+    if(simdi < b) return { tok: true, yazi: tokYazi(b) + ' · ' + kalanYazi(Math.round((b - simdi) / 60000)) };
+    return { tok: false, yazi: EN ? K.acAlt + hhmm(b) : saatEk(b, EK_DEN) + ' beri açsın, bir şey ekle' };
+  };
   var SUS_ANAHTAR = 'pr_uye_sus';
   function kayitNotu(bugunG){
     if(currentUser) return '';

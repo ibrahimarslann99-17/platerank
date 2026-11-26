@@ -99,22 +99,28 @@ function seoBolumu(e) {
   const ust = e.sirali.filter((y) => !y.kanonik && y.tur !== 'icecek' && !y.sadece_malzeme).slice(0, 15);
   const alt = e.sirali.filter((y) => !y.kanonik && y.tur === 'tatli').slice(-4).reverse();
   const ciftler = [...e.ciftler.values()].filter((c) => c.secme).slice(0, 12);
+  // Türkçe sayfadaki gibi açılır sorular: uzun yazı kaydırmayla değil dokunarak okunur
   return `<section id="seo">
-    <h2>The most filling foods: fullness per calorie</h2>
+    <p class="sss-bas">Common questions</p>
+    <details class="sss"><summary><h2>The most filling foods: fullness per calorie</h2></summary>
     <p>The answer to “which foods keep you full the longest?” isn’t portion size, it’s <b>fullness per calorie</b>. The list below shows the 15 highest satiety scores among the <span class="toplam-sayi">${e.toplam}</span> foods on PlateRank. What they share is clear: lots of water volume, lots of protein, lots of fiber and little sugar.</p>
     <ol class="seo-list">
 ${ust.map((y) => `      <li><b><a href="/en/food/${y.slug}">${esc(y.tam)}</a></b> · ${y.kcal} kcal · score ${y.doyuruculuk}${y.tanim ? ' · ' + esc(y.tanim) : ''}</li>`).join('\n')}
     </ol>
     <p>What’s at the other end? Sugar-heavy desserts like ${alt.map((y) => `${esc(y.ad)} (score ${y.doyuruculuk})`).join(', ')}: lots of calories, short-lived fullness, so they sit in the <b>D league</b>.</p>
-    <h3>Head-to-head</h3>
+    </details>
+    <details class="sss"><summary><h3>Head-to-head</h3></summary>
     <ul class="seo-list">
 ${ciftler.map((c) => `      <li><a href="/en/vs/${c.slug}">${esc(c.a.ad)} vs ${esc(c.b.ad)}</a></li>`).join('\n')}
     </ul>
-    <h3>How many grams of protein do I need a day?</h3>
-    <p>Simple math: <b>your weight × a factor</b>. The factor depends on your situation: 0.8 to avoid falling short, 1.1 to be healthy and energetic, 1.5 if you train regularly, 1.8 if you’re losing weight, 1.6 if you’re over 65, 2.0 if you’re recovering from illness or surgery (grams per kg of body weight). The <b>What to eat?</b> section below works it out for you and shows sample plates.</p>
-    <h3>How is the score calculated?</h3>
+    </details>
+    <details class="sss"><summary><h3>How many grams of protein do I need a day?</h3></summary>
+    <p>Simple math: <b>your weight × a factor</b>. The factor depends on your situation: 0.8 to avoid falling short, 1.1 to be healthy and energetic, 1.5 if you train regularly, 1.8 if you’re losing weight, 1.6 if you’re over 65, 2.0 if you’re recovering from illness or surgery (grams per kg of body weight). The <b>How much protein do I need?</b> button above works it out for you and shows sample plates.</p>
+    </details>
+    <details class="sss"><summary><h3>How is the score calculated?</h3></summary>
     <p>The satiety score isn’t a lab measurement; it’s a calculation built to rank foods against each other. Protein and fiber per serving push it up, calorie density and sugar pull it down. The full explanation is on the <a href="/en/method">method page</a>, and every food is on the <a href="/en/food">full list</a>.</p>
     <p>Want a week of meals built around staying full? <a href="/en/plan"><b>Build your Stay Full Plan</b></a>.</p>
+    </details>
   </section>`;
 }
 
