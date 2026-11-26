@@ -919,13 +919,21 @@ body{transition:background-color .35s ease;}
 #seo .sss[open] summary::after{transform:rotate(45deg);}
 #seo .sss[open]{padding-bottom:8px;}
 /* ---------- Yeni ana sayfa (yalnız Türkçe: body.yeniev) ---------- */
+.ev-geri{display:none;align-items:center;gap:6px;border:0;border-radius:999px;background:#FFFFFF;color:var(--ink);font:700 14px/1 'Figtree',system-ui,sans-serif;padding:11px 14px;cursor:pointer;box-shadow:var(--shadow);flex:none;}
+body.yeniev:not(.ev) .ev-geri{display:inline-flex;}
+body.yeniev:not(.ev) .baslik-satir, body.yeniev:not(.ev) .sayac-kutu{display:none;}
+body.yeniev:not(.ev) .ust{margin-bottom:12px;}
+body.yeniev:not(.ev){padding-top:10px;}
+body.yeniev:not(.ev) .selam-t{font-size:18px;}
 .ev-profil{display:none;width:44px;height:44px;border-radius:50%;border:0;background:#FFFFFF;color:var(--ink);align-items:center;justify-content:center;cursor:pointer;flex:none;box-shadow:var(--shadow);}
 .ev-profil svg{width:22px;height:22px;}
 #evtus{display:none;}
 body.yeniev.ev #evtus{display:block;}
 body.yeniev.ev .baslik-satir, body.yeniev.ev .sayac-kutu, body.yeniev.ev .altmenu{display:none;}
 body.yeniev.ev .ev-profil{display:flex;}
-body.yeniev.ev .ust{margin-bottom:14px;}
+body.yeniev.ev .ust{margin-bottom:12px;}
+body.yeniev.ev{padding-top:10px;}
+body.yeniev.ev .selam-t{font-size:20px;}
 body.yeniev.ev .hero{padding:26px 20px 12px;border-radius:50% 50% 0 0 / 40% 40% 0 0;box-shadow:none;cursor:pointer;}
 body.yeniev.ev .hero-harf{font-size:190px;top:-22px;}
 body.yeniev.ev .hero-ad{font-size:23px;margin:10px 0 4px;}
@@ -937,15 +945,15 @@ body.yeniev.ev .hero-sen .uzun{display:none;}
 body.yeniev.ev .hero-sen .kisa{display:inline;}
 .hero-sen .kisa{display:none;}
 body.yeniev.ev .surus{border-radius:0 0 20px 20px;margin:0 0 8px;}
-body.yeniev.ev .surus .sm{flex-direction:row;justify-content:center;gap:6px;padding:9px 0;}
-body.yeniev.ev .surus .sm svg{width:18px;height:18px;}
-body.yeniev.ev .surus-alt{padding:7px 12px;margin:0 0 10px;}
+body.yeniev .surus .sm{flex-direction:row;justify-content:center;gap:6px;padding:9px 0;}
+body.yeniev .surus .sm svg{width:18px;height:18px;}
+body.yeniev .surus-alt{padding:7px 12px;margin:0 0 10px;}
 body.yeniev.ev .surus-alt .sa-y small{display:none;}
-body.yeniev.ev .surus-alt svg{width:20px;height:20px;}
-body.yeniev.ev .surus-alt .sa-y{font-size:14px;}
+body.yeniev .surus-alt svg{width:20px;height:20px;}
+body.yeniev .surus-alt .sa-y{font-size:14px;}
 body.yeniev.ev .surus-alt .sa-y small{font-size:12px;}
 .evtus{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.etus{display:flex;flex-direction:column;justify-content:space-between;gap:6px;text-align:left;min-height:90px;padding:11px 12px 10px;border-radius:18px;border:1.5px solid var(--line);background:#FFFFFF;color:var(--ink);cursor:pointer;font-family:'Figtree',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .12s ease;}
+.etus{display:flex;flex-direction:column;justify-content:flex-start;gap:7px;text-align:left;min-height:0;padding:12px 12px 11px;border-radius:18px;border:1.5px solid var(--line);background:#FFFFFF;color:var(--ink);cursor:pointer;font-family:'Figtree',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .12s ease;}
 .etus:active{transform:scale(.97);}
 .etus svg{width:21px;height:21px;color:var(--teal);}
 .etus b{display:block;font-size:15.5px;line-height:1.22;font-weight:800;}
@@ -960,6 +968,13 @@ body.yeniev.ev .surus-alt .sa-y small{font-size:12px;}
 .etus.koyu svg{color:var(--hero-a);}
 .etus.koyu span{color:rgba(255,255,255,.75);}
 .ev-alt{margin-top:14px;}
+.evplan{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:18px;background:#D5EC62;color:#15240F;text-decoration:none;font-family:'Figtree',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .12s ease;}
+.evplan:active{transform:scale(.98);}
+.evplan svg{width:24px;height:24px;flex:none;}
+.evplan div{flex:1;min-width:0;}
+.evplan b{display:block;font-size:15.5px;font-weight:800;line-height:1.2;}
+.evplan span{display:block;font-size:12px;line-height:1.3;color:#3A4A1F;margin-top:2px;}
+.evplan .ok{font-size:20px;font-weight:800;flex:none;}
 .ev-neden{display:block;margin:16px auto 0;font-size:13.5px;}
 /* ---------- Günün düellosu ---------- */
 #duello{position:fixed;inset:0;z-index:205;background:var(--paper);overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -1041,6 +1056,7 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
       <div class="selam-t" id="selam-t">Selam, yabancı <span class="el">👋</span></div>
       <button class="giris-link" id="giris-link">Giriş yap</button>
     </div>
+    <button class="ev-geri" id="ev-geri" aria-label="Ana sayfaya dön">← Ana sayfa</button>
     <button class="ev-profil" id="ev-profil" aria-label="Profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
     <div class="sayac-kutu">
       <div class="sayac-daire"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg></div>
@@ -3729,12 +3745,13 @@ document.addEventListener('keydown', e=>{
 window.addEventListener('resize', ()=>requestAnimationFrame(tnYerlestir));
 // ---- Ana sayfa tuşları ve düello metinleri: İngilizce karşılığı api/_ceviri_en.js'te bu blok tek parça ----
 const EVM = {
-  araB:'Bu yemek beni tutar mı?', araA:n=>n+' yemekte ara',
+  araB:'Hangi yemek kaç saat tutar?', araA:n=>n+' yemeğin listesi, ara ya da gez',
   yesemB:'Şimdi ne yesem?', yesemA:'Öneri, plan, hazır listeler',
   protB:'Ne kadar protein lazım?', protA:g=>'Senin için '+g+' g', protYok:'Kilona göre hesapla',
   bugunB:'Bugün ne yedim?', bugunKcal:k=>'Bugün '+k+' kcal', bugunYok:'Yediğini ekle, ne kadar tok kalacağını gör',
   duelloB:'Hangisi daha tok tutar?', duelloOynadi:'Bugün oynadın', seriEk:n=>' · '+n+' gün seri', duelloVars:'Günün düellosu',
   meclisB:'Seni kaç saat tuttu?', meclisA:'Meclis: yiyenlerin saatleri', neden:'Neden bu site var? →',
+  planB:'Seni tok tutan yemek planı', planA:'Haftalık plan, alışveriş listesi, tarifler', planUrl:'/tok-plan',
   ikili:(a,b)=>a+' '+soruEki(a)+', '+b+' '+soruEki(b)+'?',
   no:n=>'Düello #'+n, seri:(s,d)=>s+' gün seri · '+d+' doğru', yeni:'Her gün yeni ikili', kapat:'Kapat', yukleniyor:'Yemekler yükleniyor, birazdan tekrar dene.',
   soru:'Hangisi seni daha uzun tok tutar?', cevap:'Bugünün cevabı', dokun:'Birine dokun. Tek hakkın var.', tahminin:'Senin tahminin',
@@ -3788,14 +3805,15 @@ function evTuslariCiz(){
     + tus('bugun', EVM.bugunB, tk ? tk.yazi : bk ? EVM.bugunKcal(bk) : EVM.bugunYok, false, tk ? (tk.tok ? 'canli tok' : 'canli ac') : '')
     + tus('duello', EVM.duelloB, dAlt, true)
     + tus('meclis', EVM.meclisB, EVM.meclisA)
+    + '<a class="evplan" href="'+EVM.planUrl+'" data-tus="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><div><b>'+EVM.planB+'</b><span>'+EVM.planA+'</span></div><span class="ok">→</span></a>'
     + '</div>'
     + '<button type="button" class="link-btn ev-neden" data-tus="neden">'+EVM.neden+'</button>';
 }
-function evAramaAc(){
+// Liste tuşu: bütün yemeklerin sıralı listesi açılır, arama kutusu üstünde hazır durur (klavye kendiliğinden açılmaz)
+async function evListeAc(){
+  await modAc('auto');
   const w = document.getElementById('searchwrap'), h = document.getElementById('ara-hap');
   w.classList.add('acik'); h.classList.add('acik');
-  const q = document.getElementById('q'); q.focus();
-  window.scrollTo({top:0, behavior: azHareket() ? 'auto' : 'smooth'});
 }
 (function(){
   if(!YENI_EV) return;
@@ -3808,7 +3826,7 @@ function evAramaAc(){
     buzz(10);
     const t = b.dataset.tus;
     try{ window.va('event', {name:'ev_tus', data:{tus:t}}); }catch(err){}
-    if(t==='ara') evAramaAc();
+    if(t==='ara') evListeAc();
     else if(t==='yesem') modAc('yesem');
     else if(t==='protein') modAc('protein');
     else if(t==='bugun') modAc('menu');
@@ -3822,6 +3840,7 @@ function evAramaAc(){
     const hb = document.getElementById('hero-btn'); if(hb) hb.click();
   });
   document.getElementById('ev-profil').onclick = ()=>{ buzz(10); modAc(profilAlt); };
+  document.getElementById('ev-geri').onclick = ()=>{ buzz(10); evDon(); };
 })();
 
 // ================= Günün düellosu =================
@@ -3876,7 +3895,7 @@ function duelloKart(f, secim, kazanId, sonuc){
   const ligRenk = {S:'#1E7A4C', A:'#5A9135', B:'#C2961B', C:'#D06C28', D:'#BF3B38'}[lig];
   const sinif = 'dl-kart' + (sonuc ? (f.id===kazanId ? ' kazan' : ' kaybet') : '') + (sonuc && f.id===secim ? ' secti' : '');
   return `<button type="button" class="${sinif}" data-dsec="${f.id}" data-tahmin="${EVM.tahminin}" ${sonuc?'disabled':''}>
-    <img class="dl-img" src="/img/yemek/k/${slug}.webp" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;dl-img&quot;>?</div>'">
+    <img class="dl-img" src="/img/yemek/${slug}.webp" alt="" decoding="async" onerror="this.outerHTML='<div class=&quot;dl-img&quot;>?</div>'">
     <span class="dl-ad">${esc(f.ad)}</span>
     <span class="dl-kc">${EVM.porsiyon(f.kcal)}</span>
     ${sonuc ? `<span class="dl-lig" style="background:${ligRenk}">${lig}</span><span class="dl-saat">${EVM.saat(t)}</span>` : ''}
