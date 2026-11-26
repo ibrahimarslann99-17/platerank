@@ -6,6 +6,7 @@
 // index.html değişip yeni Türkçe metin eklenince buraya da satır eklenir; eklenmezse metin İngilizce sayfada Türkçe kalır.
 
 module.exports = [
+  ["const MUTFAK_BASLIK = { ulke:' mutfağı', hepsi:'Bütün mutfaklar', temel:'Temel gıdalar', veg:'Vejeteryan', zincir:'Zincir restoranlar', market:'Market ürünleri', hm:'Keşifler', yemek:' yemek', degistir:'Değiştir' };", "const MUTFAK_BASLIK = { ulke:' food', hepsi:'All cuisines', temel:'Basic foods', veg:'Vegetarian', zincir:'Chain restaurants', market:'Grocery products', hm:'Discoveries', yemek:' foods', degistir:'Change' };", 'kod'],
   ['<button class="ev-geri" id="ev-geri" aria-label="Ana sayfaya dön">← Ana sayfa</button>', '<button class="ev-geri" id="ev-geri" aria-label="Back to home">← Home</button>', 'kod'],
   // ---------- Sürüş modları (İngilizce sürümde ilk kez görünür oldu, 26.11.2026) ----------
   ["{ad:'Spor+', alt:'Antrenman yapanlara: kalori başına en çok protein',", "{ad:'Sport+', alt:'Training days: most protein per calorie',", 'kod'],

@@ -1043,6 +1043,20 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
 .mod-mini svg{width:18px;height:18px;}
 #stickybar.yapisik .mod-mini{display:flex;}
 #stickybar.yapisik .tabwrap{padding-right:42px;}
+/* Kaydırırken mutfak farkındalığı (yeni düzen, telefon): çipler aynı yükseklikte tek satırlık başlığa döner.
+   Katman çiplerin üstüne biner, yükseklik değişmez; böylece kaydırırken sayfa zıplamaz. */
+.mbas{display:none;}
+@media (max-width:899px){
+  body.yeniev #stickybar.yapisik{border-bottom:3px solid var(--teal);}
+  body.yeniev #stickybar.yapisik .mbas{display:flex;}
+  body.yeniev #stickybar.yapisik .tabwrap{visibility:hidden;}
+}
+.mbas{position:absolute;inset:0;align-items:center;gap:10px;padding:0 54px 0 16px;border:0;background:var(--paper);color:var(--ink);text-align:left;cursor:pointer;font-family:'Figtree',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;animation:fadeUp .2s ease both;}
+.mbas .mb-ic{font-size:34px;line-height:1;flex:none;}
+.mbas .mb-y{flex:1;min-width:0;display:flex;flex-direction:column;}
+.mbas .mb-y b{font-size:17px;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mbas .mb-y small{font-size:12px;color:var(--ink-muted);margin-top:2px;}
+.mbas .mb-d{flex:none;font-size:12.5px;font-weight:700;background:var(--forest);color:#FFFFFF;border-radius:999px;padding:8px 12px;}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"PlateRank","url":"https://platerank.dev/","description":"Yemekleri kalori başına doyuruculuğa göre sıralayan topluluk destekli tier listesi.","inLanguage":"tr-TR"},{"@type":"ItemList","name":"En doyurucu yiyecekler","description":"Kalori başına doyuruculuk skoru en yüksek yemekler.","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":15,"itemListElement":[{"@type":"ListItem","position":1,"name":"Ayran"},{"@type":"ListItem","position":2,"name":"Lupin tabule salatası"},{"@type":"ListItem","position":3,"name":"Tempeh sote"},{"@type":"ListItem","position":4,"name":"Haşlanmış patates"},{"@type":"ListItem","position":5,"name":"Miso çorbası"},{"@type":"ListItem","position":6,"name":"Seitan sote"},{"@type":"ListItem","position":7,"name":"Tempeh şiş (sebzeli)"},{"@type":"ListItem","position":8,"name":"Quorn taco kasesi"},{"@type":"ListItem","position":9,"name":"Kenevirli Quorn sezar salata"},{"@type":"ListItem","position":10,"name":"Wonton çorbası"},{"@type":"ListItem","position":11,"name":"Minestrone çorbası"},{"@type":"ListItem","position":12,"name":"Mercimek çorbası"},{"@type":"ListItem","position":13,"name":"Yayla çorbası"},{"@type":"ListItem","position":14,"name":"Ezogelin çorbası"},{"@type":"ListItem","position":15,"name":"Ceviche"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"En doyurucu yiyecekler hangileri?","acceptedAnswer":{"@type":"Answer","text":"Kalori başına en çok tokluk veren yiyecekler yüksek su hacmi, protein ve lif içerenlerdir: ayran, haşlanmış patates, mercimek ve miso gibi çorbalar, tempeh ve seitan gibi yoğun bitkisel proteinler, ızgara tavuk göğsü ve yağsız balık. PlateRank bu yemekleri S ligine yerleştirir."}},{"@type":"Question","name":"Doyuruculuk skoru nasıl hesaplanır?","acceptedAnswer":{"@type":"Answer","text":"Puan ölçülmüş bir değer değil, yemekleri birbirine göre sıralayan bir hesaptır. Porsiyon başına protein ve lif puanı yükseltir, kalori yoğunluğu ve şeker düşürür; makro tablosunda görünmeyen su hacmi yüzünden çorba ve sulu yemekler ayrıca elle yukarı alınır ve her yemek kendi türündeki komşularına göre yerleştirilir. 200 üzeri S ligi, 70 altı D ligidir."}},{"@type":"Question","name":"Az kalorili ama doyurucu ne yenir?","acceptedAnswer":{"@type":"Answer","text":"100 kalorinin altında en yüksek tokluk veren seçenekler ayran (65 kcal), miso çorbası (80 kcal), karpuz (85 kcal), tavuk suyu çorbası (90 kcal) ve cacıktır (90 kcal). Hepsi PlateRank'te S ligindedir."}},{"@type":"Question","name":"Bu verinin API'si var mı?","acceptedAnswer":{"@type":"Answer","text":"Evet, tüm yemek veri seti salt-okunur bir REST API üzerinden herkese açık. https://hpxnektzsrdhqzwwkfau.supabase.co/rest/v1/yemekler adresine apikey başlığıyla istek atman yeterli, kayıt veya izin gerekmez."}}]}]}
@@ -1102,7 +1116,7 @@ body[data-surus] .avatar{background:color-mix(in srgb, var(--teal) 55%, var(--fo
   </div>
 
   <div id="banner"></div>
-  <div id="stickybar"><div class="tabwrap" id="tabwrap"><div class="tabs" id="tabs"></div></div><button class="mod-mini" id="mod-mini" aria-label="Modu değiştir"></button></div>
+  <div id="stickybar"><div class="tabwrap" id="tabwrap"><div class="tabs" id="tabs"></div></div><button type="button" class="mbas" id="mbas" hidden></button><button class="mod-mini" id="mod-mini" aria-label="Modu değiştir"></button></div>
   <div class="turs" id="turs"></div>
   <div id="hero"></div>
   <div id="content"></div>
@@ -1710,6 +1724,7 @@ async function aramaYap(){
   render();
 }
 function renderTabs(){
+  if(typeof mutfakBaslikCiz==='function') mutfakBaslikCiz();
   const el = document.getElementById('tabs');
   el.innerHTML = CUISINES.map(c=>`<button class="tab rp ${c.id==='hm'?'hm':''} ${c.id===currentCuisine?'active':''}" data-c="${c.id}"><span class="tic">${c.ic}</span>${c.name}</button>`).join('');
   el.querySelectorAll('.tab').forEach(b=>{
@@ -3522,6 +3537,23 @@ document.getElementById("q-clear").onclick = ()=>{
 };
 
 
+// ---------- Kaydırırken mutfak başlığı ----------
+const MUTFAK_BASLIK = { ulke:' mutfağı', hepsi:'Bütün mutfaklar', temel:'Temel gıdalar', veg:'Vejeteryan', zincir:'Zincir restoranlar', market:'Market ürünleri', hm:'Keşifler', yemek:' yemek', degistir:'Değiştir' };
+const ULKE_MUTFAK = ['tr','it','jp','mx','cn','us','kr','th','in','me'];
+function mutfakBaslikCiz(){
+  const el = document.getElementById('mbas'); if(!el) return;
+  const c = CUISINES.find(x=>x.id===currentCuisine) || CUISINES[0];
+  const ad = ULKE_MUTFAK.indexOf(c.id)>=0 ? c.name + MUTFAK_BASLIK.ulke : (MUTFAK_BASLIK[c.id] || c.name);
+  const n = (foodCache[currentCuisine]||[]).length;
+  el.innerHTML = '<span class="mb-ic" aria-hidden="true">'+c.ic+'</span><span class="mb-y"><b>'+esc(ad)+'</b><small>'+(n ? n+MUTFAK_BASLIK.yemek+' · ' : '')+esc(SURUS[surus].ad)+'</small></span><span class="mb-d">'+MUTFAK_BASLIK.degistir+'</span>';
+  el.hidden = false;
+  el.setAttribute('aria-label', ad);
+}
+(function(){
+  const el = document.getElementById('mbas'); if(!el) return;
+  el.onclick = ()=>{ buzz(8); window.scrollTo({top:0, behavior: azHareket() ? 'auto' : 'smooth'}); };
+})();
+
 // ---------- Sürüş modu (Spor+ / Konfor / Eko) ----------
 // Konfor varsayılan: bugünkü doyuruculuk sıralaması. Spor+ kalori başına protein, Eko porsiyon süresi.
 const SURUS = {
@@ -3537,6 +3569,7 @@ function surusUygula(){
   const alt = document.getElementById('surus-alt'); if(alt) alt.innerHTML = SURUS[surus].ik + '<span class="sa-y">' + SURUS[surus].ad + ': ' + SURUS[surus].alt + '<small>' + SURUS[surus].nasil + '</small></span>';
   const mm = document.getElementById('mod-mini'); if(mm){ mm.innerHTML = SURUS[surus].ik; mm.title = SURUS[surus].ad + ' modu: değiştirmek için dokun'; }
   const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', SURUS[surus].renk);
+  if(typeof mutfakBaslikCiz==='function' && typeof CUISINES!=='undefined') mutfakBaslikCiz();
 }
 function surusSec(m){
   if(!SURUS[m] || m===surus) return;
