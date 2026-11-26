@@ -1691,11 +1691,19 @@ function slugla(s){
     .normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/['’]/g,'')
     .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
-let GORSEL = new Set();
-fetch('/img/yemek/liste.json').then(r=>r.ok?r.json():[]).then(a=>{
-  GORSEL = new Set(a);
-  if(document.querySelector('.arow')) render();
-}).catch(()=>{});
+// Görsel listesi: önce cihazdaki son kopya (anında resim), sonra ağdan taze liste.
+// Ağ isteği düşerse (mobil veri, zayıf sinyal) bir kez daha dener; tek hata tüm oturumu resimsiz bırakmasın.
+let GORSEL = (function(){ try{ const a = JSON.parse(localStorage.getItem('pr_gorsel')||'[]'); return new Set(Array.isArray(a)?a:[]); }catch(e){ return new Set(); } })();
+function gorselListeAl(deneme){
+  fetch('/img/yemek/liste.json', {cache:'no-cache'}).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(a=>{
+    if(!Array.isArray(a) || !a.length) return;
+    const onceki = GORSEL.size;
+    GORSEL = new Set(a);
+    try{ localStorage.setItem('pr_gorsel', JSON.stringify(a)); }catch(e){}
+    if(GORSEL.size !== onceki && document.querySelector('.arow')) render();
+  }).catch(()=>{ if(deneme < 2) setTimeout(()=>gorselListeAl(deneme+1), 2500*(deneme+1)); });
+}
+gorselListeAl(0);
 function renderTurs(){
   const el = document.getElementById("turs");
   if(!el) return;
@@ -3621,8 +3629,11 @@ surusUygula();
   const sb_el = document.getElementById('stickybar');
   if(!sb_el) return;
   let tikli = false;
+  // Şerit gerçekten tepeye yapışınca "yapisik" olur. Eskiden 8 px kaydırmak yetiyordu:
+  // şerit daha yerindeyken mutfak düğmeleri (Tümü dahil) gizlenip yerine başlık geliyordu.
   const guncelle = ()=>{
-    const y = window.scrollY > 8;
+    const ust = parseFloat(getComputedStyle(sb_el).top) || 0;
+    const y = window.scrollY > 8 && sb_el.offsetParent !== null && sb_el.getBoundingClientRect().top <= ust + 1;
     if(y !== tikli){ tikli = y; sb_el.classList.toggle('yapisik', y); }
   };
   window.addEventListener('scroll', ()=>requestAnimationFrame(guncelle), {passive:true});
